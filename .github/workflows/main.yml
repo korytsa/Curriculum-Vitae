@@ -1,11 +1,10 @@
-name: Deploy to Stage
+name: Deploy to Production
 
 on:
   push:
     branches:
-      - stage
-  workflow_dispatch: 
-
+      - main
+  workflow_dispatch:
 jobs:
   checks:
     name: Pre-deployment Checks
@@ -31,12 +30,12 @@ jobs:
         run: npm test || echo "Tests completed"
 
   build-and-deploy:
-    name: Build and Deploy to Stage
+    name: Build and Deploy to Production
     runs-on: ubuntu-latest
     needs: checks
     environment:
-      name: stage
-      url: https://stage.your-domain.com # Замените на ваш URL
+      name: production
+      url: https://your-domain.com # Замените на ваш URL
 
     steps:
       - name: Checkout code
@@ -54,17 +53,18 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Deploy to Stage
+      - name: Deploy to Production
         run: |
-          echo "🚀 Deploying to Stage environment..."
+          echo "🚀 Deploying to Production environment..."
           echo "Build completed successfully"
           # Здесь добавьте команды для реального деплоя
-          # Например: npm run deploy:stage
+          # Например: npm run deploy:prod
           # Или используйте Vercel, AWS, или другой сервис
 
       - name: Deployment Summary
         run: |
-          echo "✅ Stage deployment completed"
-          echo "Environment: stage"
+          echo "✅ Production deployment completed"
+          echo "Environment: production"
           echo "Commit: ${{ github.sha }}"
           echo "Branch: ${{ github.ref_name }}"
+
