@@ -35,7 +35,7 @@ jobs:
     needs: checks
     environment:
       name: production
-      url: https://your-domain.com # Замените на ваш URL
+      url: https://your-domain.com
 
     steps:
       - name: Checkout code
@@ -57,9 +57,6 @@ jobs:
         run: |
           echo "🚀 Deploying to Production environment..."
           echo "Build completed successfully"
-          # Здесь добавьте команды для реального деплоя
-          # Например: npm run deploy:prod
-          # Или используйте Vercel, AWS, или другой сервис
 
       - name: Deployment Summary
         run: |
