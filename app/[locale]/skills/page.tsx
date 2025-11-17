@@ -3,9 +3,7 @@
 export default function SkillsPage() {
 	return (
 		<section>
-			<h1>Skills</h1>
-			<p>Track team competencies and create new skill entries.</p>
+			<h1 className="font-semibold text-neutral-500 mb-1.5">Skills</h1>
 		</section>
 	);
 }
-
