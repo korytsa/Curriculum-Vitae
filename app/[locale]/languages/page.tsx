@@ -3,9 +3,7 @@
 export default function LanguagesPage() {
 	return (
 		<section>
-			<h1>Languages</h1>
-			<p>Configure language coverage and proficiency levels.</p>
+			<h1 className="font-medium text-neutral-500 mb-1.5">Languages</h1>
 		</section>
 	);
 }
-

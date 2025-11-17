@@ -1,17 +1,14 @@
-'use client'
+"use client";
 
-import { useTranslation } from 'react-i18next'
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-export default function Home({
-  params,
-}: {
-  params: { locale: string }
-}) {
-  const { t } = useTranslation()
+export default function Home({ params }: { params: { locale: string } }) {
+	const router = useRouter();
 
-  return (
-    <main>
-      <h1>{t('title')}</h1>
-    </main>
-  )
+	useEffect(() => {
+		router.push(`/${params.locale}/users`);
+	}, [router, params.locale]);
+
+	return null;
 }

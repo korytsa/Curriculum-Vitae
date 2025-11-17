@@ -20,7 +20,9 @@ export function LayoutClient({ children, locale, fontClass }: LayoutClientProps)
 		<body className={`${fontClass} antialiased`}>
 			<Sidebar />
 			<I18nextProvider i18n={i18n}>
-				<main className="content">{children}</main>
+				<main className="py-[14px] px-10 min-h-screen max-h-screen overflow-y-auto ml-[var(--sidebar-width,200px)] transition-[margin-left] duration-300 ease-in-out">
+				{children}
+			</main>
 			</I18nextProvider>
 		</body>
 	);
