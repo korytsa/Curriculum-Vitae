@@ -1,13 +1,14 @@
 import * as React from 'react'
 import { cn } from '@/shared/lib'
 
-type SkillIndicatorColor = 'red' | 'orange' | 'green' | 'blue'
+type SkillIndicatorColor = 'red' | 'orange' | 'green' | 'blue' | 'gray'
 
 const colorClasses: Record<SkillIndicatorColor, string> = {
   red: 'bg-red-500',
   orange: 'bg-orange-400',
   green: 'bg-green-500',
   blue: 'bg-blue-500',
+  gray: 'bg-gray-500',
 }
 
 const transparentColorClasses: Record<SkillIndicatorColor, string> = {
@@ -15,13 +16,15 @@ const transparentColorClasses: Record<SkillIndicatorColor, string> = {
   orange: 'bg-orange-400/20',
   green: 'bg-green-500/20',
   blue: 'bg-blue-500/20',
+  gray: 'bg-gray-500/20',
 }
 
 function getColorFromValue(value: number): SkillIndicatorColor {
   if (value >= 9) return 'red'
   if (value >= 7) return 'orange'
-  if (value >= 4) return 'green'
-  return 'blue'
+  if (value >= 5) return 'green'
+  if (value >= 3) return 'blue'
+  return 'gray'
 }
 
 function getWidthPercentage(value: number): number {
