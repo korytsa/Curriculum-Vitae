@@ -13,8 +13,10 @@ const variantClasses = {
 }
 
 const sizeClasses = {
-  default: 'h-12 px-8 text-sm',
   sm: 'h-10 px-6 text-xs',
+  md: 'h-11 px-7 text-sm',
+  default: 'h-12 px-8 text-sm',
+  lg: 'h-14 px-10 text-base',
   icon: 'h-10 w-10 p-0',
 }
 
