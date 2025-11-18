@@ -1,3 +1,42 @@
+/**
+ * Modal Component
+ *
+ * Features:
+ * - Controlled by `open` prop
+ * - Closes on backdrop click or close button
+ * - Prevents body scroll when open
+ * - Supports primary and secondary action buttons
+ * - Primary action can be styled as "primary" or "danger" variant
+ *
+ * @example
+ * ```tsx
+ * const [isOpen, setIsOpen] = useState(false);
+ *
+ * <Modal
+ *   open={isOpen}
+ *   onClose={() => setIsOpen(false)}
+ *   title="Confirm Action"
+ *   primaryAction={{
+ *     label: "Confirm",
+ *     onClick: handleConfirm,
+ *     variant: "primary"
+ *   }}
+ *   secondaryAction={{
+ *     label: "Cancel",
+ *     onClick: () => setIsOpen(false)
+ *   }}
+ * >
+ *   <p>Are you sure you want to proceed?</p>
+ *   Or
+ *   Your form goes here...
+ *   <div className="space-y-4">
+ *     <Input type="email" label="Email" placeholder="example@gmail.com" />
+ *     <Input type="password" label="Password" placeholder="Enter your password" />
+ *   </div>
+ * </Modal>
+ * ```
+ */
+
 "use client";
 
 import * as React from "react";
@@ -62,7 +101,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(({ open, onClose, tit
 			<div
 				ref={ref}
 				className={cn(
-					"relative z-10 w-full sm:max-w-[600px] mx-4 bg-[#2F2F2F] rounded-lg shadow-xl overflow-hidden p-5 pb-2",
+					"relative z-10 w-full sm:max-w-[600px] mx-4 bg-[#353535] rounded-md overflow-hidden p-5 pb-2",
 					"transform transition-all duration-200",
 					open ? "scale-100" : "scale-95",
 					className,

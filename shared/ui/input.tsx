@@ -1,15 +1,37 @@
+/**
+ * Input Component
+ *
+ * Features:
+ * - Floating label animation when focused or has value
+ * - Error state styling and error message display
+ * - Password type with show/hide toggle button
+ * - Extends all standard HTML input attributes
+ *
+ * @example
+ * ```tsx
+ * <Input
+ *   label="Email"
+ *   type="email"
+ *   placeholder="Enter your email"
+ *   value={email}
+ *   onChange={(e) => setEmail(e.target.value)}
+ *   error={errors.email}
+ * />
+ * ```
+ */
+
 import * as React from "react";
 import { cn } from "@/shared/lib";
 import { Button } from "./button";
 import { IoEyeOffSharp, IoEyeSharp } from "react-icons/io5";
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  error?: string;
+	error?: string;
 	label?: string;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type = "text", placeholder, error, value, label, ...props }, ref) => {
-  const [showPassword, setShowPassword] = React.useState(false);
+	const [showPassword, setShowPassword] = React.useState(false);
 	const [isFocused, setIsFocused] = React.useState(false);
 	const isPassword = type === "password";
 	const hasValue = Boolean(value);
@@ -17,8 +39,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type 
 	const inputType = isPassword ? (showPassword ? "text" : "password") : type;
 	const labelColor = error ? "text-red-500" : isFocused ? "text-red-500" : "text-[#C7C7C7]";
 	const borderColor = error ? "border-red-500" : isFocused ? "border-red-500" : "border-[#656565]";
-  const baseClasses =
-    "w-full rounded-md border bg-transparent px-3 py-3 text-[#C7C7C7] placeholder:font-medium transition-colors focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50";
+	const baseClasses =
+		"w-full border bg-transparent px-3 py-3 text-[#C7C7C7] placeholder:font-medium transition-colors focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50";
 
 	const inputElement = (
 		<div className="relative">

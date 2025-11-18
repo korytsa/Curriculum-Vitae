@@ -1,3 +1,25 @@
+/**
+ * Button Component
+ *
+ * Features:
+ * - Multiple variants: primary, secondary, outline, ghost, danger, dangerGhost
+ * - Multiple sizes: default, sm, icon
+ * - Icon support with left/right positioning
+ * - Badge display for notifications or counts
+ * - Extends all standard HTML button attributes
+ *
+ * @example
+ * ```tsx
+ * <Button
+ *   variant="primary"
+ *   size="default"
+ *   onClick={() => handleClick()}
+ * >
+ *   Click Me
+ * </Button>
+ * ```
+ */
+
 import * as React from "react";
 import { cn } from "@/shared/lib";
 
