@@ -9,3 +9,6 @@ export type { ModalProps } from "./modal";
 
 export { Input } from "./input";
 export type { InputProps } from "./input";
+
+export { Loader } from "./loader";
+export type { LoaderProps } from "./loader";
