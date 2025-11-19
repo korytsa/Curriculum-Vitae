@@ -4,9 +4,6 @@ export type { ButtonProps, ButtonVariant, ButtonSize, ButtonConfig } from "./but
 export { SkillIndicator } from "./indicator";
 export type { SkillIndicatorProps } from "./indicator";
 
-export { PasswordInput } from './password-input'
-export type { PasswordInputProps } from './password-input'
-
 export { Modal } from "./modal";
 export type { ModalProps } from "./modal";
 

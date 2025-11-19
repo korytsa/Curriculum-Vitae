@@ -1,5 +1,5 @@
-import { useMutation } from '@apollo/client/react'
-import { LOGIN_MUTATION } from './graphql'
+import { useLazyQuery } from '@apollo/client/react'
+import { LOGIN_QUERY } from './graphql'
 import { setAccessToken } from '@/shared/config/apollo'
 import { useRouter } from 'next/navigation'
 import { usePathname } from 'next/navigation'
@@ -22,19 +22,13 @@ export function useLogin() {
   const pathname = usePathname()
   const locale = pathname?.split('/')[1] || 'en'
 
-  const [login, { loading, error }] = useMutation<LoginResponse, LoginVariables>(LOGIN_MUTATION, {
-    onCompleted: (data) => {
-      const token = data.login.access_token
-      setAccessToken(token)
-      router.push(`/${locale}/cvs`)
-    },
-    onError: (error) => {
-      console.error('Login error:', error)
-    },
+  const [loginQuery, { loading, error }] = useLazyQuery<LoginResponse, LoginVariables>(LOGIN_QUERY, {
+    fetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
   })
 
-  const handleLogin = (email: string, password: string) => {
-    return login({
+  const handleLogin = async (email: string, password: string) => {
+    const result = await loginQuery({
       variables: {
         auth: {
           email,
@@ -42,6 +36,12 @@ export function useLogin() {
         },
       },
     })
+
+    const token = result.data?.login.access_token
+    if (token) {
+      setAccessToken(token)
+      router.push(`/${locale}/cvs`)
+    }
   }
 
   return {

@@ -7,6 +7,7 @@ const httpLink = createHttpLink({
   uri: process.env.NEXT_PUBLIC_GRAPHQL_URI || 'https://cv-project-js.inno.ws/api/graphql',
 })
 
+
 const authLink = setContext((_, { headers }) => {
   const token = accessTokenVar()
   return {

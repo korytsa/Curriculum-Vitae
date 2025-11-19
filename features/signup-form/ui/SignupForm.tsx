@@ -1,64 +1,87 @@
 'use client'
 
-import { useState } from 'react'
-import { Button } from '@/shared/ui'
+import { useFormik } from 'formik'
+import { useRouter, usePathname } from 'next/navigation'
+import { Button, Input } from '@/shared/ui'
 import { useSignup } from '@/features/auth'
 
 export function SignupForm() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const { signup, loading, error } = useSignup()
+  const router = useRouter()
+  const pathname = usePathname()
+  const locale = pathname?.split('/')[1] || 'en'
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    await signup(email, password)
-  }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    validate: (values) => {
+      const errors: Partial<typeof values> = {}
+
+      if (!values.email.trim()) {
+        errors.email = 'Email is required'
+      } else if (!emailRegex.test(values.email.trim())) {
+        errors.email = 'Invalid email address'
+      }
+
+      if (!values.password.trim()) {
+        errors.password = 'Password is required'
+      }
+
+      return errors
+    },
+    onSubmit: async (values) => {
+      await signup(values.email.trim(), values.password)
+    },
+  })
 
   return (
-    <form className="space-y-6" onSubmit={handleSubmit}>
+    <form className="space-y-6" onSubmit={formik.handleSubmit}>
       {error && (
         <div className="p-3 bg-red-500/20 border border-red-500 rounded-lg text-red-400 text-sm">
           {error.message}
         </div>
       )}
-      <div className="space-y-1">
-        <label htmlFor="email" className="block text-sm font-medium text-white">
-          Email
-        </label>
-        <input
+      <div>
+        <Input
           id="email"
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="w-full h-12 px-4 bg-[#2F2F2F] border border-white/20 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+          label="Email"
           placeholder="Email"
+          {...formik.getFieldProps('email')}
+          required
         />
+        {formik.touched.email && formik.errors.email ? (
+          <p className="mt-1 text-sm text-red-400">{formik.errors.email}</p>
+        ) : null}
       </div>
 
-      <div className="space-y-1">
-        <label htmlFor="password" className="block text-sm font-medium text-white">
-          Password
-        </label>
-        <input
+      <div>
+        <Input
           id="password"
           type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="w-full h-12 px-4 bg-[#2F2F2F] border border-white/20 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+          label="Password"
           placeholder="Password"
+          {...formik.getFieldProps('password')}
+          required
         />
+        {formik.touched.password && formik.errors.password ? (
+          <p className="mt-1 text-sm text-red-400">{formik.errors.password}</p>
+        ) : null}
       </div>
 
-      <Button variant="primary" className="w-full" type="submit" disabled={loading}>
-        {loading ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}
+      <Button variant="primary" className="w-full" type="submit" disabled={loading || !formik.isValid || formik.isSubmitting}>
+        {loading || formik.isSubmitting ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}
       </Button>
 
       <div className="text-center">
         <button
           type="button"
           className="text-sm text-white/60 hover:text-white transition-colors"
+          onClick={() => router.push(`/${locale}/login`)}
         >
           I HAVE AN ACCOUNT
         </button>
