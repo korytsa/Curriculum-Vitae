@@ -1,8 +1,9 @@
 import { useMemo } from "react";
 import type {
   SkillCategory,
-  SkillsWithCategoriesQueryResult,
   CategoryOption,
+  SkillCategoriesQueryResult,
+  SkillsWithCategoriesQueryResult,
 } from "./types";
 
 const mockCategoryOptions: CategoryOption[] = [
@@ -49,9 +50,9 @@ const mockAllSkillsForSelect: Array<{
   { id: "mock-5", name: "GraphQL", categoryName: "Database" },
 ];
 
-export function useCategoryOptions(categoriesData?: {
-  skillCategories: CategoryOption[];
-}): CategoryOption[] {
+export function useCategoryOptions(
+  categoriesData?: SkillCategoriesQueryResult
+): CategoryOption[] {
   return useMemo(() => {
     if (
       categoriesData?.skillCategories &&

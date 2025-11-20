@@ -12,3 +12,9 @@ export type { InputProps } from "./input";
 
 export { Loader } from "./loader";
 export type { LoaderProps } from "./loader";
+
+export { Notification } from "./notification";
+export type { NotificationProps } from "./notification";
+
+export { FormStatus } from "./form-status";
+export type { FormStatusProps } from "./form-status";

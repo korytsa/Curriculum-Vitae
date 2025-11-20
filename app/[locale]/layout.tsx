@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Inter } from "next/font/google";
 import "../globals.css";
-import { LayoutClient } from "./LayoutClient";
+import { initLocale } from "@/shared/lib/i18n-server";
 
 const inter = Inter({
 	subsets: ["latin"],
@@ -19,12 +19,12 @@ type RootLayoutProps = {
 	params: { locale: string };
 };
 
-export default function RootLayout({ children, params }: RootLayoutProps) {
+export default async function RootLayout({ children, params }: RootLayoutProps) {
+	await initLocale(params.locale);
+
 	return (
 		<html lang={params.locale}>
-			<LayoutClient locale={params.locale} fontClass={inter.variable}>
-				{children}
-			</LayoutClient>
+			<body className={`${inter.variable} antialiased`}>{children}</body>
 		</html>
 	);
 }

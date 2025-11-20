@@ -1,56 +1,64 @@
-'use client'
+"use client";
 
-import { useFormik } from 'formik'
-import { useRouter, usePathname } from 'next/navigation'
-import { Button, Input } from '@/shared/ui'
-import { useSignup } from '@/features/auth'
+import { useFormik } from "formik";
+import { useRouter, usePathname } from "next/navigation";
+import { useTranslation } from "react-i18next";
+import { Button, Input, FormStatus } from "@/shared/ui";
+import { useSignup } from "@/features/auth";
+import type { SignupPayload } from "@/features/auth";
 
 export function SignupForm() {
-  const { signup, loading, error } = useSignup()
-  const router = useRouter()
-  const pathname = usePathname()
-  const locale = pathname?.split('/')[1] || 'en'
+  const { signup, loading, error } = useSignup();
+  const router = useRouter();
+  const pathname = usePathname();
+  const locale = pathname?.split("/")[1] || "en";
+  const { t } = useTranslation();
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const initialValues = {
+    email: "",
+    password: "",
+  };
+
+  const validate = (values: typeof initialValues) => {
+    const errors: Partial<typeof values> = {};
+
+    if (!values.email.trim()) {
+      errors.email = t("features.signupForm.errors.emailRequired");
+    } else if (!emailRegex.test(values.email.trim())) {
+      errors.email = t("features.signupForm.errors.emailInvalid");
+    }
+
+    if (!values.password.trim()) {
+      errors.password = t("features.signupForm.errors.passwordRequired");
+    }
+
+    return errors;
+  };
+
+  const mapValuesToSignupPayload = (values: typeof initialValues): SignupPayload => ({
+    email: values.email.trim(),
+    password: values.password,
+  });
 
   const formik = useFormik({
-    initialValues: {
-      email: '',
-      password: '',
-    },
-    validate: (values) => {
-      const errors: Partial<typeof values> = {}
-
-      if (!values.email.trim()) {
-        errors.email = 'Email is required'
-      } else if (!emailRegex.test(values.email.trim())) {
-        errors.email = 'Invalid email address'
-      }
-
-      if (!values.password.trim()) {
-        errors.password = 'Password is required'
-      }
-
-      return errors
-    },
+    initialValues,
+    validate,
     onSubmit: async (values) => {
-      await signup(values.email.trim(), values.password)
+      await signup(mapValuesToSignupPayload(values));
     },
-  })
+  });
 
   return (
     <form className="space-y-6" onSubmit={formik.handleSubmit}>
-      {error && (
-        <div className="p-3 bg-red-500/20 border border-red-500 rounded-lg text-red-400 text-sm">
-          {error.message}
-        </div>
-      )}
+      <FormStatus errorMessage={error?.message ?? null} />
       <div>
         <Input
           id="email"
           type="email"
-          label="Email"
-          placeholder="Email"
+          label={t("features.signupForm.labels.email")}
+          placeholder={t("features.signupForm.placeholders.email")}
           {...formik.getFieldProps('email')}
           required
         />
@@ -63,8 +71,8 @@ export function SignupForm() {
         <Input
           id="password"
           type="password"
-          label="Password"
-          placeholder="Password"
+          label={t("features.signupForm.labels.password")}
+          placeholder={t("features.signupForm.placeholders.password")}
           {...formik.getFieldProps('password')}
           required
         />
@@ -74,17 +82,20 @@ export function SignupForm() {
       </div>
 
       <Button variant="primary" className="w-full" type="submit" disabled={loading || !formik.isValid || formik.isSubmitting}>
-        {loading || formik.isSubmitting ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}
+        {loading || formik.isSubmitting
+          ? t("features.signupForm.buttons.creating")
+          : t("features.signupForm.buttons.create")}
       </Button>
 
       <div className="text-center">
-        <button
+        <Button
           type="button"
+          variant="ghost"
           className="text-sm text-white/60 hover:text-white transition-colors"
           onClick={() => router.push(`/${locale}/login`)}
         >
-          I HAVE AN ACCOUNT
-        </button>
+          {t("features.signupForm.links.haveAccount")}
+        </Button>
       </div>
     </form>
   )

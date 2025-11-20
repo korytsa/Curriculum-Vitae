@@ -1,10 +1,12 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useFormik } from 'formik';
-import { useCreateSkill } from '../model/useCreateSkill';
-import { AddSkillFormView } from './AddSkillFormView';
-import type { CategoryOption } from '../model/types';
+import { useEffect } from "react";
+import { useFormik } from "formik";
+import { useTranslation } from "react-i18next";
+import { Input, Modal, FormStatus } from "@/shared/ui";
+import { useCreateSkill } from "../model/useCreateSkill";
+import type { CreateSkillPayload } from "../model/useCreateSkill";
+import type { CategoryOption } from "../model/types";
 
 interface AddSkillFormValues {
   skillName: string;
@@ -25,61 +27,141 @@ export function AddSkillForm({
   onCancel,
 }: AddSkillFormProps) {
   const { createSkill, loading, error } = useCreateSkill();
+  const { t } = useTranslation();
 
-  const formik = useFormik<AddSkillFormValues>({
-    initialValues: {
-      skillName: '',
-      categoryId: categoryOptions.length > 0 ? categoryOptions[0].id : '',
-    },
-    validate: (values) => {
-      const errors: Partial<AddSkillFormValues> = {};
+  const initialValues: AddSkillFormValues = {
+    skillName: "",
+    categoryId: categoryOptions.length > 0 ? categoryOptions[0].id : "",
+  };
 
-      if (!values.skillName.trim()) {
-        errors.skillName = 'Skill name is required';
-      }
+  const validate = (values: AddSkillFormValues) => {
+    const errors: Partial<AddSkillFormValues> = {};
 
-      if (!values.categoryId) {
-        errors.categoryId = 'Category is required';
-      } else {
-        const categoryIdNum = parseInt(values.categoryId, 10);
-        if (isNaN(categoryIdNum)) {
-          errors.categoryId = 'Invalid category ID';
-        }
-      }
+    if (!values.skillName.trim()) {
+      errors.skillName = t("features.skills.addForm.errors.nameRequired");
+    }
 
-      return errors;
-    },
-    onSubmit: async (values, helpers) => {
+    if (!values.categoryId) {
+      errors.categoryId = t("features.skills.addForm.errors.categoryRequired");
+    } else {
       const categoryIdNum = parseInt(values.categoryId, 10);
       if (isNaN(categoryIdNum)) {
+        errors.categoryId = t("features.skills.addForm.errors.categoryInvalid");
+      }
+    }
+
+    return errors;
+  };
+
+  const mapValuesToPayload = (
+    values: AddSkillFormValues
+  ): CreateSkillPayload | null => {
+    if (!values.skillName.trim()) {
+      return null;
+    }
+
+    const categoryId = parseInt(values.categoryId, 10);
+    if (isNaN(categoryId)) {
+      return null;
+    }
+
+    return {
+      name: values.skillName.trim(),
+      categoryId,
+    };
+  };
+
+  const formik = useFormik<AddSkillFormValues>({
+    initialValues,
+    validate,
+    onSubmit: async (values, helpers) => {
+      const payload = mapValuesToPayload(values);
+      if (!payload) {
         return;
       }
 
       try {
-        await createSkill(values.skillName.trim(), categoryIdNum);
+        await createSkill(payload);
         helpers.resetForm();
         onSuccess();
       } catch (err) {
+        // handled by hook error
       }
     },
   });
 
   useEffect(() => {
     if (!formik.values.categoryId && categoryOptions.length > 0) {
-      formik.setFieldValue('categoryId', categoryOptions[0].id);
+      formik.setFieldValue("categoryId", categoryOptions[0].id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoryOptions]);
 
   return (
-    <AddSkillFormView
-      formik={formik}
-      categoryOptions={categoryOptions}
-      error={error}
-      loading={loading}
+    <Modal
       open={open}
-      onCancel={onCancel}
-    />
+      onClose={onCancel}
+      title={t("features.skills.addForm.title")}
+      primaryAction={{
+        label: t("features.skills.common.confirm"),
+        onClick: () => formik.handleSubmit(),
+        disabled: loading || !formik.isValid || formik.isSubmitting,
+      }}
+      secondaryAction={{
+        label: t("features.skills.common.cancel"),
+        onClick: () => {
+          formik.resetForm();
+          onCancel();
+        },
+      }}
+    >
+      <FormStatus errorMessage={error?.message ?? null} className="mb-4" />
+
+      <div className="space-y-4">
+        <div>
+          <Input
+            id="skillName"
+            label={t("features.skills.addForm.labels.name")}
+            placeholder={t("features.skills.addForm.placeholders.name")}
+            {...formik.getFieldProps("skillName")}
+            required
+          />
+          {formik.touched.skillName && formik.errors.skillName ? (
+            <p className="mt-1 text-sm text-red-400">
+              {formik.errors.skillName}
+            </p>
+          ) : null}
+        </div>
+
+        <div className="space-y-1">
+          <label
+            htmlFor="categoryId"
+            className="text-xs uppercase tracking-[0.2em] text-gray-400"
+          >
+            {t("features.skills.addForm.labels.category")}
+          </label>
+          <select
+            id="categoryId"
+            {...formik.getFieldProps("categoryId")}
+            className="w-full rounded-lg border border-white/20 bg-transparent px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+          >
+            {categoryOptions.map((category) => (
+              <option
+                key={category.id}
+                value={category.id}
+                className="text-black"
+              >
+                {category.name}
+              </option>
+            ))}
+          </select>
+          {formik.touched.categoryId && formik.errors.categoryId ? (
+            <p className="mt-1 text-sm text-red-400">
+              {formik.errors.categoryId}
+            </p>
+          ) : null}
+        </div>
+      </div>
+    </Modal>
   );
 }
-

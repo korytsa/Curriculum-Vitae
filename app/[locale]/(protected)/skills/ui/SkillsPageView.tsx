@@ -1,7 +1,8 @@
 "use client";
 
 import { Plus, Trash2 } from "lucide-react";
-import { Loader } from "@/shared/ui";
+import { useTranslation } from "react-i18next";
+import { Button, Loader } from "@/shared/ui";
 import {
   CategoryBlock,
   AddSkillForm,
@@ -43,11 +44,13 @@ export function SkillsPageView({
   onCloseUpdateForm,
   onCloseDeleteModal,
 }: SkillsPageViewProps) {
+  const { t } = useTranslation();
+
   return (
     <section className="px-6 py-8 text-white space-y-10">
       <div className="flex justify-between items-start gap-16">
         <h1 className="text-sm font-semibold text-gray-400 tracking-[0.2em] uppercase">
-          Skills
+          {t("skills.heading")}
         </h1>
 
         <div className="flex-1 space-y-16 mt-16">
@@ -63,29 +66,32 @@ export function SkillsPageView({
 
           {!skillsLoading && (
             <div className="flex flex-wrap items-center justify-end gap-10 pr-4 lg:pr-20 text-sm uppercase tracking-wide">
-              <button
+              <Button
                 type="button"
-                onClick={onOpenAddForm}
+                variant="ghost"
                 className="flex items-center gap-2 rounded-full px-4 py-2 text-gray-400 text-xs md:text-sm tracking-[0.2em] hover:text-gray-200 transition-colors"
+                icon={<Plus className="h-4 w-4" />}
+                onClick={onOpenAddForm}
               >
-                <Plus className="h-4 w-4" />
-                Add Skill
-              </button>
-              <button
+                {t("features.skills.page.actions.add")}
+              </Button>
+              <Button
                 type="button"
-                onClick={onOpenUpdateForm}
+                variant="ghost"
                 className="flex items-center gap-2 text-blue-500 text-xs md:text-sm tracking-[0.2em] hover:text-blue-300 transition-colors"
+                onClick={onOpenUpdateForm}
               >
-                Update Skill
-              </button>
-              <button
+                {t("features.skills.page.actions.update")}
+              </Button>
+              <Button
                 type="button"
-                onClick={onOpenDeleteModal}
+                variant="ghost"
                 className="flex items-center gap-2 text-red-500 text-xs md:text-sm tracking-[0.2em] hover:text-red-300 transition-colors"
+                icon={<Trash2 className="h-4 w-4" />}
+                onClick={onOpenDeleteModal}
               >
-                <Trash2 className="h-4 w-4" />
-                Remove Skills
-              </button>
+                {t("features.skills.page.actions.delete")}
+              </Button>
             </div>
           )}
 
