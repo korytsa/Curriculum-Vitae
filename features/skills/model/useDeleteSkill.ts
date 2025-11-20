@@ -3,25 +3,28 @@ import {
   DELETE_SKILL_MUTATION,
   SKILLS_WITH_CATEGORIES_QUERY,
 } from "./graphql";
+import type {
+  DeleteSkillMutation,
+  DeleteSkillMutationVariables,
+  DeleteSkillInput,
+} from "@/shared/graphql/generated";
 
-export type DeleteSkillPayload = {
-  skillId: string;
-};
+export type DeleteSkillPayload = DeleteSkillInput;
 
 export function useDeleteSkill() {
-  const { mutate, loading, error } = useSafeMutation(DELETE_SKILL_MUTATION, {
+  const { mutate, loading, error } = useSafeMutation<
+    DeleteSkillMutation,
+    DeleteSkillMutationVariables
+  >(DELETE_SKILL_MUTATION, {
     refetchQueries: [{ query: SKILLS_WITH_CATEGORIES_QUERY }],
   });
 
-  const handleDeleteSkill = async (payload: DeleteSkillPayload) => {
-    return mutate({
+  const handleDeleteSkill = async (payload: DeleteSkillPayload) =>
+    mutate({
       variables: {
-        skill: {
-          skillId: payload.skillId,
-        },
+        skill: payload,
       },
     });
-  };
 
   return {
     deleteSkill: handleDeleteSkill,

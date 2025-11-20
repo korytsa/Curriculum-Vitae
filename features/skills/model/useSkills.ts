@@ -4,19 +4,19 @@ import {
   SKILLS_WITH_CATEGORIES_QUERY,
 } from "./graphql";
 import type {
-  SkillCategoriesQueryResult,
-  SkillsWithCategoriesQueryResult,
-} from "./types";
+  SkillCategoriesForFormQuery,
+  SkillsWithCategoriesQuery,
+} from "@/shared/graphql/generated";
 
 export function useSkills() {
   const { data: categoriesData, loading: categoriesLoading } =
-    useQuery<SkillCategoriesQueryResult>(SKILL_CATEGORIES_QUERY);
+    useQuery<SkillCategoriesForFormQuery>(SKILL_CATEGORIES_QUERY);
 
   const {
     data: skillsData,
     loading: skillsLoading,
     refetch: refetchSkills,
-  } = useQuery<SkillsWithCategoriesQueryResult>(SKILLS_WITH_CATEGORIES_QUERY, {
+  } = useQuery<SkillsWithCategoriesQuery>(SKILLS_WITH_CATEGORIES_QUERY, {
     fetchPolicy: "cache-and-network",
   });
 

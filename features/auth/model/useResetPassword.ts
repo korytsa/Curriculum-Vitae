@@ -2,26 +2,19 @@
 
 import { RESET_PASSWORD_MUTATION } from "./graphql";
 import { useSafeMutation } from "@/shared/lib";
+import type {
+  ResetPasswordMutation,
+  ResetPasswordMutationVariables,
+} from "@/shared/graphql/generated";
 
-interface ResetPasswordVariables {
-  auth: {
-    newPassword: string;
-  };
-}
-
-interface ResetPasswordResponse {
-  resetPassword: null;
-}
-
-export type ResetPasswordPayload = {
+export type ResetPasswordPayload = ResetPasswordMutationVariables["auth"] & {
   token: string;
-  newPassword: string;
 };
 
 export function useResetPassword() {
   const { mutate, loading, error } = useSafeMutation<
-    ResetPasswordResponse,
-    ResetPasswordVariables
+    ResetPasswordMutation,
+    ResetPasswordMutationVariables
   >(RESET_PASSWORD_MUTATION);
 
   return {

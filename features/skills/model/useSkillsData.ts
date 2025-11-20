@@ -1,10 +1,9 @@
 import { useMemo } from "react";
+import type { SkillCategory, CategoryOption } from "./types";
 import type {
-  SkillCategory,
-  CategoryOption,
-  SkillCategoriesQueryResult,
-  SkillsWithCategoriesQueryResult,
-} from "./types";
+  SkillCategoriesForFormQuery,
+  SkillsWithCategoriesQuery,
+} from "@/shared/graphql/generated";
 
 const mockCategoryOptions: CategoryOption[] = [
   { id: "1", name: "Programming languages" },
@@ -51,29 +50,44 @@ const mockAllSkillsForSelect: Array<{
 ];
 
 export function useCategoryOptions(
-  categoriesData?: SkillCategoriesQueryResult
+  categoriesData?: SkillCategoriesForFormQuery
 ): CategoryOption[] {
   return useMemo(() => {
     if (
       categoriesData?.skillCategories &&
       categoriesData.skillCategories.length > 0
     ) {
-      return categoriesData.skillCategories;
+      return categoriesData.skillCategories
+        .filter(
+          (category): category is NonNullable<typeof category> =>
+            category !== null
+        )
+        .map((category) => ({
+          id: category.id,
+          name: category.name,
+        }));
     }
     return mockCategoryOptions;
   }, [categoriesData]);
 }
 
 export function useDisplayCategories(
-  skillsData?: SkillsWithCategoriesQueryResult
+  skillsData?: SkillsWithCategoriesQuery
 ): SkillCategory[] {
   return useMemo(() => {
     if (skillsData === undefined) {
       return mockDisplayCategories;
     }
 
-    const allSkills = skillsData?.skills || [];
-    const allCategories = skillsData?.skillCategories || [];
+    const allSkills =
+      skillsData?.skills?.filter(
+        (skill): skill is NonNullable<typeof skill> => skill !== null
+      ) || [];
+    const allCategories =
+      skillsData?.skillCategories?.filter(
+        (category): category is NonNullable<typeof category> =>
+          category !== null
+      ) || [];
 
     if (allCategories.length === 0 && allSkills.length === 0) {
       return mockDisplayCategories;

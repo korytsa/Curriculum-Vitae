@@ -60,8 +60,10 @@ export function useCreateUserForm(): CreateUserFormHook {
   const mapValuesToCreatePayload = (
     values: CreateUserFormValues
   ): CreateUserPayload => ({
-    email: values.email.trim(),
-    password: values.password,
+    auth: {
+      email: values.email.trim(),
+      password: values.password,
+    },
     profile: {
       first_name: values.firstName,
       last_name: values.lastName,
@@ -69,6 +71,7 @@ export function useCreateUserForm(): CreateUserFormHook {
     role: values.role,
     departmentId: values.departmentId.trim() || undefined,
     positionId: values.positionId.trim() || undefined,
+    cvsIds: [],
   });
 
   const formik = useFormik<CreateUserFormValues>({
@@ -85,7 +88,7 @@ export function useCreateUserForm(): CreateUserFormHook {
 
         setSuccessMessage(
           t("features.createUserForm.notifications.success", {
-            email: payload.email,
+            email: payload.auth.email,
             role: payload.role,
           })
         );

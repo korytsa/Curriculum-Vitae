@@ -3,29 +3,28 @@ import {
   UPDATE_SKILL_MUTATION,
   SKILLS_WITH_CATEGORIES_QUERY,
 } from "./graphql";
+import type {
+  UpdateSkillMutation,
+  UpdateSkillMutationVariables,
+  UpdateSkillInput,
+} from "@/shared/graphql/generated";
 
-export type UpdateSkillPayload = {
-  skillId: string;
-  name: string;
-  categoryId?: number;
-};
+export type UpdateSkillPayload = UpdateSkillInput;
 
 export function useUpdateSkill() {
-  const { mutate, loading, error } = useSafeMutation(UPDATE_SKILL_MUTATION, {
+  const { mutate, loading, error } = useSafeMutation<
+    UpdateSkillMutation,
+    UpdateSkillMutationVariables
+  >(UPDATE_SKILL_MUTATION, {
     refetchQueries: [{ query: SKILLS_WITH_CATEGORIES_QUERY }],
   });
 
-  const handleUpdateSkill = async (payload: UpdateSkillPayload) => {
-    return mutate({
+  const handleUpdateSkill = async (payload: UpdateSkillPayload) =>
+    mutate({
       variables: {
-        skill: {
-          skillId: payload.skillId,
-          name: payload.name,
-          ...(payload.categoryId && { categoryId: payload.categoryId }),
-        },
+        skill: payload,
       },
     });
-  };
 
   return {
     updateSkill: handleUpdateSkill,
