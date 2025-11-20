@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
-import { Input, Modal } from '@/shared/ui';
-import type { FormikProps } from 'formik';
-import type { CategoryOption } from '../model/types';
+import { useTranslation } from "react-i18next";
+import { Input, Modal } from "@/shared/ui";
+import type { FormikProps } from "formik";
+import type { CategoryOption } from "../model/types";
 
 interface UpdateSkillFormValues {
   skillId: string;
@@ -31,18 +32,20 @@ export function UpdateSkillFormView({
   onCancel,
   onSkillSelect,
 }: UpdateSkillFormViewProps) {
+  const { t } = useTranslation();
+
   return (
     <Modal
       open={open}
       onClose={onCancel}
-      title="Update skill"
+      title={t("features.skills.updateForm.title")}
       primaryAction={{
-        label: 'CONFIRM',
+        label: t("features.skills.common.confirm"),
         onClick: () => formik.handleSubmit(),
         disabled: loading || !formik.isValid || formik.isSubmitting || !formik.values.skillId,
       }}
       secondaryAction={{
-        label: 'CANCEL',
+        label: t("features.skills.common.cancel"),
         onClick: () => {
           formik.resetForm();
           onCancel();
@@ -61,7 +64,7 @@ export function UpdateSkillFormView({
             htmlFor="skillId"
             className="text-xs uppercase tracking-[0.2em] text-gray-400"
           >
-            Select Skill
+            {t("features.skills.updateForm.labels.selectSkill")}
           </label>
           <select
             id="skillId"
@@ -70,7 +73,7 @@ export function UpdateSkillFormView({
             className="w-full rounded-lg border border-white/20 bg-transparent px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
           >
             <option value="" className="text-black">
-              Select a skill...
+              {t("features.skills.updateForm.placeholders.selectSkill")}
             </option>
             {allSkillsForSelect.map((skill) => (
               <option key={skill.id} value={skill.id} className="text-black">
@@ -86,8 +89,8 @@ export function UpdateSkillFormView({
         <div>
           <Input
             id="skillName"
-            label="New Skill Name"
-            placeholder="Enter new skill name"
+            label={t("features.skills.updateForm.labels.skillName")}
+            placeholder={t("features.skills.updateForm.placeholders.skillName")}
             {...formik.getFieldProps('skillName')}
             required
             disabled={!formik.values.skillId}
@@ -102,7 +105,7 @@ export function UpdateSkillFormView({
             htmlFor="categoryId"
             className="text-xs uppercase tracking-[0.2em] text-gray-400"
           >
-            Category (optional)
+            {t("features.skills.updateForm.labels.category")}
           </label>
           <select
             id="categoryId"
@@ -111,7 +114,7 @@ export function UpdateSkillFormView({
             disabled={!formik.values.skillId}
           >
             <option value="" className="text-black">
-              Keep current category
+              {t("features.skills.updateForm.placeholders.category")}
             </option>
             {categoryOptions.map((category) => (
               <option key={category.id} value={category.id} className="text-black">

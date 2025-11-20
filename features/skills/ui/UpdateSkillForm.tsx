@@ -1,9 +1,10 @@
 'use client';
 
-import { useFormik } from 'formik';
-import { useUpdateSkill } from '../model/useUpdateSkill';
-import { UpdateSkillFormView } from './UpdateSkillFormView';
-import type { CategoryOption, SkillCategory } from '../model/types';
+import { useFormik } from "formik";
+import { useTranslation } from "react-i18next";
+import { useUpdateSkill } from "../model/useUpdateSkill";
+import { UpdateSkillFormView } from "./UpdateSkillFormView";
+import type { CategoryOption, SkillCategory } from "../model/types";
 
 interface UpdateSkillFormValues {
   skillId: string;
@@ -29,6 +30,7 @@ export function UpdateSkillForm({
   onCancel,
 }: UpdateSkillFormProps) {
   const { updateSkill, loading, error } = useUpdateSkill();
+  const { t } = useTranslation();
 
   const formik = useFormik<UpdateSkillFormValues>({
     initialValues: {
@@ -40,17 +42,17 @@ export function UpdateSkillForm({
       const errors: Partial<UpdateSkillFormValues> = {};
 
       if (!values.skillId) {
-        errors.skillId = 'Please select a skill';
+        errors.skillId = t("features.skills.updateForm.errors.skillRequired");
       }
 
       if (!values.skillName.trim()) {
-        errors.skillName = 'Skill name is required';
+        errors.skillName = t("features.skills.updateForm.errors.nameRequired");
       }
 
       if (values.categoryId) {
         const categoryIdNum = parseInt(values.categoryId, 10);
         if (isNaN(categoryIdNum)) {
-          errors.categoryId = 'Invalid category ID';
+          errors.categoryId = t("features.skills.updateForm.errors.categoryInvalid");
         }
       }
 

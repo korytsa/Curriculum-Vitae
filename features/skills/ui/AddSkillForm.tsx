@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useFormik } from 'formik';
-import { useCreateSkill } from '../model/useCreateSkill';
-import { AddSkillFormView } from './AddSkillFormView';
-import type { CategoryOption } from '../model/types';
+import { useEffect } from "react";
+import { useFormik } from "formik";
+import { useTranslation } from "react-i18next";
+import { useCreateSkill } from "../model/useCreateSkill";
+import { AddSkillFormView } from "./AddSkillFormView";
+import type { CategoryOption } from "../model/types";
 
 interface AddSkillFormValues {
   skillName: string;
@@ -25,6 +26,7 @@ export function AddSkillForm({
   onCancel,
 }: AddSkillFormProps) {
   const { createSkill, loading, error } = useCreateSkill();
+  const { t } = useTranslation();
 
   const formik = useFormik<AddSkillFormValues>({
     initialValues: {
@@ -35,15 +37,15 @@ export function AddSkillForm({
       const errors: Partial<AddSkillFormValues> = {};
 
       if (!values.skillName.trim()) {
-        errors.skillName = 'Skill name is required';
+        errors.skillName = t("features.skills.addForm.errors.nameRequired");
       }
 
       if (!values.categoryId) {
-        errors.categoryId = 'Category is required';
+        errors.categoryId = t("features.skills.addForm.errors.categoryRequired");
       } else {
         const categoryIdNum = parseInt(values.categoryId, 10);
         if (isNaN(categoryIdNum)) {
-          errors.categoryId = 'Invalid category ID';
+          errors.categoryId = t("features.skills.addForm.errors.categoryInvalid");
         }
       }
 

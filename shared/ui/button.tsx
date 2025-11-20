@@ -1,8 +1,14 @@
 import * as React from "react";
 import { cn } from "@/shared/lib";
 
+type GetButtonClassesParams = {
+	variant?: keyof typeof variantClasses;
+	size?: keyof typeof sizeClasses;
+	className?: string;
+}
+
 const baseClasses =
-	"inline-flex items-center justify-center gap-2 rounded-full border font-semibold uppercase tracking-wide transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50";
+"inline-flex items-center justify-center gap-2 rounded-full border font-semibold uppercase tracking-wide transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50";
 
 const variantClasses = {
 	primary: "border-transparent bg-red-600 text-white hover:bg-red-500 disabled:bg-red-600/50 disabled:text-white/70",
@@ -22,7 +28,7 @@ const sizeClasses = {
   icon: 'h-10 w-10 p-0',
 }
 
-function getButtonClasses(variant?: keyof typeof variantClasses, size?: keyof typeof sizeClasses, className?: string) {
+function getButtonClasses({ variant, size, className }: GetButtonClassesParams = {}) {
 	const variantClass = variant ? variantClasses[variant] : variantClasses.primary;
 	const sizeClass = size ? sizeClasses[size] : sizeClasses.default;
 	return cn(baseClasses, variantClass, sizeClass, className);
@@ -45,7 +51,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, va
 	const hasOnlyIcon = icon && (!children || children === "") && badge === undefined;
 
 	return (
-		<button ref={ref} className={getButtonClasses(variant, size, className)} {...props}>
+		<button ref={ref} className={getButtonClasses({ variant, size, className })} {...props}>
 			{hasOnlyIcon ? (
 				<span className="inline-flex items-center justify-center text-current">{icon}</span>
 			) : (

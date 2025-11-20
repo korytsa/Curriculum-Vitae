@@ -28,6 +28,15 @@ interface CreateUserResponse {
   }
 }
 
+type HandleCreateUserParams = {
+  email: string
+  password: string
+  profile?: { first_name?: string; last_name?: string }
+  role?: 'Admin' | 'Employee'
+  departmentId?: string
+  positionId?: string
+}
+
 export function useCreateUser() {
   const router = useRouter()
   const pathname = usePathname()
@@ -46,13 +55,14 @@ export function useCreateUser() {
     }
   )
 
-  const handleCreateUser = (
-    email: string,
-    password: string,
-    profile: { first_name?: string; last_name?: string } = {},
-    role: 'Admin' | 'Employee' = 'Employee',
-    options?: { departmentId?: string; positionId?: string }
-  ) => {
+  const handleCreateUser = ({
+    email,
+    password,
+    profile = {},
+    role = 'Employee',
+    departmentId,
+    positionId,
+  }: HandleCreateUserParams) => {
     const profilePayload = {
       first_name: profile.first_name ?? '',
       last_name: profile.last_name ?? '',
@@ -67,8 +77,8 @@ export function useCreateUser() {
           },
           profile: profilePayload,
           cvsIds: [],
-          departmentId: options?.departmentId,
-          positionId: options?.positionId,
+          departmentId,
+          positionId,
           role,
         },
       },

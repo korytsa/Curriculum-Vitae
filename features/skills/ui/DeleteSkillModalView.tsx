@@ -1,7 +1,8 @@
-'use client';
+"use client";
 
-import { Modal } from '@/shared/ui';
-import type { FormikProps } from 'formik';
+import { useTranslation } from "react-i18next";
+import { Modal } from "@/shared/ui";
+import type { FormikProps } from "formik";
 
 interface DeleteSkillFormValues {
   skillId: string;
@@ -34,28 +35,32 @@ export function DeleteSkillModalView({
   onConfirmDelete,
   onClose,
 }: DeleteSkillModalViewProps) {
+  const { t } = useTranslation();
+
   if (showConfirm) {
     return (
       <Modal
         open={open}
         onClose={onCancel}
-        title="Confirm Deletion"
+        title={t("features.skills.deleteModal.confirmTitle")}
         primaryAction={{
-          label: 'CONFIRM',
+          label: t("features.skills.common.confirm"),
           onClick: onConfirmDelete,
           disabled: loading,
         }}
         secondaryAction={{
-          label: 'CANCEL',
+          label: t("features.skills.common.cancel"),
           onClick: () => onCancel(),
         }}
       >
         <p className="text-white/80 mb-4">
-          Are you sure you want to delete this skill? This action cannot be undone.
+          {t("features.skills.deleteModal.warning")}
         </p>
         {selectedSkillName && (
           <div className="p-4 bg-white/5 rounded-lg">
-            <div className="text-sm text-gray-400 mb-1">Skill to delete:</div>
+            <div className="text-sm text-gray-400 mb-1">
+              {t("features.skills.deleteModal.labels.skillToDelete")}
+            </div>
             <div className="text-white font-semibold">{selectedSkillName}</div>
           </div>
         )}
@@ -72,14 +77,14 @@ export function DeleteSkillModalView({
     <Modal
       open={open}
       onClose={onClose}
-      title="Remove skill"
+      title={t("features.skills.deleteModal.title")}
       primaryAction={{
-        label: 'DELETE',
+        label: t("features.skills.deleteModal.delete"),
         onClick: onDelete,
         disabled: !formik.values.skillId || !formik.isValid,
       }}
       secondaryAction={{
-        label: 'CANCEL',
+        label: t("features.skills.common.cancel"),
         onClick: () => {
           formik.resetForm();
           onClose();
@@ -97,7 +102,7 @@ export function DeleteSkillModalView({
           htmlFor="skillId"
           className="text-xs uppercase tracking-[0.2em] text-gray-400"
         >
-          Skill
+          {t("features.skills.deleteModal.labels.skill")}
         </label>
         <select
           id="skillId"
@@ -105,7 +110,7 @@ export function DeleteSkillModalView({
           className="w-full rounded-lg border border-white/20 bg-transparent px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
         >
           <option value="" className="text-black">
-            Select a skill...
+            {t("features.skills.deleteModal.placeholders.skill")}
           </option>
           {allSkillsForSelect.map((skill) => (
             <option key={skill.id} value={skill.id} className="text-black">

@@ -7,21 +7,21 @@ export const menuItems = [
 	{
 		href: "/users",
 		icon: FaUserFriends,
-		label: "Employees",
+		labelKey: "features.sidebar.menu.employees",
 	},
 	{
 		href: "/skills",
 		icon: FaArrowTrendUp,
-		label: "Skills",
+		labelKey: "features.sidebar.menu.skills",
 	},
 	{
 		href: "/languages",
 		icon: IoLanguage,
-		label: "Languages",
+		labelKey: "features.sidebar.menu.languages",
 	},
 	{
 		href: "/cvs",
 		icon: GrDocumentUser,
-		label: "CVs",
+		labelKey: "features.sidebar.menu.cvs",
 	},
 ];

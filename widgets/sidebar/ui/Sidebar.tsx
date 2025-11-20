@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import { IoChevronBackOutline } from "react-icons/io5";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { menuItems } from "../config/menuItems";
 import { cn } from "@/shared/lib/utils";
+import { Button } from "@/shared/ui";
 
 const SIDEBAR_WIDTH_EXPANDED = "200px";
 const SIDEBAR_WIDTH_COLLAPSED = "60px";
@@ -20,6 +22,7 @@ export default function Sidebar() {
 	const normalizedPath = firstSegmentAfterLocale ? `/${firstSegmentAfterLocale}` : "/";
 
 	const [isCollapsed, setIsCollapsed] = useState<boolean | null>(null);
+	const { t } = useTranslation();
 
 	useEffect(() => {
 		const stored = localStorage.getItem(STORAGE_KEY);
@@ -69,7 +72,7 @@ export default function Sidebar() {
 									)}
 								>
 									<Icon className="text-[21px]" />
-									{!isCollapsed && <span className="whitespace-nowrap">{item.label}</span>}
+									{!isCollapsed && <span className="whitespace-nowrap">{t(item.labelKey)}</span>}
 								</Link>
 							</li>
 						);
@@ -83,16 +86,21 @@ export default function Sidebar() {
 						isCollapsed ? "justify-center px-0" : "px-[10px] py-2",
 					)}
 				>
-					<div className="w-10 h-10 rounded-full bg-sidebar-avatar-bg text-sidebar-avatar-text flex items-center justify-center font-semibold">R</div>
-					{!isCollapsed && <span className="text-sm font-normal text-white whitespace-nowrap overflow-hidden text-ellipsis ml-3">Rostislav Harlanov</span>}
+					<div className="w-10 h-10 rounded-full bg-sidebar-avatar-bg text-sidebar-avatar-text flex items-center justify-center font-semibold">
+						{t("features.sidebar.avatar.initials")}
+					</div>
+					{!isCollapsed && <span className="text-sm font-normal text-white whitespace-nowrap overflow-hidden text-ellipsis ml-3">{t("features.sidebar.avatar.name")}</span>}
 				</div>
-				<button
+				<Button
+					type="button"
+					variant="ghost"
+					size="icon"
 					className="ml-[10px] bg-transparent border-none cursor-pointer w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-200 ease-in-out hover:bg-sidebar-hover"
 					onClick={toggleCollapse}
-					aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+					aria-label={isCollapsed ? t("features.sidebar.aria.expand") : t("features.sidebar.aria.collapse")}
 				>
 					<IoChevronBackOutline className={cn("text-xl text-white transition-transform duration-300 ease-in-out", isCollapsed && "rotate-180")} />
-				</button>
+				</Button>
 			</div>
 		</aside>
 	);

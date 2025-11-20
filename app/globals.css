@@ -3,27 +3,28 @@
 @tailwind utilities;
 
 @layer base {
-	:root {
-		--sidebar-bg: 53, 53, 53;
-		--sidebar-hover: 69, 69, 69;
-		--sidebar-avatar-bg: 198, 48, 49;
-		--sidebar-avatar-text: 50, 50, 50;
-		--sidebar-text: 204, 203, 203;
-	}
+  :root {
+    --sidebar-bg: 53, 53, 53;
+    --sidebar-hover: 69, 69, 69;
+    --sidebar-avatar-bg: 198, 48, 49;
+    --sidebar-avatar-text: 50, 50, 50;
+    --sidebar-text: 204, 203, 203;
+    --body-bg: #353535;
+    --body-text: #ffffff;
+  }
 }
 
 body {
-	background-color: #353535;
-	color: #ffffff;
-	font-family: var(--font-inter), sans-serif;
+  background-color: var(--body-bg);
+  color: var(--body-text);
+  font-family: var(--font-inter), sans-serif;
 }
 
-
 @layer base {
-	* {
-		@apply border-border;
-	}
-	body {
-		@apply bg-background text-foreground;
-	}
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

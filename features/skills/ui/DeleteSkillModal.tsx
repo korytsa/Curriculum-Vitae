@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import { useFormik } from 'formik';
-import { useDeleteSkill } from '../model/useDeleteSkill';
-import { DeleteSkillModalView } from './DeleteSkillModalView';
+import { useState } from "react";
+import { useFormik } from "formik";
+import { useTranslation } from "react-i18next";
+import { useDeleteSkill } from "../model/useDeleteSkill";
+import { DeleteSkillModalView } from "./DeleteSkillModalView";
 
 interface DeleteSkillFormValues {
   skillId: string;
@@ -24,6 +25,7 @@ export function DeleteSkillModal({
 }: DeleteSkillModalProps) {
   const [showConfirm, setShowConfirm] = useState(false);
   const { deleteSkill, loading, error } = useDeleteSkill();
+  const { t } = useTranslation();
 
   const formik = useFormik<DeleteSkillFormValues>({
     initialValues: {
@@ -33,7 +35,7 @@ export function DeleteSkillModal({
       const errors: Partial<DeleteSkillFormValues> = {};
 
       if (!values.skillId) {
-        errors.skillId = 'Please select a skill to delete';
+        errors.skillId = t("features.skills.deleteModal.errors.skillRequired");
       }
 
       return errors;

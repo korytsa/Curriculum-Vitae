@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
-import { Input, Modal } from '@/shared/ui';
-import type { FormikProps } from 'formik';
-import type { CategoryOption } from '../model/types';
+import { useTranslation } from "react-i18next";
+import { Input, Modal } from "@/shared/ui";
+import type { FormikProps } from "formik";
+import type { CategoryOption } from "../model/types";
 
 interface AddSkillFormValues {
   skillName: string;
@@ -26,18 +27,20 @@ export function AddSkillFormView({
   open,
   onCancel,
 }: AddSkillFormViewProps) {
+  const { t } = useTranslation();
+
   return (
     <Modal
       open={open}
       onClose={onCancel}
-      title="Add skill"
+      title={t("features.skills.addForm.title")}
       primaryAction={{
-        label: 'CONFIRM',
+        label: t("features.skills.common.confirm"),
         onClick: () => formik.handleSubmit(),
         disabled: loading || !formik.isValid || formik.isSubmitting,
       }}
       secondaryAction={{
-        label: 'CANCEL',
+        label: t("features.skills.common.cancel"),
         onClick: () => {
           formik.resetForm();
           onCancel();
@@ -54,8 +57,8 @@ export function AddSkillFormView({
         <div>
           <Input
             id="skillName"
-            label="Skill name"
-            placeholder="Enter skill name"
+            label={t("features.skills.addForm.labels.name")}
+            placeholder={t("features.skills.addForm.placeholders.name")}
             {...formik.getFieldProps('skillName')}
             required
           />
@@ -69,7 +72,7 @@ export function AddSkillFormView({
             htmlFor="categoryId"
             className="text-xs uppercase tracking-[0.2em] text-gray-400"
           >
-            Category
+            {t("features.skills.addForm.labels.category")}
           </label>
           <select
             id="categoryId"
