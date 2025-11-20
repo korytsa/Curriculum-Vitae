@@ -18,3 +18,6 @@ export type { NotificationProps } from "./notification";
 
 export { FormStatus } from "./form-status";
 export type { FormStatusProps } from "./form-status";
+
+export { Tabs } from "./tabs";
+export type { TabsProps, TabItem } from "./tabs";
