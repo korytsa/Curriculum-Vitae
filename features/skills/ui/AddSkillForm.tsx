@@ -67,7 +67,7 @@ export function AddSkillForm({
 
     return {
       name: values.skillName.trim(),
-      categoryId,
+      categoryId: String(categoryId),
     };
   };
 

@@ -3,19 +3,10 @@ import { useMutation } from "@apollo/client/react";
 import { useRouter, usePathname } from "next/navigation";
 import { setAccessToken } from "@/shared/config/apollo";
 import { SIGNUP_MUTATION } from "./graphql";
-
-interface SignupVariables {
-  auth: {
-    email: string;
-    password: string;
-  };
-}
-
-interface SignupResponse {
-  signup: {
-    access_token: string;
-  };
-}
+import type {
+  SignupMutation,
+  SignupMutationVariables,
+} from "@/shared/graphql/generated";
 
 export type SignupPayload = {
   email: string;
@@ -28,8 +19,8 @@ export function useSignup() {
   const locale = pathname?.split("/")[1] || "en";
 
   const [signupMutation, { loading, error }] = useMutation<
-    SignupResponse,
-    SignupVariables
+    SignupMutation,
+    SignupMutationVariables
   >(SIGNUP_MUTATION);
 
   const handleSignup = async ({ email, password }: SignupPayload) => {

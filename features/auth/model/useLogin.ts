@@ -4,19 +4,10 @@ import { useLazyQuery } from "@apollo/client/react";
 import { usePathname, useRouter } from "next/navigation";
 import { setAccessToken } from "@/shared/config/apollo";
 import { LOGIN_QUERY } from "./graphql";
-
-interface LoginVariables {
-  auth: {
-    email: string;
-    password: string;
-  };
-}
-
-interface LoginResponse {
-  login: {
-    access_token: string;
-  };
-}
+import type {
+  LoginQuery,
+  LoginQueryVariables,
+} from "@/shared/graphql/generated";
 
 export type LoginPayload = {
   email: string;
@@ -29,8 +20,8 @@ export function useLogin() {
   const locale = pathname?.split("/")[1] || "en";
 
   const [loginQuery, { loading, error }] = useLazyQuery<
-    LoginResponse,
-    LoginVariables
+    LoginQuery,
+    LoginQueryVariables
   >(LOGIN_QUERY, {
     fetchPolicy: "no-cache",
     notifyOnNetworkStatusChange: true,

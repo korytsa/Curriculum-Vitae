@@ -2,25 +2,18 @@
 
 import { FORGOT_PASSWORD_MUTATION } from "./graphql";
 import { useSafeMutation } from "@/shared/lib";
+import type {
+  ForgotPasswordMutation,
+  ForgotPasswordMutationVariables,
+} from "@/shared/graphql/generated";
 
-interface ForgotPasswordVariables {
-  auth: {
-    email: string;
-  };
-}
-
-interface ForgotPasswordResponse {
-  forgotPassword: null;
-}
-
-export type ForgotPasswordPayload = {
-  email: string;
-};
+export type ForgotPasswordPayload =
+  ForgotPasswordMutationVariables["auth"];
 
 export function useForgotPassword() {
   const { mutate, loading, error } = useSafeMutation<
-    ForgotPasswordResponse,
-    ForgotPasswordVariables
+    ForgotPasswordMutation,
+    ForgotPasswordMutationVariables
   >(FORGOT_PASSWORD_MUTATION);
 
   return {

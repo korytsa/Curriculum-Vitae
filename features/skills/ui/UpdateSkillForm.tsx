@@ -67,13 +67,13 @@ export function UpdateSkillForm({
       return null;
     }
 
-    let categoryId: number | undefined;
+    let categoryId: string | undefined;
     if (values.categoryId) {
       const parsedCategoryId = parseInt(values.categoryId, 10);
       if (Number.isNaN(parsedCategoryId)) {
         return null;
       }
-      categoryId = parsedCategoryId;
+      categoryId = String(parsedCategoryId);
     }
 
     return {

@@ -17,6 +17,4 @@ export type {
   SkillItem,
   SkillCategory,
   CategoryOption,
-  SkillCategoriesQueryResult,
-  SkillsWithCategoriesQueryResult,
 } from "./model/types";
