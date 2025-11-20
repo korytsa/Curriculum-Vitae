@@ -1,53 +1,58 @@
-import { useMutation } from '@apollo/client/react'
-import { SIGNUP_MUTATION } from './graphql'
-import { setAccessToken } from '@/shared/config/apollo'
-import { useRouter } from 'next/navigation'
-import { usePathname } from 'next/navigation'
+"use client";
+import { useMutation } from "@apollo/client/react";
+import { useRouter, usePathname } from "next/navigation";
+import { setAccessToken } from "@/shared/config/apollo";
+import { SIGNUP_MUTATION } from "./graphql";
 
 interface SignupVariables {
   auth: {
-    email: string
-    password: string
-  }
+    email: string;
+    password: string;
+  };
 }
 
 interface SignupResponse {
   signup: {
-    access_token: string
-  }
+    access_token: string;
+  };
 }
 
+export type SignupPayload = {
+  email: string;
+  password: string;
+};
+
 export function useSignup() {
-  const router = useRouter()
-  const pathname = usePathname()
-  const locale = pathname?.split('/')[1] || 'en'
+  const router = useRouter();
+  const pathname = usePathname();
+  const locale = pathname?.split("/")[1] || "en";
 
-  const [signupMutation, { loading, error }] = useMutation<SignupResponse, SignupVariables>(SIGNUP_MUTATION, {
-    onCompleted: (data) => {
-      const token = data.signup.access_token
-      setAccessToken(token)
-      router.push(`/${locale}/cvs`)
-    },
-    onError: (error) => {
-      console.error('Signup error:', error)
-    },
-  })
+  const [signupMutation, { loading, error }] = useMutation<
+    SignupResponse,
+    SignupVariables
+  >(SIGNUP_MUTATION);
 
-  const handleSignup = (email: string, password: string) => {
-    return signupMutation({
+  const handleSignup = async ({ email, password }: SignupPayload) => {
+    const result = await signupMutation({
       variables: {
         auth: {
           email,
           password,
         },
       },
-    })
-  }
+    });
+
+    const token = result.data?.signup.access_token;
+    if (token) {
+      setAccessToken(token);
+      router.push(`/${locale}/cvs`);
+    }
+  };
 
   return {
     signup: handleSignup,
     loading,
     error,
-  }
+  };
 }
 

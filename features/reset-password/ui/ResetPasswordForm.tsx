@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
-import { Button, Input } from "@/shared/ui";
+import { Button, Input, FormStatus } from "@/shared/ui";
 import { useResetPassword } from "@/features/auth";
+import type { ResetPasswordPayload } from "@/features/auth";
 
 type ResetPasswordFormProps = {
   token: string | null;
@@ -18,28 +19,43 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   } | null>(null);
   const { t } = useTranslation();
 
+  const initialValues = {
+    password: "",
+    confirmPassword: "",
+  };
+
+  const validate = (values: typeof initialValues) => {
+    const errors: Partial<typeof values> = {};
+
+    if (!values.password.trim()) {
+      errors.password = t("features.resetPassword.errors.passwordRequired");
+    } else if (values.password.trim().length < 5) {
+      errors.password = t("features.resetPassword.errors.passwordLength");
+    }
+
+    if (!values.confirmPassword.trim()) {
+      errors.confirmPassword = t("features.resetPassword.errors.confirmRequired");
+    } else if (values.password !== values.confirmPassword) {
+      errors.confirmPassword = t("features.resetPassword.errors.passwordMismatch");
+    }
+
+    return errors;
+  };
+
+  const mapValuesToPayload = (values: typeof initialValues): ResetPasswordPayload | null => {
+    if (!token) {
+      return null;
+    }
+
+    return {
+      token,
+      newPassword: values.password.trim(),
+    };
+  };
+
   const formik = useFormik({
-    initialValues: {
-      password: "",
-      confirmPassword: "",
-    },
-    validate: (values) => {
-      const errors: Partial<typeof values> = {};
-
-      if (!values.password.trim()) {
-        errors.password = t("features.resetPassword.errors.passwordRequired");
-      } else if (values.password.trim().length < 5) {
-        errors.password = t("features.resetPassword.errors.passwordLength");
-      }
-
-      if (!values.confirmPassword.trim()) {
-        errors.confirmPassword = t("features.resetPassword.errors.confirmRequired");
-      } else if (values.password !== values.confirmPassword) {
-        errors.confirmPassword = t("features.resetPassword.errors.passwordMismatch");
-      }
-
-      return errors;
-    },
+    initialValues,
+    validate,
     onSubmit: async (values, helpers) => {
       if (!token) {
         setFeedback({
@@ -49,8 +65,13 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
         return;
       }
 
+      const payload = mapValuesToPayload(values);
+      if (!payload) {
+        return;
+      }
+
       try {
-        await resetPassword(token, values.password);
+        await resetPassword(payload);
         setFeedback({
           type: "success",
           message: t("features.resetPassword.feedback.success"),
@@ -79,23 +100,11 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
         </div>
 
         <form className="space-y-6" onSubmit={formik.handleSubmit}>
-          {feedback && (
-            <div
-              className={`p-3 rounded-lg text-sm ${
-                feedback.type === "success"
-                  ? "bg-green-500/20 border border-green-500 text-green-300"
-                  : "bg-red-500/20 border border-red-500 text-red-400"
-              }`}
-            >
-              {feedback.message}
-            </div>
-          )}
-
-          {error && (
-            <div className="p-3 bg-red-500/20 border border-red-500 rounded-lg text-red-400 text-sm">
-              {error.message}
-            </div>
-          )}
+          <FormStatus
+            successMessage={feedback?.type === "success" ? feedback.message : null}
+            noticeMessage={feedback?.type === "error" ? feedback.message : null}
+            errorMessage={error?.message ?? null}
+          />
 
           <div>
             <Input

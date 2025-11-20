@@ -41,7 +41,8 @@
       "errors": {
         "emailRequired": "Введите email",
         "emailInvalid": "Некорректный email",
-        "passwordRequired": "Введите пароль"
+        "passwordRequired": "Введите пароль",
+        "submitFailed": "Не удалось создать пользователя. Попробуйте ещё раз."
       },
       "notifications": {
         "success": "Пользователь {{email}} создан с ролью {{role}}."

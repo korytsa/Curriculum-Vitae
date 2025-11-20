@@ -1,22 +1,27 @@
-import { useMutation } from '@apollo/client/react';
-import { UPDATE_SKILL_MUTATION, SKILLS_WITH_CATEGORIES_QUERY } from './graphql';
+import { useSafeMutation } from "@/shared/lib";
+import {
+  UPDATE_SKILL_MUTATION,
+  SKILLS_WITH_CATEGORIES_QUERY,
+} from "./graphql";
+
+export type UpdateSkillPayload = {
+  skillId: string;
+  name: string;
+  categoryId?: number;
+};
 
 export function useUpdateSkill() {
-  const [updateSkill, { loading, error }] = useMutation(UPDATE_SKILL_MUTATION, {
+  const { mutate, loading, error } = useSafeMutation(UPDATE_SKILL_MUTATION, {
     refetchQueries: [{ query: SKILLS_WITH_CATEGORIES_QUERY }],
   });
 
-  const handleUpdateSkill = async (
-    skillId: string,
-    name: string,
-    categoryId?: number
-  ) => {
-    return updateSkill({
+  const handleUpdateSkill = async (payload: UpdateSkillPayload) => {
+    return mutate({
       variables: {
         skill: {
-          skillId,
-          name: name.trim(),
-          ...(categoryId && { categoryId }),
+          skillId: payload.skillId,
+          name: payload.name,
+          ...(payload.categoryId && { categoryId: payload.categoryId }),
         },
       },
     });

@@ -1,74 +1,70 @@
-import { useMutation } from '@apollo/client/react'
-import { CREATE_USER_MUTATION } from './graphql'
-import { useRouter } from 'next/navigation'
-import { usePathname } from 'next/navigation'
+"use client";
+import { useRouter, usePathname } from "next/navigation";
+import { CREATE_USER_MUTATION } from "./graphql";
+import { useSafeMutation } from "@/shared/lib";
 
 interface CreateUserVariables {
   user: {
     auth: {
-      email: string
-      password: string
-    }
+      email: string;
+      password: string;
+    };
     profile: {
-      first_name: string
-      last_name: string
-    }
-    departmentId?: string
-    positionId?: string
-    cvsIds: string[]
-    role: 'Admin' | 'Employee'
-  }
+      first_name: string;
+      last_name: string;
+    };
+    departmentId?: string;
+    positionId?: string;
+    cvsIds: string[];
+    role: "Admin" | "Employee";
+  };
 }
 
 interface CreateUserResponse {
   createUser: {
-    id: string
-    email: string
-    role: 'Admin' | 'Employee'
-  }
+    id: string;
+    email: string;
+    role: "Admin" | "Employee";
+  };
 }
 
-type HandleCreateUserParams = {
-  email: string
-  password: string
-  profile?: { first_name?: string; last_name?: string }
-  role?: 'Admin' | 'Employee'
-  departmentId?: string
-  positionId?: string
-}
+export type CreateUserPayload = {
+  email: string;
+  password: string;
+  profile?: { first_name?: string; last_name?: string };
+  role?: "Admin" | "Employee";
+  departmentId?: string;
+  positionId?: string;
+};
 
 export function useCreateUser() {
-  const router = useRouter()
-  const pathname = usePathname()
-  const locale = pathname?.split('/')[1] || 'en'
+  const router = useRouter();
+  const pathname = usePathname();
+  const locale = pathname?.split("/")[1] || "en";
 
-  const [createUserMutation, { loading, error }] = useMutation<CreateUserResponse, CreateUserVariables>(
-    CREATE_USER_MUTATION,
-    {
-      onCompleted: (data) => {
-        console.log('User created:', data.createUser)
-        router.push(`/${locale}/users`)
-      },
-      onError: (error) => {
-        console.error('Create user error:', error)
-      },
-    }
-  )
+  const { mutate, loading, error } = useSafeMutation<
+    CreateUserResponse,
+    CreateUserVariables
+  >(CREATE_USER_MUTATION, {
+    onCompleted: () => {
+      router.push(`/${locale}/users`);
+    },
+  });
 
   const handleCreateUser = ({
     email,
     password,
     profile = {},
-    role = 'Employee',
+    role = "Employee",
     departmentId,
     positionId,
-  }: HandleCreateUserParams) => {
+  }: CreateUserPayload) => {
     const profilePayload = {
-      first_name: profile.first_name ?? '',
-      last_name: profile.last_name ?? '',
-    }
+      first_name: profile.first_name ?? "",
+      last_name: profile.last_name ?? "",
+    };
 
-    return createUserMutation({
+    return mutate({
       variables: {
         user: {
           auth: {
@@ -82,13 +78,13 @@ export function useCreateUser() {
           role,
         },
       },
-    })
-  }
+    });
+  };
 
   return {
     createUser: handleCreateUser,
     loading,
     error,
-  }
+  };
 }
 

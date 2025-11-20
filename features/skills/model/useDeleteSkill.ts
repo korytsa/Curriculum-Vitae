@@ -1,16 +1,23 @@
-import { useMutation } from "@apollo/client/react";
-import { DELETE_SKILL_MUTATION, SKILLS_WITH_CATEGORIES_QUERY } from "./graphql";
+import { useSafeMutation } from "@/shared/lib";
+import {
+  DELETE_SKILL_MUTATION,
+  SKILLS_WITH_CATEGORIES_QUERY,
+} from "./graphql";
+
+export type DeleteSkillPayload = {
+  skillId: string;
+};
 
 export function useDeleteSkill() {
-  const [deleteSkill, { loading, error }] = useMutation(DELETE_SKILL_MUTATION, {
+  const { mutate, loading, error } = useSafeMutation(DELETE_SKILL_MUTATION, {
     refetchQueries: [{ query: SKILLS_WITH_CATEGORIES_QUERY }],
   });
 
-  const handleDeleteSkill = async (skillId: string) => {
-    return deleteSkill({
+  const handleDeleteSkill = async (payload: DeleteSkillPayload) => {
+    return mutate({
       variables: {
         skill: {
-          skillId,
+          skillId: payload.skillId,
         },
       },
     });

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, Input } from "@/shared/ui";
+import { Button, Input, FormStatus } from "@/shared/ui";
 import type { FormikProps } from "formik";
 import type { CreateUserFormValues } from "../model/useCreateUserForm";
 
@@ -35,17 +35,7 @@ export function CreateUserFormView({
       className="space-y-6 bg-[#1C1C1C] border border-white/10 rounded-2xl px-8 py-8 shadow-lg"
       onSubmit={formik.handleSubmit}
     >
-      {errorMessage ? (
-        <div className="p-3 bg-red-500/10 border border-red-600 rounded-lg text-red-300 text-sm">
-          {errorMessage}
-        </div>
-      ) : null}
-
-      {successMessage ? (
-        <div className="p-3 bg-green-500/10 border border-green-600 rounded-lg text-green-200 text-sm">
-          {successMessage}
-        </div>
-      ) : null}
+      <FormStatus successMessage={successMessage} errorMessage={errorMessage} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>

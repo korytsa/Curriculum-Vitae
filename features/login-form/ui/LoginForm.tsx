@@ -1,69 +1,73 @@
-'use client'
+"use client";
 
 import { useState } from "react";
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
-import { Button, Input } from "@/shared/ui";
+import { Button, Input, FormStatus } from "@/shared/ui";
 import { useLogin, useForgotPassword } from "@/features/auth";
+import type { LoginPayload } from "@/features/auth";
 
 export function LoginForm() {
   const { login, loading, error } = useLogin();
   const { forgotPassword, loading: forgotLoading } = useForgotPassword();
-  const [forgotFeedback, setForgotFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const [forgotFeedback, setForgotFeedback] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
   const { t } = useTranslation();
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+  const initialValues = {
+    email: "",
+    password: "",
+  };
+
+  const validate = (values: typeof initialValues) => {
+    const errors: Partial<typeof values> = {};
+
+    if (!values.email.trim()) {
+      errors.email = t("features.loginForm.errors.emailRequired");
+    } else if (!emailRegex.test(values.email.trim())) {
+      errors.email = t("features.loginForm.errors.emailInvalid");
+    }
+
+    if (!values.password.trim()) {
+      errors.password = t("features.loginForm.errors.passwordRequired");
+    }
+
+    return errors;
+  };
+
+  const mapValuesToLoginPayload = (
+    values: typeof initialValues
+  ): LoginPayload => ({
+    email: values.email.trim(),
+    password: values.password,
+  });
+
   const formik = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-    },
-    validate: (values) => {
-      const errors: Partial<typeof values> = {};
-
-      if (!values.email.trim()) {
-        errors.email = t("features.loginForm.errors.emailRequired");
-      } else if (!emailRegex.test(values.email.trim())) {
-        errors.email = t("features.loginForm.errors.emailInvalid");
-      }
-
-      if (!values.password.trim()) {
-        errors.password = t("features.loginForm.errors.passwordRequired");
-      }
-
-      return errors;
-    },
+    initialValues,
+    validate,
     onSubmit: async (values) => {
-      await login(values.email.trim(), values.password);
+      await login(mapValuesToLoginPayload(values));
     },
   });
 
   return (
     <form className="space-y-6" onSubmit={formik.handleSubmit}>
-      {error && (
-        <div className="p-3 bg-red-500/20 border border-red-500 rounded-lg text-red-400 text-sm">
-          {error.message}
-        </div>
-      )}
-      {forgotFeedback && (
-        <div
-          className={`p-3 rounded-lg text-sm ${
-            forgotFeedback.type === 'success'
-              ? 'bg-green-500/20 border border-green-500 text-green-300'
-              : 'bg-red-500/20 border border-red-500 text-red-400'
-          }`}
-        >
-          {forgotFeedback.message}
-        </div>
-      )}
+      <FormStatus
+        errorMessage={error?.message ?? null}
+        successMessage={forgotFeedback?.type === "success" ? forgotFeedback.message : null}
+        noticeMessage={forgotFeedback?.type === "error" ? forgotFeedback.message : null}
+      />
       <div>
         <Input
           id="email"
           type="email"
           label={t("features.loginForm.labels.email")}
           placeholder={t("features.loginForm.placeholders.email")}
-          {...formik.getFieldProps('email')}
+          {...formik.getFieldProps("email")}
           required
         />
         {formik.touched.email && formik.errors.email ? (
@@ -77,7 +81,7 @@ export function LoginForm() {
           type="password"
           label={t("features.loginForm.labels.password")}
           placeholder={t("features.loginForm.placeholders.password")}
-          {...formik.getFieldProps('password')}
+          {...formik.getFieldProps("password")}
           required
         />
         {formik.touched.password && formik.errors.password ? (
@@ -85,8 +89,15 @@ export function LoginForm() {
         ) : null}
       </div>
 
-      <Button variant="primary" className="w-full" type="submit" disabled={loading || !formik.isValid || formik.isSubmitting}>
-        {loading || formik.isSubmitting ? t("features.loginForm.buttons.loggingIn") : t("features.loginForm.buttons.login")}
+      <Button
+        variant="primary"
+        className="w-full"
+        type="submit"
+        disabled={loading || !formik.isValid || formik.isSubmitting}
+      >
+        {loading || formik.isSubmitting
+          ? t("features.loginForm.buttons.loggingIn")
+          : t("features.loginForm.buttons.login")}
       </Button>
 
       <div className="text-center">
@@ -95,45 +106,46 @@ export function LoginForm() {
           variant="ghost"
           className="text-sm text-white/60 hover:text-white transition-colors disabled:opacity-60"
           onClick={async () => {
-            const trimmedEmail = formik.values.email.trim()
+            const trimmedEmail = formik.values.email.trim();
             if (!trimmedEmail) {
               setForgotFeedback({
-                type: 'error',
+                type: "error",
                 message: t("features.loginForm.forgotPassword.emailMissing"),
-              })
-              return
+              });
+              return;
             }
 
             if (!emailRegex.test(trimmedEmail)) {
               setForgotFeedback({
-                type: 'error',
+                type: "error",
                 message: t("features.loginForm.forgotPassword.emailInvalid"),
-              })
-              return
+              });
+              return;
             }
 
-            setForgotFeedback(null)
+            setForgotFeedback(null);
 
             try {
-              await forgotPassword(trimmedEmail)
+              await forgotPassword({ email: trimmedEmail });
               setForgotFeedback({
-                type: 'success',
+                type: "success",
                 message: t("features.loginForm.forgotPassword.success"),
-              })
+              });
             } catch (forgotError) {
               const fallbackMessage =
                 forgotError instanceof Error
                   ? forgotError.message
-                  : t("features.loginForm.forgotPassword.genericError")
-              setForgotFeedback({ type: 'error', message: fallbackMessage })
+                  : t("features.loginForm.forgotPassword.genericError");
+              setForgotFeedback({ type: "error", message: fallbackMessage });
             }
           }}
           disabled={forgotLoading}
         >
-          {forgotLoading ? t("features.loginForm.forgotPassword.sending") : t("features.loginForm.forgotPassword.cta")}
+          {forgotLoading
+            ? t("features.loginForm.forgotPassword.sending")
+            : t("features.loginForm.forgotPassword.cta")}
         </Button>
       </div>
     </form>
-  )
+  );
 }
-

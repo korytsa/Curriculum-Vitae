@@ -41,7 +41,8 @@
       "errors": {
         "emailRequired": "Email is required",
         "emailInvalid": "Invalid email address",
-        "passwordRequired": "Password is required"
+        "passwordRequired": "Password is required",
+        "submitFailed": "Failed to create user. Please try again."
       },
       "notifications": {
         "success": "User {{email}} created as {{role}}."

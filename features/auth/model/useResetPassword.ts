@@ -1,42 +1,44 @@
-import { useMutation } from '@apollo/client/react'
-import { RESET_PASSWORD_MUTATION } from './graphql'
+"use client";
+
+import { RESET_PASSWORD_MUTATION } from "./graphql";
+import { useSafeMutation } from "@/shared/lib";
 
 interface ResetPasswordVariables {
   auth: {
-    newPassword: string
-  }
+    newPassword: string;
+  };
 }
 
 interface ResetPasswordResponse {
-  resetPassword: null
+  resetPassword: null;
 }
+
+export type ResetPasswordPayload = {
+  token: string;
+  newPassword: string;
+};
 
 export function useResetPassword() {
-  const [resetPasswordMutation, { loading, error }] = useMutation<
+  const { mutate, loading, error } = useSafeMutation<
     ResetPasswordResponse,
     ResetPasswordVariables
-  >(RESET_PASSWORD_MUTATION)
-
-  const handleResetPassword = (token: string, password: string) => {
-    return resetPasswordMutation({
-      variables: {
-        auth: {
-          newPassword: password,
-        },
-      },
-      context: {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
-      },
-    })
-  }
+  >(RESET_PASSWORD_MUTATION);
 
   return {
-    resetPassword: handleResetPassword,
+    resetPassword: ({ token, newPassword }: ResetPasswordPayload) =>
+      mutate({
+        variables: {
+          auth: {
+            newPassword,
+          },
+        },
+        context: {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        },
+      }),
     loading,
     error,
-  }
+  };
 }
-
-

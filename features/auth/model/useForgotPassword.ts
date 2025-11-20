@@ -1,37 +1,34 @@
-import { useMutation } from '@apollo/client/react'
-import { FORGOT_PASSWORD_MUTATION } from './graphql'
+"use client";
+
+import { FORGOT_PASSWORD_MUTATION } from "./graphql";
+import { useSafeMutation } from "@/shared/lib";
 
 interface ForgotPasswordVariables {
   auth: {
-    email: string
-  }
+    email: string;
+  };
 }
 
 interface ForgotPasswordResponse {
-  forgotPassword: null
+  forgotPassword: null;
 }
+
+export type ForgotPasswordPayload = {
+  email: string;
+};
 
 export function useForgotPassword() {
-  const [forgotPasswordMutation, { loading, error }] = useMutation<
+  const { mutate, loading, error } = useSafeMutation<
     ForgotPasswordResponse,
     ForgotPasswordVariables
-  >(FORGOT_PASSWORD_MUTATION)
-
-  const handleForgotPassword = async (email: string) => {
-    return forgotPasswordMutation({
-      variables: {
-        auth: {
-          email,
-        },
-      },
-    })
-  }
+  >(FORGOT_PASSWORD_MUTATION);
 
   return {
-    forgotPassword: handleForgotPassword,
+    forgotPassword: ({ email }: ForgotPasswordPayload) =>
+      mutate({
+        variables: { auth: { email } },
+      }),
     loading,
     error,
-  }
+  };
 }
-
-
