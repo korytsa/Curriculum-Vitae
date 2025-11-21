@@ -47,7 +47,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type 
 			{label && (
 				<label
 					className={cn(
-						"absolute left-3 transition-all duration-200 pointer-events-none px-1",
+						"absolute left-3 transition-all duration-200 pointer-events-none px-2",
 						isLabelActive ? "top-0 -translate-y-1/2 text-xs bg-[#353535]" : "top-1/2 -translate-y-1/2 text-sm",
 						labelColor,
 					)}

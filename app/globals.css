@@ -28,3 +28,24 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  input:-webkit-autofill,
+  input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px #353535 inset !important;
+    -webkit-text-fill-color: #C7C7C7 !important;
+    caret-color: #C7C7C7 !important;
+
+  }
+}
+
+@keyframes ripple-animation {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
