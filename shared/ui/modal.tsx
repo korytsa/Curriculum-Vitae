@@ -82,7 +82,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
         <div
           ref={ref}
           className={cn(
-            "relative z-10 w-full max-w-md mx-4 bg-[#2F2F2F] rounded-lg shadow-xl overflow-hidden",
+            "relative z-10 w-full max-w-xl mx-4 bg-[#353535] rounded-lg shadow-xl overflow-hidden",
             "transform transition-all duration-200",
             open ? "scale-100 opacity-100" : "scale-95 opacity-0",
             className

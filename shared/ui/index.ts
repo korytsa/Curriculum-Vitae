@@ -19,5 +19,7 @@ export type { NotificationProps } from "./notification";
 export { FormStatus } from "./form-status";
 export type { FormStatusProps } from "./form-status";
 
+export { SearchInput } from "./search-input";
+export type { SearchInputProps } from "./search-input";
 export { Tabs } from "./tabs";
 export type { TabsProps, TabItem } from "./tabs";
