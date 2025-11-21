@@ -8,7 +8,7 @@ export function SignupPage() {
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-[#1F1F1F] flex flex-col">
+    <div className="min-h-screen bg-[#353535] flex flex-col">
       <AuthTabs />
       <div className="flex-1 flex items-center justify-center px-4">
         <div className="w-full max-w-md space-y-8">
