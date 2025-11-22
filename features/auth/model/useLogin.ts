@@ -28,19 +28,37 @@ export function useLogin() {
   });
 
   const handleLogin = async ({ email, password }: LoginPayload) => {
-    const result = await loginQuery({
-      variables: {
-        auth: {
-          email,
-          password,
+    try {
+      const result = await loginQuery({
+        variables: {
+          auth: {
+            email,
+            password,
+          },
         },
-      },
-    });
+      });
 
-    const token = result.data?.login.access_token;
-    if (token) {
-      setAccessToken(token);
-      router.push(`/${locale}/users`);
+      if (result.error) {
+        console.error("[Login error]", result.error);
+        throw result.error;
+      }
+
+      if (!result.data?.login) {
+        console.error("[Login error] No login data received");
+        throw new Error("Invalid response from server");
+      }
+
+      const token = result.data.login.access_token;
+      if (token) {
+        setAccessToken(token);
+        router.push(`/${locale}/users`);
+      } else {
+        console.error("[Login error] No token received");
+        throw new Error("No access token received");
+      }
+    } catch (err) {
+      console.error("[Login error]", err);
+      throw err;
     }
   };
 
@@ -50,4 +68,3 @@ export function useLogin() {
     error,
   };
 }
-

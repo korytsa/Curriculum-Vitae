@@ -142,15 +142,20 @@
         "title": "Add skill",
         "labels": {
           "name": "Skill name",
-          "category": "Category"
+          "category": "Category",
+          "skill": "Skill",
+          "mastery": "Skill mastery"
         },
         "placeholders": {
-          "name": "Enter skill name"
+          "name": "Enter skill name",
+          "selectSkill": "Select a skill"
         },
         "errors": {
           "nameRequired": "Skill name is required",
           "categoryRequired": "Category is required",
-          "categoryInvalid": "Invalid category ID"
+          "categoryInvalid": "Invalid category ID",
+          "skillRequired": "Skill is required",
+          "masteryRequired": "Mastery level is required"
         }
       },
       "updateForm": {
@@ -220,4 +225,3 @@
     }
   }
 }
-

@@ -3,48 +3,44 @@
 import { Plus, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button, Loader } from "@/shared/ui";
-import {
-  CategoryBlock,
-  AddSkillForm,
-  UpdateSkillForm,
-  DeleteSkillModal,
-} from "@/features/skills";
+import { cn } from "@/shared/lib";
+import { CategoryBlock, AddSkillForm } from "@/features/skills";
 import type { SkillCategory } from "@/features/skills";
 
 interface SkillsPageViewProps {
   skillsLoading: boolean;
   displayCategories: SkillCategory[];
   showAddSkillForm: boolean;
-  showUpdateSkillForm: boolean;
-  showDeleteModal: boolean;
-  categoryOptions: Array<{ id: string; name: string }>;
-  displayCategoriesForUpdate: SkillCategory[];
-  allSkillsForSelect: Array<{ id: string; name: string }>;
+  isDeleteMode: boolean;
+  selectedSkillIds: Set<string>;
+  deleteLoading?: boolean;
   onOpenAddForm: () => void;
-  onOpenUpdateForm: () => void;
-  onOpenDeleteModal: () => void;
+  onToggleDeleteMode: () => void;
+  onToggleSkillSelection: (skillId: string) => void;
+  onDeleteSelectedSkills: () => void;
   onCloseAddForm: () => void;
-  onCloseUpdateForm: () => void;
-  onCloseDeleteModal: () => void;
 }
 
 export function SkillsPageView({
   skillsLoading,
   displayCategories,
   showAddSkillForm,
-  showUpdateSkillForm,
-  showDeleteModal,
-  categoryOptions,
-  displayCategoriesForUpdate,
-  allSkillsForSelect,
+  isDeleteMode,
+  selectedSkillIds,
+  deleteLoading,
   onOpenAddForm,
-  onOpenUpdateForm,
-  onOpenDeleteModal,
+  onToggleDeleteMode,
+  onToggleSkillSelection,
+  onDeleteSelectedSkills,
   onCloseAddForm,
-  onCloseUpdateForm,
-  onCloseDeleteModal,
 }: SkillsPageViewProps) {
   const { t } = useTranslation();
+
+  const hasSkills = displayCategories.some(
+    (cat) =>
+      cat.skills.length > 0 ||
+      cat.children?.some((child) => child.skills.length > 0)
+  );
 
   return (
     <section className="px-6 py-8 text-white space-y-10">
@@ -53,69 +49,79 @@ export function SkillsPageView({
           {t("skills.heading")}
         </h1>
 
-        <div className="flex-1 space-y-16 mt-16">
+        <div className="flex-1 mt-16">
           {skillsLoading ? (
             <div className="flex justify-center items-center py-20">
               <Loader size="lg" />
             </div>
           ) : (
-            displayCategories.map((category) => (
-              <CategoryBlock key={category.id} category={category} />
-            ))
+            <div className="space-y-16">
+              {displayCategories.length > 0 &&
+                displayCategories.map((category) => (
+                  <CategoryBlock
+                    key={category.id}
+                    category={category}
+                    isDeleteMode={isDeleteMode}
+                    selectedSkillIds={selectedSkillIds}
+                    onToggleSkillSelection={onToggleSkillSelection}
+                  />
+                ))}
+            </div>
           )}
 
-          {!skillsLoading && (
-            <div className="flex flex-wrap items-center justify-end gap-10 pr-4 lg:pr-20 text-sm uppercase tracking-wide">
-              <Button
-                type="button"
-                variant="ghost"
-                className="flex items-center gap-2 rounded-full px-4 py-2 text-gray-400 text-xs md:text-sm tracking-[0.2em] hover:text-gray-200 transition-colors"
-                icon={<Plus className="h-4 w-4" />}
-                onClick={onOpenAddForm}
-              >
-                {t("features.skills.page.actions.add")}
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                className="flex items-center gap-2 text-blue-500 text-xs md:text-sm tracking-[0.2em] hover:text-blue-300 transition-colors"
-                onClick={onOpenUpdateForm}
-              >
-                {t("features.skills.page.actions.update")}
-              </Button>
+          <div
+            className={cn(
+              "flex flex-wrap items-center gap-10 pr-4 lg:pr-20 text-sm uppercase tracking-wide mt-8",
+              hasSkills ? "justify-end" : "justify-center"
+            )}
+          >
+            <Button
+              type="button"
+              variant="ghost"
+              className="flex items-center gap-2 rounded-full px-4 py-2 text-gray-400 text-xs md:text-sm tracking-[0.2em] hover:text-gray-200 transition-colors"
+              icon={<Plus className="h-4 w-4" />}
+              onClick={onOpenAddForm}
+              disabled={
+                skillsLoading ||
+                isDeleteMode ||
+                showAddSkillForm ||
+                deleteLoading
+              }
+            >
+              {t("features.skills.page.actions.add")}
+            </Button>
+            {hasSkills && (
               <Button
                 type="button"
                 variant="ghost"
                 className="flex items-center gap-2 text-red-500 text-xs md:text-sm tracking-[0.2em] hover:text-red-300 transition-colors"
                 icon={<Trash2 className="h-4 w-4" />}
-                onClick={onOpenDeleteModal}
+                onClick={
+                  isDeleteMode && selectedSkillIds.size > 0
+                    ? onDeleteSelectedSkills
+                    : onToggleDeleteMode
+                }
+                disabled={
+                  skillsLoading ||
+                  deleteLoading ||
+                  showAddSkillForm ||
+                  (isDeleteMode && selectedSkillIds.size === 0)
+                }
               >
                 {t("features.skills.page.actions.delete")}
+                {isDeleteMode && selectedSkillIds.size > 0 && (
+                  <span className="ml-1 px-2 py-0.5 bg-red-500 text-white rounded-full text-xs font-semibold">
+                    {selectedSkillIds.size}
+                  </span>
+                )}
               </Button>
-            </div>
-          )}
+            )}
+          </div>
 
           <AddSkillForm
             open={showAddSkillForm}
-            categoryOptions={categoryOptions}
             onSuccess={onCloseAddForm}
             onCancel={onCloseAddForm}
-          />
-
-          <UpdateSkillForm
-            open={showUpdateSkillForm}
-            categoryOptions={categoryOptions}
-            displayCategories={displayCategoriesForUpdate}
-            allSkillsForSelect={allSkillsForSelect}
-            onSuccess={onCloseUpdateForm}
-            onCancel={onCloseUpdateForm}
-          />
-
-          <DeleteSkillModal
-            open={showDeleteModal}
-            allSkillsForSelect={allSkillsForSelect}
-            onClose={onCloseDeleteModal}
-            onSuccess={onCloseDeleteModal}
           />
         </div>
       </div>
