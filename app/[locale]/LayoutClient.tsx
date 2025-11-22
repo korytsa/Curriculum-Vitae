@@ -10,12 +10,16 @@ type LayoutClientProps = {
   children: ReactNode;
   locale: string;
   showSidebar?: boolean;
+  initialSidebarCollapsed?: boolean;
+  hasSidebarPreference?: boolean;
 };
 
 export function LayoutClient({
   children,
   locale,
   showSidebar = true,
+  initialSidebarCollapsed = false,
+  hasSidebarPreference = false,
 }: LayoutClientProps) {
   useEffect(() => {
     i18n.changeLanguage(locale);
@@ -23,7 +27,12 @@ export function LayoutClient({
 
   return (
     <ApolloProvider client={apolloClient}>
-      {showSidebar && <Sidebar />}
+      {showSidebar && (
+        <Sidebar
+          initialCollapsed={initialSidebarCollapsed}
+          hasInitialPreference={hasSidebarPreference}
+        />
+      )}
       <I18nextProvider i18n={i18n}>
         <main
           className={

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useUsers } from "@/features/users";
@@ -10,20 +10,30 @@ import { getUserDisplayName, getUserInitials } from "./userDisplay";
 const SIDEBAR_WIDTH_EXPANDED = "200px";
 const SIDEBAR_WIDTH_COLLAPSED = "60px";
 const STORAGE_KEY = "sidebar-collapsed";
+const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 365;
+
+type UseSidebarStateParams = {
+  initialIsCollapsed?: boolean;
+  hasInitialPreference?: boolean;
+};
 
 interface SidebarState {
   t: ReturnType<typeof useTranslation>["t"];
   locale?: string;
   normalizedPath: string;
-  isCollapsed: boolean | null;
+  isCollapsed: boolean;
   toggleCollapse: () => void;
   applyLocaleToPath: (path: string) => string;
   currentUserName: string | null;
   currentUserInitials: string;
   userMenuItems: ReturnType<typeof buildUserMenuItems>;
+  isUserLoading: boolean;
 }
 
-export function useSidebarState(): SidebarState {
+export function useSidebarState({
+  initialIsCollapsed = false,
+  hasInitialPreference = false,
+}: UseSidebarStateParams = {}): SidebarState {
   const pathname = usePathname();
   const params = useParams();
   const locale =
@@ -40,27 +50,39 @@ export function useSidebarState(): SidebarState {
     : "/";
 
   const { t } = useTranslation();
-  const { users } = useUsers();
+  const { users, loading: isUserLoading } = useUsers();
   const router = useRouter();
 
-  const [isCollapsed, setIsCollapsed] = useState<boolean | null>(null);
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(initialIsCollapsed);
+  const hasPreferenceRef = useRef(hasInitialPreference);
 
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    const value = stored === "true";
-    setIsCollapsed(value);
+  useLayoutEffect(() => {
+    if (hasPreferenceRef.current) return;
 
-    const width = value ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH_EXPANDED;
-    document.documentElement.style.setProperty("--sidebar-width", width);
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored !== null) {
+        setIsCollapsed(stored === "true");
+      }
+    } catch {}
+
+    hasPreferenceRef.current = true;
   }, []);
 
-  useEffect(() => {
-    if (isCollapsed === null) return;
+  useLayoutEffect(() => {
+    if (typeof document === "undefined") return;
+
     const width = isCollapsed
       ? SIDEBAR_WIDTH_COLLAPSED
       : SIDEBAR_WIDTH_EXPANDED;
     document.documentElement.style.setProperty("--sidebar-width", width);
-    localStorage.setItem(STORAGE_KEY, String(isCollapsed));
+    document.cookie = `${STORAGE_KEY}=${String(
+      isCollapsed
+    )}; path=/; max-age=${COOKIE_MAX_AGE_SECONDS}`;
+
+    try {
+      localStorage.setItem(STORAGE_KEY, String(isCollapsed));
+    } catch {}
   }, [isCollapsed]);
 
   const applyLocaleToPath = (path: string) =>
@@ -99,5 +121,6 @@ export function useSidebarState(): SidebarState {
     currentUserName,
     currentUserInitials,
     userMenuItems,
+    isUserLoading,
   };
 }
