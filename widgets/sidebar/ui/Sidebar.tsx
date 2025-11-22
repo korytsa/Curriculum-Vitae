@@ -5,9 +5,18 @@ import Link from "next/link";
 import { menuItems } from "../config/menuItems";
 import { cn } from "@/shared/lib";
 import { Button, DropdownMenu } from "@/shared/ui";
+import { Skeleton } from "@/shared/ui/skeleton";
 import { useSidebarState } from "../lib/useSidebarState";
 
-export default function Sidebar() {
+type SidebarProps = {
+  initialCollapsed?: boolean;
+  hasInitialPreference?: boolean;
+};
+
+export default function Sidebar({
+  initialCollapsed = false,
+  hasInitialPreference = false,
+}: SidebarProps) {
   const {
     t,
     normalizedPath,
@@ -17,9 +26,11 @@ export default function Sidebar() {
     currentUserInitials,
     currentUserName,
     userMenuItems,
-  } = useSidebarState();
-
-  if (isCollapsed === null) return null;
+    isUserLoading,
+  } = useSidebarState({
+    initialIsCollapsed: initialCollapsed,
+    hasInitialPreference,
+  });
 
   const userMenuDropdownProps = {
     items: userMenuItems,
@@ -59,20 +70,27 @@ export default function Sidebar() {
         </div>
 
         <div className="flex items-center gap-4">
-          <DropdownMenu
-            {...userMenuDropdownProps}
-            className="w-full"
-            menuWidth="200px"
-          >
-            <div className="flex items-center cursor-pointer gap-2">
-              <div className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center font-semibold text-sm">
-                {currentUserInitials}
-              </div>
-              <span className="text-sm font-normal text-white whitespace-nowrap overflow-hidden text-ellipsis max-w-[60px]">
-                {currentUserName || t("features.sidebar.avatar.name")}
-              </span>
+          {isUserLoading ? (
+            <div className="flex items-center gap-2">
+              <Skeleton className="w-8 h-8 rounded-full" />
+              <Skeleton className="h-3 w-16 rounded-full" />
             </div>
-          </DropdownMenu>
+          ) : (
+            <DropdownMenu
+              {...userMenuDropdownProps}
+              className="w-full"
+              menuWidth="200px"
+            >
+              <div className="flex items-center cursor-pointer gap-2">
+                <div className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center font-semibold text-sm">
+                  {currentUserInitials}
+                </div>
+                <span className="text-sm font-normal text-white whitespace-nowrap overflow-hidden text-ellipsis max-w-[60px]">
+                  {currentUserName || t("features.sidebar.avatar.name")}
+                </span>
+              </div>
+            </DropdownMenu>
+          )}
         </div>
       </aside>
 
@@ -115,27 +133,41 @@ export default function Sidebar() {
 
         <div className="flex flex-col gap-3">
           <div className="relative">
-            <DropdownMenu
-              {...userMenuDropdownProps}
-              className="w-full"
-              menuWidth="100%"
-            >
+            {isUserLoading ? (
               <div
                 className={cn(
-                  "flex items-center cursor-pointer rounded-r-[28px] transition-colors duration-200 ease-in-out hover:bg-sidebar-hover",
-                  isCollapsed ? "justify-center px-0" : "px-[10px] py-2"
+                  "flex items-center rounded-r-[28px] py-2",
+                  isCollapsed ? "justify-center px-0" : "px-[10px] py-2",
+                  "gap-3"
                 )}
               >
-                <div className="w-10 h-10 rounded-full bg-sidebar-avatar-bg text-sidebar-avatar-text flex items-center justify-center font-semibold">
-                  {currentUserInitials}
-                </div>
-                {!isCollapsed && (
-                  <span className="ml-3 text-sm font-normal text-white whitespace-nowrap overflow-hidden text-ellipsis">
-                    {currentUserName || t("features.sidebar.avatar.name")}
-                  </span>
-                )}
+                <Skeleton className="w-10 h-10 rounded-full" />
+                {!isCollapsed && <Skeleton className="h-4 w-28 rounded-full" />}
               </div>
-            </DropdownMenu>
+            ) : (
+              <DropdownMenu
+                {...userMenuDropdownProps}
+                className="w-full"
+                menuWidth="100%"
+                menuClassName="ml-3 border border-white/5"
+              >
+                <div
+                  className={cn(
+                    "flex py-2 items-center cursor-pointer rounded-r-[28px] transition-colors duration-200 ease-in-out hover:bg-sidebar-hover",
+                    isCollapsed ? "justify-center px-3" : "px-[10px] py-2"
+                  )}
+                >
+                  <div className="w-10 h-10 rounded-full bg-sidebar-avatar-bg text-sidebar-avatar-text flex items-center justify-center font-semibold">
+                    {currentUserInitials}
+                  </div>
+                  {!isCollapsed && (
+                    <span className="ml-3 text-sm font-normal text-white whitespace-nowrap overflow-hidden text-ellipsis">
+                      {currentUserName || t("features.sidebar.avatar.name")}
+                    </span>
+                  )}
+                </div>
+              </DropdownMenu>
+            )}
           </div>
 
           <Button
