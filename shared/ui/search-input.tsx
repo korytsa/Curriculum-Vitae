@@ -60,7 +60,7 @@ const SearchInputBase = <TData extends SearchableRecord = SearchableRecord>(
 	}, [filterData, onResults, query]);
 
 	return (
-		<div className="flex w-full items-center gap-3 rounded-full text-white border border-white/25 bg-transparent px-4 py-2 focus-within:border-red-500 focus-within:text-white">
+		<div className="flex w-full items-center gap-3 rounded-full text-white border border-white/25 bg-transparent px-4 py-2 transition-all hover:border-white/80 focus-within:border-red-500 focus-within:hover:border-red-500 focus-within:text-white">
             <IoSearchSharp className="w-[22px] h-[22px]" />
 
 			<input
