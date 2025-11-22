@@ -4,7 +4,7 @@ type SidebarUser = {
     first_name?: string | null;
     last_name?: string | null;
   };
-} | null;
+} | null | undefined;
 
 const normalize = (value?: string | null) =>
   typeof value === "string" && value.length > 0 ? value : null;

@@ -10,6 +10,7 @@ const config: CodegenConfig = {
   documents: [
     "features/auth/model/graphql.ts",
     "features/skills/model/graphql.ts",
+    "features/users/model/graphql.ts",
   ],
   generates: {
     "shared/graphql/generated.ts": {
@@ -25,4 +26,3 @@ const config: CodegenConfig = {
 };
 
 export default config;
-

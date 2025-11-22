@@ -808,3 +808,8 @@ export type UpdateSkillMutationVariables = Exact<{
 
 
 export type UpdateSkillMutation = { __typename: 'Mutation', updateSkill: { __typename: 'Skill', id: string, name: string, category?: { __typename: 'SkillCategory', id: string, name: string } | null } };
+
+export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UsersQuery = { __typename: 'Query', users: Array<{ __typename: 'User', id: string, email: string, department_name?: string | null, position_name?: string | null, profile: { __typename: 'Profile', id: string, first_name?: string | null, last_name?: string | null, avatar?: string | null } }> };
