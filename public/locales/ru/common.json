@@ -1,4 +1,223 @@
 {
-  "title": "Резюме"
+  "title": "Резюме",
+  "skills": {
+    "heading": "Навыки"
+  },
+  "cvs": {
+    "heading": "Резюме"
+  },
+  "languages": {
+    "heading": "Языки"
+  },
+  "users": {
+    "heading": "Сотрудники"
+  },
+  "features": {
+    "createUserForm": {
+      "roles": {
+        "employee": "Сотрудник",
+        "admin": "Админ"
+      },
+      "labels": {
+        "email": "Email",
+        "password": "Пароль",
+        "firstName": "Имя",
+        "lastName": "Фамилия",
+        "departmentId": "ID отдела",
+        "positionId": "ID позиции",
+        "role": "Роль"
+      },
+      "placeholders": {
+        "email": "user@example.com",
+        "password": "Надёжный пароль",
+        "firstName": "Имя",
+        "lastName": "Фамилия",
+        "numericId": "Числовой ID"
+      },
+      "buttons": {
+        "creating": "СОЗДАНИЕ...",
+        "create": "СОЗДАТЬ"
+      },
+      "errors": {
+        "emailRequired": "Введите email",
+        "emailInvalid": "Некорректный email",
+        "passwordRequired": "Введите пароль",
+        "submitFailed": "Не удалось создать пользователя. Попробуйте ещё раз."
+      },
+      "notifications": {
+        "success": "Пользователь {{email}} создан с ролью {{role}}."
+      }
+    },
+    "loginForm": {
+      "labels": {
+        "email": "Email",
+        "password": "Пароль"
+      },
+      "placeholders": {
+        "email": "Введите email",
+        "password": "Введите пароль"
+      },
+      "buttons": {
+        "loggingIn": "ВХОД...",
+        "login": "ВОЙТИ"
+      },
+      "errors": {
+        "emailRequired": "Введите email",
+        "emailInvalid": "Некорректный email",
+        "passwordRequired": "Введите пароль"
+      },
+      "forgotPassword": {
+        "emailMissing": "Введите email, чтобы мы знали, куда отправить письмо.",
+        "emailInvalid": "Укажите корректный email.",
+        "success": "Если такой email существует, мы отправили инструкции по сбросу.",
+        "genericError": "Не удалось отправить письмо. Попробуйте позже.",
+        "sending": "ОТПРАВКА...",
+        "cta": "ЗАБЫЛ ПАРОЛЬ"
+      }
+    },
+    "signupForm": {
+      "labels": {
+        "email": "Email",
+        "password": "Пароль"
+      },
+      "placeholders": {
+        "email": "Email",
+        "password": "Пароль"
+      },
+      "buttons": {
+        "creating": "СОЗДАНИЕ АККАУНТА...",
+        "create": "СОЗДАТЬ АККАУНТ"
+      },
+      "errors": {
+        "emailRequired": "Введите email",
+        "emailInvalid": "Некорректный email",
+        "passwordRequired": "Введите пароль"
+      },
+      "links": {
+        "haveAccount": "У МЕНЯ УЖЕ ЕСТЬ АККАУНТ"
+      }
+    },
+    "resetPassword": {
+      "headings": {
+        "title": "Сброс пароля",
+        "subtitle": "Введите новый пароль, чтобы завершить процесс"
+      },
+      "labels": {
+        "password": "Новый пароль",
+        "confirmPassword": "Подтверждение пароля"
+      },
+      "placeholders": {
+        "password": "Введите новый пароль",
+        "confirmPassword": "Повторите новый пароль"
+      },
+      "buttons": {
+        "updating": "ОБНОВЛЕНИЕ...",
+        "submit": "УСТАНОВИТЬ ПАРОЛЬ"
+      },
+      "errors": {
+        "passwordRequired": "Введите пароль",
+        "passwordLength": "Пароль должен содержать минимум 5 символов.",
+        "confirmRequired": "Подтвердите пароль",
+        "passwordMismatch": "Пароли не совпадают."
+      },
+      "feedback": {
+        "missingToken": "Токен отсутствует или недействителен. Запросите письмо ещё раз.",
+        "success": "Пароль успешно обновлён. Теперь вы можете войти.",
+        "genericError": "Не удалось сбросить пароль. Попробуйте позже."
+      }
+    },
+    "skills": {
+      "page": {
+        "actions": {
+          "add": "Добавить",
+          "update": "Обновить",
+          "delete": "Удалить"
+        }
+      },
+      "common": {
+        "confirm": "ПОДТВЕРДИТЬ",
+        "cancel": "ОТМЕНА"
+      },
+      "addForm": {
+        "title": "Добавить навык",
+        "labels": {
+          "name": "Название навыка",
+          "category": "Категория"
+        },
+        "placeholders": {
+          "name": "Введите название"
+        },
+        "errors": {
+          "nameRequired": "Введите название навыка",
+          "categoryRequired": "Выберите категорию",
+          "categoryInvalid": "Некорректный ID категории"
+        }
+      },
+      "updateForm": {
+        "title": "Обновить навык",
+        "labels": {
+          "selectSkill": "Выберите навык",
+          "skillName": "Новое название",
+          "category": "Категория (опционально)"
+        },
+        "placeholders": {
+          "selectSkill": "Выберите навык...",
+          "skillName": "Введите новое название",
+          "category": "Оставить текущую категорию"
+        },
+        "errors": {
+          "skillRequired": "Выберите навык",
+          "nameRequired": "Введите название навыка",
+          "categoryInvalid": "Некорректный ID категории"
+        }
+      },
+      "deleteModal": {
+        "title": "Удалить навык",
+        "confirmTitle": "Подтверждение удаления",
+        "warning": "Вы уверены, что хотите удалить этот навык? Это действие необратимо.",
+        "labels": {
+          "skill": "Навык",
+          "skillToDelete": "Навык к удалению:"
+        },
+        "placeholders": {
+          "skill": "Выберите навык..."
+        },
+        "delete": "УДАЛИТЬ",
+        "errors": {
+          "skillRequired": "Выберите навык для удаления"
+        }
+      }
+    },
+    "authPage": {
+      "tabs": {
+        "login": "ВОЙТИ",
+        "signup": "РЕГИСТРАЦИЯ"
+      },
+      "loginPage": {
+        "title": "С возвращением",
+        "subtitle": "Здравствуйте! Войдите, чтобы продолжить"
+      },
+      "signupPage": {
+        "title": "Зарегистрируйтесь",
+        "subtitle": "Добро пожаловать! Создайте аккаунт, чтобы продолжить"
+      }
+    },
+    "sidebar": {
+      "menu": {
+        "employees": "Сотрудники",
+        "skills": "Навыки",
+        "languages": "Языки",
+        "cvs": "Резюме"
+      },
+      "avatar": {
+        "initials": "R",
+        "name": "Ростислав Харланов"
+      },
+      "aria": {
+        "expand": "Раскрыть боковую панель",
+        "collapse": "Свернуть боковую панель"
+      }
+    }
+  }
 }
 

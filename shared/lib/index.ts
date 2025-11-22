@@ -1,2 +1,3 @@
-export { cn } from './utils';
+export { cn } from "./utils";
+export { useSafeMutation } from "./useSafeMutation";
 

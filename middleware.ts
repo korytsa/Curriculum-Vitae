@@ -11,11 +11,21 @@ export function middleware(request: NextRequest) {
   )
 
   if (pathnameHasLocale) {
+    const locale = pathname.split('/')[1]
+    const isRootPath = pathname === `/${locale}` || pathname === `/${locale}/`
+    if (isRootPath) {
+      request.nextUrl.pathname = `/${locale}/login`
+      return NextResponse.redirect(request.nextUrl)
+    }
     return NextResponse.next()
   }
 
   const locale = defaultLocale
-  request.nextUrl.pathname = `/${locale}${pathname}`
+  if (pathname === '/' || pathname === '') {
+    request.nextUrl.pathname = `/${locale}/login`
+  } else {
+    request.nextUrl.pathname = `/${locale}${pathname}`
+  }
   return NextResponse.redirect(request.nextUrl)
 }
 
@@ -24,4 +34,3 @@ export const config = {
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 }
-

@@ -1,28 +1,30 @@
-'use client'
+import type { Metadata } from "next";
+import type { ReactNode } from "react";
+import { Inter } from "next/font/google";
+import "../globals.css";
+import { initLocale } from "@/shared/lib/i18n-server";
 
-import '../globals.css'
-import { I18nextProvider } from 'react-i18next'
-import i18n from '@/shared/lib/i18n'
-import { useEffect } from 'react'
+const inter = Inter({
+	subsets: ["latin"],
+	variable: "--font-inter",
+});
 
-export default function RootLayout({
-  children,
-  params,
-}: {
-  children: React.ReactNode
-  params: { locale: string }
-}) {
-  useEffect(() => {
-    i18n.changeLanguage(params.locale)
-  }, [params.locale])
+export const metadata: Metadata = {
+	title: "Curriculum Vitae",
+	description: "Manage employees, skills, languages, and CVs",
+};
 
-  return (
-    <html lang={params.locale}>
-      <body>
-        <I18nextProvider i18n={i18n}>
-          {children}
-        </I18nextProvider>
-      </body>
-    </html>
-  )
+type RootLayoutProps = {
+	children: ReactNode;
+	params: { locale: string };
+};
+
+export default async function RootLayout({ children, params }: RootLayoutProps) {
+	await initLocale(params.locale);
+
+	return (
+		<html lang={params.locale}>
+			<body className={`${inter.variable} antialiased`}>{children}</body>
+		</html>
+	);
 }
