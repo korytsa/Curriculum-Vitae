@@ -154,3 +154,81 @@ export const isClickOutside = (
   if (!ref.current) return false;
   return !ref.current.contains(event.target as Node);
 };
+
+
+export interface SelectOption {
+	value: string;
+	label: string;
+}
+
+export const findSelectedOption = (options: SelectOption[], value?: string): SelectOption | undefined => {
+	return options.find((opt) => opt.value === value);
+};
+
+export const isNoPositionValue = (value?: string, selectedOption?: SelectOption): boolean => {
+	if (!value) return true;
+	if (!selectedOption) return false;
+	
+	const lowerLabel = selectedOption.label.toLowerCase();
+	return lowerLabel === "no position" || lowerLabel.includes("no position");
+};
+
+export const getDisplayValue = (selectedOption?: SelectOption, isNoPositionValue?: boolean): string => {
+	return selectedOption && !isNoPositionValue ? selectedOption.label : "";
+};
+
+export const hasValue = (value?: string, selectedOption?: SelectOption, isNoPositionValue?: boolean): boolean => {
+	return Boolean(value && selectedOption && !isNoPositionValue);
+};
+
+export const isLabelActive = (isFocused: boolean, hasValue: boolean, isOpen: boolean): boolean => {
+	return isFocused || hasValue || isOpen;
+};
+
+export const isActive = (isFocused: boolean, isOpen: boolean): boolean => {
+	return isFocused || isOpen;
+};
+
+export const getLabelColor = (error?: string, isActive?: boolean): string => {
+	return error || isActive ? "text-red-500" : "text-[#C7C7C7]";
+};
+
+export const getBorderColor = (error?: string, isActive?: boolean): string => {
+	return error || isActive ? "border-red-500" : "border-[#656565] hover:border-white/80";
+};
+
+export const createCloseSelectHandler = (
+	setIsOpen: (value: boolean) => void,
+	setIsFocused: (value: boolean) => void,
+) => {
+	return () => {
+		setIsOpen(false);
+		setIsFocused(false);
+	};
+};
+
+export const createClickOutsideHandler = (
+	selectRef: { current: HTMLDivElement | null },
+	dropdownRef: { current: HTMLDivElement | null },
+	closeSelect: () => void,
+) => {
+	return (event: MouseEvent) => {
+		const target = event.target as Node;
+		if (
+			selectRef.current?.contains(target) ||
+			dropdownRef.current?.contains(target)
+		) {
+			return;
+		}
+		closeSelect();
+	};
+};
+
+export const createKeyDownHandler = (closeSelect: () => void) => {
+	return (event: KeyboardEvent) => {
+		if (event.key === "Escape") {
+			closeSelect();
+		}
+	};
+};
+

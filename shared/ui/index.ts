@@ -26,6 +26,7 @@ export type { FormStatusProps } from "./form-status";
 
 export { SearchInput } from "./search-input";
 export type { SearchInputProps } from "./search-input";
+
 export { Tabs } from "./tabs";
 export type { TabsProps, TabItem } from "./tabs";
 
@@ -37,3 +38,5 @@ export type { AvatarProps } from "./avatar";
 
 export { DropdownMenu } from "./dropdown-menu";
 export type { DropdownMenuItem } from "./dropdown-menu";
+export { Select } from "./select";
+export type { SelectProps, SelectOption } from "./select";

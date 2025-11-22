@@ -4,6 +4,7 @@ import * as React from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/shared/lib";
 import { IoClose } from "react-icons/io5";
+import { useState, useEffect, forwardRef } from "react";
 
 export interface ModalProps {
   open: boolean;
@@ -23,7 +24,7 @@ export interface ModalProps {
   className?: string;
 }
 
-const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
+const Modal = forwardRef<HTMLDivElement, ModalProps>(
   (
     {
       open,
@@ -36,13 +37,13 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
     },
     ref
   ) => {
-    const [isMounted, setIsMounted] = React.useState(false);
+    const [isMounted, setIsMounted] = useState(false);
 
-    React.useEffect(() => {
+    useEffect(() => {
       setIsMounted(true);
     }, []);
 
-    React.useEffect(() => {
+    useEffect(() => {
       if (open) {
         document.body.style.overflow = "hidden";
       } else {

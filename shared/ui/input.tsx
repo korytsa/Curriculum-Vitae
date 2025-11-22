@@ -16,9 +16,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type 
 	const isLabelActive = isFocused || hasValue;
 	const inputType = isPassword ? (showPassword ? "text" : "password") : type;
 	const labelColor = error ? "text-red-500" : isFocused ? "text-red-500" : "text-[#C7C7C7]";
-	const borderColor = error ? "border-red-500" : isFocused ? "border-red-500" : "border-[#656565]";
+	const borderColor = error ? "border-red-500" : isFocused ? "border-red-500" : "border-[#656565] hover:border-white/80";
   const baseClasses =
-    "w-full rounded-md border bg-transparent px-3 py-3 text-[#C7C7C7] placeholder:font-medium transition-colors focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50";
+    "w-full h-12 rounded-md border bg-transparent px-3 py-3 text-[#C7C7C7] placeholder:font-medium transition-all focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50";
 
 	const inputElement = (
 		<div className="relative">
