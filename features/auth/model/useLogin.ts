@@ -40,7 +40,7 @@ export function useLogin() {
     const token = result.data?.login.access_token;
     if (token) {
       setAccessToken(token);
-      router.push(`/${locale}/cvs`);
+      router.push(`/${locale}/users`);
     }
   };
 

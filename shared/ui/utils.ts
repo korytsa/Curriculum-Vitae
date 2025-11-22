@@ -1,22 +1,31 @@
 import { usePathname } from "next/navigation";
 import { useRef, useEffect } from "react";
+import type {
+  MouseEvent as ReactMouseEvent,
+  RefObject,
+  CSSProperties,
+  ReactNode,
+} from "react";
+import type { TableColumn } from "./table";
+
+export type DropdownAlign = "left" | "right" | "bottom";
 
 export const useLocale = (): string => {
-	const pathname = usePathname();
-	return pathname?.split("/")[1] || "en";
+  const pathname = usePathname();
+  return pathname?.split("/")[1] || "en";
 };
 
 export const createRipple = (
-	element: HTMLElement,
-	event: React.MouseEvent<HTMLElement>
+  element: HTMLElement,
+  event: ReactMouseEvent<HTMLElement>
 ): NodeJS.Timeout => {
-	const rect = element.getBoundingClientRect();
-	const size = Math.max(rect.width, rect.height);
-	const x = event.clientX - rect.left - size / 2;
-	const y = event.clientY - rect.top - size / 2;
+  const rect = element.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  const x = event.clientX - rect.left - size / 2;
+  const y = event.clientY - rect.top - size / 2;
 
-	const ripple = document.createElement("span");
-	ripple.style.cssText = `
+  const ripple = document.createElement("span");
+  ripple.style.cssText = `
 		position: absolute;
 		border-radius: 50%;
 		transform: scale(0);
@@ -29,67 +38,124 @@ export const createRipple = (
 		top: ${y}px;
 	`;
 
-	element.appendChild(ripple);
+  element.appendChild(ripple);
 
-	return setTimeout(() => {
-		ripple.remove();
-	}, 900);
+  return setTimeout(() => {
+    ripple.remove();
+  }, 900);
 };
 
 export const useRippleCleanup = () => {
-	const rippleTimeoutsRef = useRef<Map<string, Set<NodeJS.Timeout>>>(new Map());
+  const rippleTimeoutsRef = useRef<Map<string, Set<NodeJS.Timeout>>>(new Map());
 
-	useEffect(() => {
-		const timeoutsMap = rippleTimeoutsRef.current;
-		return () => {
-			timeoutsMap.forEach((timeouts) => {
-				timeouts.forEach((timeout) => clearTimeout(timeout));
-			});
-			timeoutsMap.clear();
-		};
-	}, []);
+  useEffect(() => {
+    const timeoutsMap = rippleTimeoutsRef.current;
+    return () => {
+      timeoutsMap.forEach((timeouts) => {
+        timeouts.forEach((timeout) => clearTimeout(timeout));
+      });
+      timeoutsMap.clear();
+    };
+  }, []);
 
-	const addRippleTimeout = (id: string, timeoutId: NodeJS.Timeout) => {
-		if (!rippleTimeoutsRef.current.has(id)) {
-			rippleTimeoutsRef.current.set(id, new Set());
-		}
-		rippleTimeoutsRef.current.get(id)!.add(timeoutId);
+  const addRippleTimeout = (id: string, timeoutId: NodeJS.Timeout) => {
+    if (!rippleTimeoutsRef.current.has(id)) {
+      rippleTimeoutsRef.current.set(id, new Set());
+    }
+    rippleTimeoutsRef.current.get(id)!.add(timeoutId);
 
-		setTimeout(() => {
-			const timeouts = rippleTimeoutsRef.current.get(id);
-			if (timeouts) {
-				timeouts.delete(timeoutId);
-				if (timeouts.size === 0) {
-					rippleTimeoutsRef.current.delete(id);
-				}
-			}
-		}, 900);
-	};
+    setTimeout(() => {
+      const timeouts = rippleTimeoutsRef.current.get(id);
+      if (timeouts) {
+        timeouts.delete(timeoutId);
+        if (timeouts.size === 0) {
+          rippleTimeoutsRef.current.delete(id);
+        }
+      }
+    }, 900);
+  };
 
-	return { addRippleTimeout };
+  return { addRippleTimeout };
 };
 
 export const scrollToTab = (
-	container: HTMLDivElement,
-	tabElement: HTMLElement
+  container: HTMLDivElement,
+  tabElement: HTMLElement
 ): void => {
-	const containerRect = container.getBoundingClientRect();
-	const tabRect = tabElement.getBoundingClientRect();
-	const scrollLeft = container.scrollLeft;
-	const targetScroll =
-		scrollLeft +
-		tabRect.left -
-		containerRect.left -
-		containerRect.width / 2 +
-		tabRect.width / 2;
+  const containerRect = container.getBoundingClientRect();
+  const tabRect = tabElement.getBoundingClientRect();
+  const scrollLeft = container.scrollLeft;
+  const targetScroll =
+    scrollLeft +
+    tabRect.left -
+    containerRect.left -
+    containerRect.width / 2 +
+    tabRect.width / 2;
 
-	container.scrollTo({
-		left: targetScroll,
-		behavior: "smooth",
-	});
+  container.scrollTo({
+    left: targetScroll,
+    behavior: "smooth",
+  });
 };
 
-// Select component utilities
+export const createSkeletonArray = (rows: number): number[] =>
+  Array.from({ length: rows }, (_, index) => index);
+
+export const resolveTableRowKey = <T extends Record<string, unknown>>(
+  row: T,
+  index: number,
+  keyExtractor?: (row: T) => string | number
+): string => {
+  const value = keyExtractor ? keyExtractor(row) : index;
+  return String(value);
+};
+
+export const getTableCellContent = <T extends Record<string, unknown>>(
+  column: TableColumn<T>,
+  row: T
+): ReactNode => {
+  const value = row[column.key as keyof T];
+  if (column.render) {
+    return column.render(value, row);
+  }
+  return value != null ? String(value) : "";
+};
+
+export const getDropdownPositionClasses = (
+  align: DropdownAlign = "right"
+): string => {
+  if (align === "bottom") {
+    return "bottom-full left-0 mb-2";
+  }
+  if (align === "left") {
+    return "top-full left-0 mt-2";
+  }
+  return "top-full right-0 mt-1";
+};
+
+export const buildDropdownMenuStyles = (
+  menuWidth?: string,
+  menuBgColor?: string
+): CSSProperties | undefined => {
+  if (!menuWidth && !menuBgColor) {
+    return undefined;
+  }
+
+  return {
+    ...(menuWidth ? { width: menuWidth } : {}),
+    ...(menuBgColor ? { backgroundColor: menuBgColor } : {}),
+  };
+};
+
+export const isClickOutside = (
+  ref: RefObject<HTMLElement>,
+  event: MouseEvent
+): boolean => {
+  if (!ref.current) return false;
+  return !ref.current.contains(event.target as Node);
+};
+
+
 export interface SelectOption {
 	value: string;
 	label: string;

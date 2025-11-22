@@ -33,10 +33,28 @@ body {
   input:-webkit-autofill,
   input:-webkit-autofill:focus {
     -webkit-box-shadow: 0 0 0 1000px #353535 inset !important;
-    -webkit-text-fill-color: #C7C7C7 !important;
-    caret-color: #C7C7C7 !important;
-
+    -webkit-text-fill-color: #c7c7c7 !important;
+    caret-color: #c7c7c7 !important;
   }
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 1px;
+  height: 2px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.35);
+  border-radius: 9999px;
 }
 
 @keyframes ripple-animation {
@@ -48,4 +66,9 @@ body {
     transform: scale(4);
     opacity: 0;
   }
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+  appearance: none;
+  -webkit-appearance: none;
 }

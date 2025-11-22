@@ -84,9 +84,7 @@ export function AddSkillForm({
         await createSkill(payload);
         helpers.resetForm();
         onSuccess();
-      } catch (err) {
-        // handled by hook error
-      }
+      } catch (err) {}
     },
   });
 
@@ -94,8 +92,7 @@ export function AddSkillForm({
     if (!formik.values.categoryId && categoryOptions.length > 0) {
       formik.setFieldValue("categoryId", categoryOptions[0].id);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [categoryOptions]);
+  }, [categoryOptions, formik]);
 
   return (
     <Modal

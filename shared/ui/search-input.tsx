@@ -1,91 +1,147 @@
 import {
-	forwardRef,
-	useCallback,
-	useEffect,
-	useState,
-	type ChangeEvent,
-	type ForwardedRef,
-	type InputHTMLAttributes,
-	type ReactElement,
-	type Ref,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useState,
+  type ChangeEvent,
+  type ForwardedRef,
+  type InputHTMLAttributes,
+  type ReactElement,
+  type Ref,
 } from "react";
-import { IoSearchSharp } from "react-icons/io5";
+import { IoSearchSharp, IoClose } from "react-icons/io5";
 
 import { cn } from "@/shared/lib";
 
 type SearchableRecord = Record<string, unknown>;
 
-export interface SearchInputProps<TData extends SearchableRecord = SearchableRecord>
-	extends Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "value" | "defaultValue" | "onChange"> {
-	data?: TData[];
-	fields?: Array<keyof TData & string>;
-	onResults?: (results: TData[]) => void;
+export interface SearchInputProps<
+  TData extends SearchableRecord = SearchableRecord,
+> extends Omit<
+    InputHTMLAttributes<HTMLInputElement>,
+    "type" | "value" | "defaultValue" | "onChange"
+  > {
+  data?: TData[];
+  fields?: string[];
+  onResults?: (results: TData[]) => void;
+  onQueryChange?: (value: string) => void;
+  resetKey?: number;
+  hasError?: boolean;
 }
 
 const SearchInputBase = <TData extends SearchableRecord = SearchableRecord>(
-	{ className, data, fields, onResults, ...props }: SearchInputProps<TData>,
-	ref: ForwardedRef<HTMLInputElement>,
+  {
+    className,
+    data,
+    fields,
+    onResults,
+    onQueryChange,
+    resetKey,
+    hasError,
+    ...props
+  }: SearchInputProps<TData>,
+  ref: ForwardedRef<HTMLInputElement>
 ) => {
-	const [query, setQuery] = useState("");
+  const [query, setQuery] = useState("");
 
-	const filterData = useCallback(
-		(value: string) => {
-			if (!data || !fields?.length) {
-				return data ?? [];
-			}
+  const getFieldValue = useCallback((item: SearchableRecord, path: string) => {
+    return path.split(".").reduce<unknown>((acc, segment) => {
+      if (acc === undefined || acc === null) {
+        return undefined;
+      }
+      if (typeof acc !== "object") {
+        return undefined;
+      }
+      return (acc as SearchableRecord)[segment];
+    }, item);
+  }, []);
 
-			const normalizedQuery = value.trim().toLowerCase();
-			if (!normalizedQuery) return data;
+  const filterData = useCallback(
+    (value: string) => {
+      if (!data || !fields?.length) {
+        return data ?? [];
+      }
 
-			return data.filter((item) =>
-				fields.some((field) => {
-					const rawValue = item?.[field];
-					if (rawValue === undefined || rawValue === null) return false;
+      const normalizedQuery = value.trim().toLowerCase();
+      if (!normalizedQuery) return data;
 
-					return String(rawValue).toLowerCase().includes(normalizedQuery);
-				}),
-			);
-		},
-		[data, fields],
-	);
+      return data.filter((item) =>
+        fields.some((field) => {
+          const rawValue = getFieldValue(item, field);
+          if (rawValue === undefined || rawValue === null) return false;
 
-	const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-		setQuery(event.target.value);
-	};
+          return String(rawValue).toLowerCase().includes(normalizedQuery);
+        })
+      );
+    },
+    [data, fields, getFieldValue]
+  );
 
-	useEffect(() => {
-		if (onResults) {
-			onResults(filterData(query));
-		}
-	}, [filterData, onResults, query]);
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setQuery(value);
+    onQueryChange?.(value);
+  };
 
-	return (
-		<div className="flex w-full items-center gap-3 rounded-full text-white border border-white/25 bg-transparent px-4 py-2 transition-all hover:border-white/80 focus-within:border-red-500 focus-within:hover:border-red-500 focus-within:text-white">
-            <IoSearchSharp className="w-[22px] h-[22px]" />
+  const handleClear = () => {
+    setQuery("");
+    onQueryChange?.("");
+  };
 
-			<input
-				type="search"
-				ref={ref}
-				value={query}
-				onChange={handleChange}
-                placeholder="Search"
-				className={cn(
-					"flex-1 bg-transparent placeholder:text-white/50 focus:outline-none",
-					className,
-				)}
-				{...props}
-			/>
-		</div>
-	);
+  useEffect(() => {
+    if (onResults) {
+      onResults(filterData(query));
+    }
+  }, [filterData, onResults, query]);
+
+  useEffect(() => {
+    if (resetKey !== undefined) {
+      setQuery("");
+    }
+  }, [resetKey]);
+
+  return (
+    <div
+      className={cn(
+        "flex w-full items-center gap-3 rounded-full border px-4 py-2 text-white focus-within:text-white",
+        hasError ? "border-red-500" : "border-white/25",
+        className
+      )}
+    >
+      <IoSearchSharp className="h-[22px] w-[22px]" />
+
+      <input
+        type="search"
+        ref={ref}
+        value={query}
+        onChange={handleChange}
+        placeholder="Search"
+        aria-invalid={hasError ? true : undefined}
+        className="flex-1 bg-transparent placeholder:text-white/50 focus:outline-none"
+        {...props}
+      />
+
+      {query && (
+        <button
+          type="button"
+          onClick={handleClear}
+          className="flex items-center justify-center text-white hover:text-white/80 transition-colors"
+          aria-label="Clear search"
+        >
+          <IoClose className="h-5 w-5" />
+        </button>
+      )}
+    </div>
+  );
 };
 
 const ForwardedSearchInput = forwardRef(SearchInputBase);
 ForwardedSearchInput.displayName = "SearchInput";
 
 const SearchInput = ForwardedSearchInput as <
-	TData extends SearchableRecord = SearchableRecord,
+  TData extends SearchableRecord = SearchableRecord,
 >(
-	props: SearchInputProps<TData> & { ref?: Ref<HTMLInputElement> }
+  props: SearchInputProps<TData> & { ref?: Ref<HTMLInputElement> }
 ) => ReactElement | null;
 
 export { SearchInput };
