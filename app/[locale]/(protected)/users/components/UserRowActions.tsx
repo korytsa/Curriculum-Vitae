@@ -1,28 +1,65 @@
 import { MdChevronRight } from "react-icons/md";
+import { IoEllipsisVertical } from "react-icons/io5";
+import { DropdownMenu, type DropdownMenuItem } from "@/shared/ui";
 import type { User } from "../types";
-import { UserActionsMenu } from "./UserActionsMenu";
 
 interface UserRowActionsProps {
   row: User;
-  currentUserId?: string | null;
   onNavigate: (userId: string) => void;
+  currentUserId?: string | null;
 }
 
 export function UserRowActions({
   row,
-  currentUserId,
   onNavigate,
+  currentUserId,
 }: UserRowActionsProps) {
-  if (row.id === currentUserId) {
-    return <UserActionsMenu user={row} onViewProfile={onNavigate} />;
-  }
+  const labelTarget = row.profile.first_name || row.email;
+  const isCurrentUser = Boolean(currentUserId && row.id === currentUserId);
 
-  const handleNavigate = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
+  const navigateToUser = () => {
     onNavigate(row.id);
   };
 
-  const labelTarget = row.profile.first_name || row.email;
+  const handleNavigate = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    navigateToUser();
+  };
+
+  if (isCurrentUser) {
+    const menuItems: DropdownMenuItem[] = [
+      {
+        label: "Profile",
+        onClick: navigateToUser,
+      },
+      {
+        label: "Update user",
+        onClick: navigateToUser,
+      },
+      {
+        label: "Delete user",
+        disabled: true,
+      },
+    ];
+
+    return (
+      <DropdownMenu
+        items={menuItems}
+        align="right"
+        menuBgColor="#2F2F2F"
+        menuClassName="border border-white/5 shadow-xl"
+        menuWidth="140px"
+      >
+        <button
+          type="button"
+          className="flex h-10 w-10 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/10"
+          aria-label={`Open actions for ${labelTarget}`}
+        >
+          <IoEllipsisVertical className="w-5 h-5 text-white/80" />
+        </button>
+      </DropdownMenu>
+    );
+  }
 
   return (
     <button

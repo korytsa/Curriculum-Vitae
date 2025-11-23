@@ -10,7 +10,51 @@
     "heading": "Языки"
   },
   "users": {
-    "heading": "Сотрудники"
+    "heading": "Сотрудники",
+    "details": {
+      "tabs": {
+        "profile": "Профиль",
+        "skills": "Навыки",
+        "languages": "Языки"
+      },
+      "unknownUser": "Пользователь {{id}}",
+      "placeholders": {
+        "profile": "Профиль",
+        "skills": "Навыки",
+        "languages": "Языки"
+      },
+      "profile": {
+        "heading": "Информация о профиле",
+        "empty": "Информация о профиле пока недоступна.",
+        "notSet": "Не указано",
+        "memberSince": "В команде с {{date}}",
+        "upload": {
+          "button": "Загрузить аватар",
+          "hint": "png, jpg или gif до 0.5MB",
+          "selected": "Выбрано: {{file}}",
+          "maxSize": "Размер аватара не должен превышать 0.5MB."
+        },
+        "fields": {
+          "firstName": "Имя",
+          "lastName": "Фамилия",
+          "department": "Отдел",
+          "position": "Должность",
+          "email": "Email"
+        },
+        "selects": {
+          "departmentPlaceholder": "Отдел",
+          "positionPlaceholder": "Должность",
+          "notProvided": "Не указано"
+        },
+        "actions": {
+          "update": "Обновить"
+        },
+        "notifications": {
+          "success": "Профиль успешно обновлён.",
+          "error": "Не удалось обновить профиль. Попробуйте позже."
+        }
+      }
+    }
   },
   "features": {
     "createUserForm": {

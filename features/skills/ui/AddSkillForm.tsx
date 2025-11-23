@@ -125,6 +125,7 @@ export function AddSkillForm({ open, onSuccess, onCancel }: AddSkillFormProps) {
             value={formik.values.skillId}
             onChange={(value) => formik.setFieldValue("skillId", value)}
             options={selectOptions}
+            align="bottom"
             error={
               formik.touched.skillId && formik.errors.skillId
                 ? formik.errors.skillId
@@ -145,6 +146,7 @@ export function AddSkillForm({ open, onSuccess, onCancel }: AddSkillFormProps) {
               value: opt.value,
               label: opt.label,
             }))}
+            align="bottom"
             error={
               formik.touched.mastery && formik.errors.mastery
                 ? formik.errors.mastery

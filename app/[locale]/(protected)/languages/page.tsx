@@ -7,7 +7,7 @@ export default function LanguagesPage() {
 
 	return (
 		<section>
-			<h1 className="font-medium text-neutral-500 mb-1.5">{t("languages.heading")}</h1>
+			<h1 className="font-semibold text-neutral-500 mt-1">{t("languages.heading")}</h1>
 		</section>
 	);
 }

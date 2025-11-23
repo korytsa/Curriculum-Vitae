@@ -168,22 +168,37 @@ export const findSelectedOption = (
   return options.find((opt) => opt.value === value && !opt.isGroupHeader);
 };
 
-export const isNoPositionValue = (
+export const isNoOptionLabel = (label?: string): boolean => {
+  if (!label) return false;
+  const normalized = label.trim().toLowerCase();
+  if (!normalized) return false;
+
+  if (normalized === "no") {
+    return true;
+  }
+
+  return (
+    normalized.startsWith("no ") ||
+    normalized.startsWith("no-") ||
+    normalized.startsWith("no_")
+  );
+};
+
+export const isNoSelectionValue = (
   value?: string,
   selectedOption?: SelectOption
 ): boolean => {
   if (!value) return true;
   if (!selectedOption) return false;
 
-  const lowerLabel = selectedOption.label.toLowerCase();
-  return lowerLabel === "no position" || lowerLabel.includes("no position");
+  return isNoOptionLabel(selectedOption.label);
 };
 
 export const getDisplayValue = (
   selectedOption?: SelectOption,
-  isNoPositionValue?: boolean
+  isNoSelection?: boolean
 ): string => {
-  if (selectedOption && !isNoPositionValue) {
+  if (selectedOption && !isNoSelection) {
     return selectedOption.label;
   }
   return "";
@@ -192,9 +207,9 @@ export const getDisplayValue = (
 export const hasValue = (
   value?: string,
   selectedOption?: SelectOption,
-  isNoPositionValue?: boolean
+  isNoSelection?: boolean
 ): boolean => {
-  return Boolean(value && selectedOption && !isNoPositionValue);
+  return Boolean(value && selectedOption && !isNoSelection);
 };
 
 export const isLabelActive = (
@@ -213,43 +228,14 @@ export const getLabelColor = (error?: string, isActive?: boolean): string => {
   return error || isActive ? "text-red-500" : "text-[#C7C7C7]";
 };
 
-export const getBorderColor = (error?: string, isActive?: boolean): string => {
-  return error || isActive
-    ? "border-red-500"
-    : "border-[#656565] hover:border-white/80";
-};
-
-export const createCloseSelectHandler = (
-  setIsOpen: (value: boolean) => void,
-  setIsFocused: (value: boolean) => void
-) => {
-  return () => {
-    setIsOpen(false);
-    setIsFocused(false);
-  };
-};
-
-export const createClickOutsideHandler = (
-  selectRef: { current: HTMLDivElement | null },
-  dropdownRef: { current: HTMLDivElement | null },
-  closeSelect: () => void
-) => {
-  return (event: MouseEvent) => {
-    const target = event.target as Node;
-    if (
-      selectRef.current?.contains(target) ||
-      dropdownRef.current?.contains(target)
-    ) {
-      return;
-    }
-    closeSelect();
-  };
-};
-
-export const createKeyDownHandler = (closeSelect: () => void) => {
-  return (event: KeyboardEvent) => {
-    if (event.key === "Escape") {
-      closeSelect();
-    }
-  };
+export const getBorderColor = (
+  error?: string,
+  isActive?: boolean,
+  isInteractive: boolean = true
+): string => {
+  if (error || isActive) {
+    return "border-red-500";
+  }
+  const baseBorder = "border-[#656565]";
+  return isInteractive ? `${baseBorder} hover:border-white/80` : baseBorder;
 };

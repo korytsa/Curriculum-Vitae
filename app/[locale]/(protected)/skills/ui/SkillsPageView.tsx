@@ -43,9 +43,9 @@ export function SkillsPageView({
   );
 
   return (
-    <section className="px-6 py-8 text-white space-y-10">
+    <section className="text-white space-y-10">
       <div className="flex justify-between items-start gap-16">
-        <h1 className="text-sm font-semibold text-gray-400 tracking-[0.2em] uppercase">
+        <h1 className="font-semibold text-neutral-500 mt-1">
           {t("skills.heading")}
         </h1>
 

@@ -92,7 +92,7 @@ export function useUsersPage(): UsersPageHookResult {
       onNavigate={navigateToUser}
     />
   );
-
+  
   const searchInputProps: SearchInputProps<User> = {
     data: users as User[],
     fields: [...USERS_SEARCH_FIELDS],

@@ -10,7 +10,51 @@
     "heading": "Languages"
   },
   "users": {
-    "heading": "Employees"
+    "heading": "Employees",
+    "details": {
+      "tabs": {
+        "profile": "Profile",
+        "skills": "Skills",
+        "languages": "Languages"
+      },
+      "unknownUser": "User {{id}}",
+      "placeholders": {
+        "profile": "Profile",
+        "skills": "Skills",
+        "languages": "Languages"
+      },
+      "profile": {
+        "heading": "Profile overview",
+        "empty": "No profile information is available yet.",
+        "notSet": "Not specified",
+        "memberSince": "A member since {{date}}",
+        "upload": {
+          "button": "Upload avatar image",
+          "hint": "png, jpg or gif no more than 0.5MB",
+          "selected": "Selected: {{file}}",
+          "maxSize": "Avatar must be no larger than 0.5MB."
+        },
+        "fields": {
+          "firstName": "First Name",
+          "lastName": "Last Name",
+          "department": "Department",
+          "position": "Position",
+          "email": "Email"
+        },
+        "selects": {
+          "departmentPlaceholder": "Department",
+          "positionPlaceholder": "Position",
+          "notProvided": "Not specified"
+        },
+        "actions": {
+          "update": "Update"
+        },
+        "notifications": {
+          "success": "Profile updated successfully.",
+          "error": "Unable to update profile. Please try again."
+        }
+      }
+    }
   },
   "features": {
     "createUserForm": {

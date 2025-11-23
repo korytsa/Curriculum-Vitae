@@ -1,10 +1,13 @@
-type SidebarUser = {
-  email?: string | null;
-  profile?: {
-    first_name?: string | null;
-    last_name?: string | null;
-  };
-} | null | undefined;
+type SidebarUser =
+  | {
+      email?: string | null;
+      profile?: {
+        first_name?: string | null;
+        last_name?: string | null;
+      };
+    }
+  | null
+  | undefined;
 
 const normalize = (value?: string | null) =>
   typeof value === "string" && value.length > 0 ? value : null;
@@ -30,18 +33,15 @@ export const getUserInitials = (
   user: SidebarUser,
   fallback: string
 ): string => {
-  if (!user) return fallback;
+  if (!user) return fallback.charAt(0).toUpperCase();
 
   const firstName = normalize(user.profile?.first_name);
-  const lastName = normalize(user.profile?.last_name);
   const email = normalize(user.email);
+  const fallbackSource = fallback.charAt(0);
 
-  if (firstName && lastName) {
-    return `${firstName[0].toUpperCase()}${lastName[0].toUpperCase()}`;
+  if (firstName) {
+    return firstName[0]!.toUpperCase();
   }
 
-  const source =
-    firstName?.[0] || lastName?.[0] || email?.[0] || fallback.charAt(0);
-
-  return source.toUpperCase();
+  return (email?.[0] || fallbackSource).toUpperCase();
 };
