@@ -125,7 +125,6 @@ export function AddSkillForm({ open, onSuccess, onCancel }: AddSkillFormProps) {
             value={formik.values.skillId}
             onChange={(value) => formik.setFieldValue("skillId", value)}
             options={selectOptions}
-            placeholder={t("features.skills.addForm.placeholders.selectSkill")}
             error={
               formik.touched.skillId && formik.errors.skillId
                 ? formik.errors.skillId

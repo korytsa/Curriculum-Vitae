@@ -34,22 +34,11 @@ export interface SelectProps
   error?: string;
   label?: string;
   disabled?: boolean;
-  placeholder?: string;
 }
 
 const Select = forwardRef<HTMLDivElement, SelectProps>(
   (
-    {
-      className,
-      options,
-      value,
-      onChange,
-      error,
-      label,
-      disabled,
-      placeholder,
-      ...props
-    },
+    { className, options, value, onChange, error, label, disabled, ...props },
     ref
   ) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -65,11 +54,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
 
     const selectedOption = findSelectedOption(options, value);
     const isNoPosition = checkIsNoPositionValue(value, selectedOption);
-    const displayValue = getDisplayValue(
-      selectedOption,
-      isNoPosition,
-      placeholder
-    );
+    const displayValue = getDisplayValue(selectedOption, isNoPosition);
     const hasValue = checkHasValue(value, selectedOption, isNoPosition);
     const isLabelActiveState = isLabelActive(isFocused, hasValue, isOpen);
     const isActiveState = isActive(isFocused, isOpen);
@@ -173,7 +158,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
                 ? viewportHeight - selectRect.bottom - 4
                 : 0;
               const itemHeight = 40;
-              const defaultHeight = itemHeight * 6; 
+              const defaultHeight = itemHeight * 6;
               const maxHeight = Math.min(
                 500,
                 Math.max(spaceBelow, defaultHeight)

@@ -154,16 +154,10 @@ export function UpdateSkillForm({
             label={t("features.skills.updateForm.labels.selectSkill")}
             value={formik.values.skillId}
             onChange={(value) => handleSkillSelect(value)}
-            options={[
-              {
-                value: "",
-                label: t("features.skills.updateForm.placeholders.selectSkill"),
-              },
-              ...allSkillsForSelect.map((skill) => ({
-                value: skill.id,
-                label: skill.name,
-              })),
-            ]}
+            options={allSkillsForSelect.map((skill) => ({
+              value: skill.id,
+              label: skill.name,
+            }))}
             error={
               formik.touched.skillId && formik.errors.skillId
                 ? formik.errors.skillId
@@ -194,16 +188,10 @@ export function UpdateSkillForm({
             label={t("features.skills.updateForm.labels.category")}
             value={formik.values.categoryId}
             onChange={(value) => formik.setFieldValue("categoryId", value)}
-            options={[
-              {
-                value: "",
-                label: t("features.skills.updateForm.placeholders.category"),
-              },
-              ...categoryOptions.map((category) => ({
-                value: category.id,
-                label: category.name,
-              })),
-            ]}
+            options={categoryOptions.map((category) => ({
+              value: category.id,
+              label: category.name,
+            }))}
             disabled={!formik.values.skillId}
             error={
               formik.touched.categoryId && formik.errors.categoryId
