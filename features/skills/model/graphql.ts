@@ -10,7 +10,7 @@ export const SKILL_CATEGORIES_QUERY = gql`
 `;
 
 export const SKILLS_WITH_CATEGORIES_QUERY = gql`
-  query SkillsWithCategories {
+  query SkillsWithCategories($userId: ID!) {
     skillCategories {
       id
       name
@@ -28,26 +28,39 @@ export const SKILLS_WITH_CATEGORIES_QUERY = gql`
         name
       }
     }
-  }
-`;
-
-export const CREATE_SKILL_MUTATION = gql`
-  mutation CreateSkill($skill: CreateSkillInput!) {
-    createSkill(skill: $skill) {
+    profile(userId: $userId) {
       id
-      name
-      category {
-        id
+      skills {
         name
+        categoryId
+        mastery
       }
     }
   }
 `;
 
-export const DELETE_SKILL_MUTATION = gql`
-  mutation DeleteSkill($skill: DeleteSkillInput!) {
-    deleteSkill(skill: $skill) {
-      __typename
+export const ADD_PROFILE_SKILL_MUTATION = gql`
+  mutation AddProfileSkill($skill: AddProfileSkillInput!) {
+    addProfileSkill(skill: $skill) {
+      id
+      skills {
+        name
+        categoryId
+        mastery
+      }
+    }
+  }
+`;
+
+export const DELETE_PROFILE_SKILL_MUTATION = gql`
+  mutation DeleteProfileSkill($skill: DeleteProfileSkillInput!) {
+    deleteProfileSkill(skill: $skill) {
+      id
+      skills {
+        name
+        categoryId
+        mastery
+      }
     }
   }
 `;

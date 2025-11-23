@@ -783,24 +783,26 @@ export type SkillCategoriesForFormQueryVariables = Exact<{ [key: string]: never;
 
 export type SkillCategoriesForFormQuery = { __typename: 'Query', skillCategories: Array<{ __typename: 'SkillCategory', id: string, name: string }> };
 
-export type SkillsWithCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type SkillsWithCategoriesQuery = { __typename: 'Query', skillCategories: Array<{ __typename: 'SkillCategory', id: string, name: string, order: number, parent?: { __typename: 'SkillCategory', id: string, name: string } | null }>, skills: Array<{ __typename: 'Skill', id: string, name: string, category?: { __typename: 'SkillCategory', id: string, name: string } | null }> };
-
-export type CreateSkillMutationVariables = Exact<{
-  skill: CreateSkillInput;
+export type SkillsWithCategoriesQueryVariables = Exact<{
+  userId: Scalars['ID']['input'];
 }>;
 
 
-export type CreateSkillMutation = { __typename: 'Mutation', createSkill: { __typename: 'Skill', id: string, name: string, category?: { __typename: 'SkillCategory', id: string, name: string } | null } };
+export type SkillsWithCategoriesQuery = { __typename: 'Query', skillCategories: Array<{ __typename: 'SkillCategory', id: string, name: string, order: number, parent?: { __typename: 'SkillCategory', id: string, name: string } | null }>, skills: Array<{ __typename: 'Skill', id: string, name: string, category?: { __typename: 'SkillCategory', id: string, name: string } | null }>, profile: { __typename: 'Profile', id: string, skills: Array<{ __typename: 'SkillMastery', name: string, categoryId?: string | null, mastery: Mastery }> } };
 
-export type DeleteSkillMutationVariables = Exact<{
-  skill: DeleteSkillInput;
+export type AddProfileSkillMutationVariables = Exact<{
+  skill: AddProfileSkillInput;
 }>;
 
 
-export type DeleteSkillMutation = { __typename: 'Mutation', deleteSkill: { __typename: 'DeleteResult' } };
+export type AddProfileSkillMutation = { __typename: 'Mutation', addProfileSkill: { __typename: 'Profile', id: string, skills: Array<{ __typename: 'SkillMastery', name: string, categoryId?: string | null, mastery: Mastery }> } };
+
+export type DeleteProfileSkillMutationVariables = Exact<{
+  skill: DeleteProfileSkillInput;
+}>;
+
+
+export type DeleteProfileSkillMutation = { __typename: 'Mutation', deleteProfileSkill: { __typename: 'Profile', id: string, skills: Array<{ __typename: 'SkillMastery', name: string, categoryId?: string | null, mastery: Mastery }> } };
 
 export type UpdateSkillMutationVariables = Exact<{
   skill: UpdateSkillInput;

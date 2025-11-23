@@ -142,15 +142,20 @@
         "title": "Добавить навык",
         "labels": {
           "name": "Название навыка",
-          "category": "Категория"
+          "category": "Категория",
+          "skill": "Навык",
+          "mastery": "Уровень мастерства"
         },
         "placeholders": {
-          "name": "Введите название"
+          "name": "Введите название",
+          "selectSkill": "Выберите навык"
         },
         "errors": {
           "nameRequired": "Введите название навыка",
           "categoryRequired": "Выберите категорию",
-          "categoryInvalid": "Некорректный ID категории"
+          "categoryInvalid": "Некорректный ID категории",
+          "skillRequired": "Выберите навык",
+          "masteryRequired": "Выберите уровень мастерства"
         }
       },
       "updateForm": {
@@ -220,4 +225,3 @@
     }
   }
 }
-

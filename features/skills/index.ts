@@ -1,7 +1,6 @@
 export { CategoryBlock } from "./ui/CategoryBlock";
 export { AddSkillForm } from "./ui/AddSkillForm";
 export { UpdateSkillForm } from "./ui/UpdateSkillForm";
-export { DeleteSkillModal } from "./ui/DeleteSkillModal";
 
 export { useSkills } from "./model/useSkills";
 export { useCreateSkill } from "./model/useCreateSkill";
@@ -13,8 +12,4 @@ export {
   useAllSkillsForSelect,
 } from "./model/useSkillsData";
 
-export type {
-  SkillItem,
-  SkillCategory,
-  CategoryOption,
-} from "./model/types";
+export type { SkillItem, SkillCategory, CategoryOption } from "./model/types";

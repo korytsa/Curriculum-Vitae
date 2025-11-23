@@ -2,7 +2,7 @@
 
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
-import { Input, Modal, FormStatus } from "@/shared/ui";
+import { Input, Modal, FormStatus, Select } from "@/shared/ui";
 import { useUpdateSkill } from "../model/useUpdateSkill";
 import type { UpdateSkillPayload } from "../model/useUpdateSkill";
 import type { CategoryOption, SkillCategory } from "../model/types";
@@ -52,7 +52,9 @@ export function UpdateSkillForm({
     if (values.categoryId) {
       const categoryIdNum = parseInt(values.categoryId, 10);
       if (isNaN(categoryIdNum)) {
-        errors.categoryId = t("features.skills.updateForm.errors.categoryInvalid");
+        errors.categoryId = t(
+          "features.skills.updateForm.errors.categoryInvalid"
+        );
       }
     }
 
@@ -97,15 +99,16 @@ export function UpdateSkillForm({
         helpers.resetForm();
         onSuccess();
       } catch (err) {
+        console.error("Error updating skill:", err);
       }
     },
   });
 
   const handleSkillSelect = (skillId: string) => {
-    formik.setFieldValue('skillId', skillId);
+    formik.setFieldValue("skillId", skillId);
     const skill = allSkillsForSelect.find((s) => s.id === skillId);
     if (skill) {
-      formik.setFieldValue('skillName', skill.name);
+      formik.setFieldValue("skillName", skill.name);
       const skillData = displayCategories
         .flatMap((cat) => [
           ...cat.skills.map((s) => ({ skill: s, categoryId: cat.id })),
@@ -115,7 +118,7 @@ export function UpdateSkillForm({
         ])
         .find((item) => item.skill.id === skillId);
       if (skillData) {
-        formik.setFieldValue('categoryId', skillData.categoryId);
+        formik.setFieldValue("categoryId", skillData.categoryId);
       }
     }
   };
@@ -128,7 +131,11 @@ export function UpdateSkillForm({
       primaryAction={{
         label: t("features.skills.common.confirm"),
         onClick: () => formik.handleSubmit(),
-        disabled: loading || !formik.isValid || formik.isSubmitting || !formik.values.skillId,
+        disabled:
+          loading ||
+          !formik.isValid ||
+          formik.isSubmitting ||
+          !formik.values.skillId,
       }}
       secondaryAction={{
         label: t("features.skills.common.cancel"),
@@ -141,31 +148,28 @@ export function UpdateSkillForm({
       <FormStatus errorMessage={error?.message ?? null} className="mb-4" />
 
       <div className="space-y-4">
-        <div className="space-y-1">
-          <label
-            htmlFor="skillId"
-            className="text-xs uppercase tracking-[0.2em] text-gray-400"
-          >
-            {t("features.skills.updateForm.labels.selectSkill")}
-          </label>
-          <select
+        <div>
+          <Select
             id="skillId"
+            label={t("features.skills.updateForm.labels.selectSkill")}
             value={formik.values.skillId}
-            onChange={(e) => handleSkillSelect(e.target.value)}
-            className="w-full rounded-lg border border-white/20 bg-transparent px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-          >
-            <option value="" className="text-black">
-              {t("features.skills.updateForm.placeholders.selectSkill")}
-            </option>
-            {allSkillsForSelect.map((skill) => (
-              <option key={skill.id} value={skill.id} className="text-black">
-                {skill.name}
-              </option>
-            ))}
-          </select>
-          {formik.touched.skillId && formik.errors.skillId ? (
-            <p className="mt-1 text-sm text-red-400">{formik.errors.skillId}</p>
-          ) : null}
+            onChange={(value) => handleSkillSelect(value)}
+            options={[
+              {
+                value: "",
+                label: t("features.skills.updateForm.placeholders.selectSkill"),
+              },
+              ...allSkillsForSelect.map((skill) => ({
+                value: skill.id,
+                label: skill.name,
+              })),
+            ]}
+            error={
+              formik.touched.skillId && formik.errors.skillId
+                ? formik.errors.skillId
+                : undefined
+            }
+          />
         </div>
 
         <div>
@@ -184,36 +188,31 @@ export function UpdateSkillForm({
           ) : null}
         </div>
 
-        <div className="space-y-1">
-          <label
-            htmlFor="categoryId"
-            className="text-xs uppercase tracking-[0.2em] text-gray-400"
-          >
-            {t("features.skills.updateForm.labels.category")}
-          </label>
-          <select
+        <div>
+          <Select
             id="categoryId"
-            {...formik.getFieldProps("categoryId")}
-            className="w-full rounded-lg border border-white/20 bg-transparent px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+            label={t("features.skills.updateForm.labels.category")}
+            value={formik.values.categoryId}
+            onChange={(value) => formik.setFieldValue("categoryId", value)}
+            options={[
+              {
+                value: "",
+                label: t("features.skills.updateForm.placeholders.category"),
+              },
+              ...categoryOptions.map((category) => ({
+                value: category.id,
+                label: category.name,
+              })),
+            ]}
             disabled={!formik.values.skillId}
-          >
-            <option value="" className="text-black">
-              {t("features.skills.updateForm.placeholders.category")}
-            </option>
-            {categoryOptions.map((category) => (
-              <option key={category.id} value={category.id} className="text-black">
-                {category.name}
-              </option>
-            ))}
-          </select>
-          {formik.touched.categoryId && formik.errors.categoryId ? (
-            <p className="mt-1 text-sm text-red-400">
-              {formik.errors.categoryId}
-            </p>
-          ) : null}
+            error={
+              formik.touched.categoryId && formik.errors.categoryId
+                ? formik.errors.categoryId
+                : undefined
+            }
+          />
         </div>
       </div>
     </Modal>
   );
 }
-
