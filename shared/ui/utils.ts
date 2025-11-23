@@ -181,13 +181,12 @@ export const isNoPositionValue = (
 
 export const getDisplayValue = (
   selectedOption?: SelectOption,
-  isNoPositionValue?: boolean,
-  placeholder?: string
+  isNoPositionValue?: boolean
 ): string => {
   if (selectedOption && !isNoPositionValue) {
     return selectedOption.label;
   }
-  return placeholder || "";
+  return "";
 };
 
 export const hasValue = (
