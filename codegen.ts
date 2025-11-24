@@ -11,6 +11,7 @@ const config: CodegenConfig = {
     "features/auth/model/graphql.ts",
     "features/skills/model/graphql.ts",
     "features/users/model/graphql.ts",
+    "features/languages/model/graphql.ts",
   ],
   generates: {
     "shared/graphql/generated.ts": {

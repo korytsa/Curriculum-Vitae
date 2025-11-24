@@ -237,6 +237,38 @@
         }
       }
     },
+    "languages": {
+      "page": {
+        "actions": {
+          "add": "Add Language",
+          "delete": "Remove Languages"
+        }
+      },
+      "common": {
+        "confirm": "CONFIRM",
+        "cancel": "CANCEL"
+      },
+      "addForm": {
+        "title": "Add language",
+        "labels": {
+          "language": "Language",
+          "proficiency": "Language proficiency"
+        },
+        "errors": {
+          "languageRequired": "Language is required",
+          "proficiencyRequired": "Proficiency is required"
+        }
+      },
+      "levels": {
+        "A1": "A1",
+        "A2": "A2",
+        "B1": "B1",
+        "B2": "B2",
+        "C1": "C1",
+        "C2": "C2",
+        "Native": "Native"
+      }
+    },
     "authPage": {
       "tabs": {
         "login": "LOG IN",

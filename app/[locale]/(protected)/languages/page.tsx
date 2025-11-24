@@ -1,13 +1,71 @@
 "use client";
 
-import { useTranslation } from "react-i18next";
+import { useState } from "react";
+import {
+  useLanguages,
+  useDisplayLanguages,
+  useDeleteLanguage,
+} from "@/features/languages";
+import { LanguagesPageView } from "./ui/LanguagesPageView";
 
 export default function LanguagesPage() {
-	const { t } = useTranslation();
+  const [showAddLanguageForm, setShowAddLanguageForm] = useState(false);
+  const [isDeleteMode, setIsDeleteMode] = useState(false);
+  const [selectedLanguageNames, setSelectedLanguageNames] = useState<
+    Set<string>
+  >(new Set());
 
-	return (
-		<section>
-			<h1 className="font-semibold text-neutral-500 mt-1">{t("languages.heading")}</h1>
-		</section>
-	);
+  const { languagesData, languagesLoading, refetchLanguages } = useLanguages();
+  const languages = useDisplayLanguages(languagesData);
+  const { deleteLanguage, loading: deleteLoading } = useDeleteLanguage();
+
+  const handleToggleDeleteMode = () => {
+    if (isDeleteMode) {
+      setIsDeleteMode(false);
+      setSelectedLanguageNames(new Set());
+    } else {
+      setIsDeleteMode(true);
+    }
+  };
+
+  const handleToggleLanguageSelection = (languageName: string) => {
+    setSelectedLanguageNames((prev) => {
+      const next = new Set(prev);
+      if (next.has(languageName)) {
+        next.delete(languageName);
+      } else {
+        next.add(languageName);
+      }
+      return next;
+    });
+  };
+
+  const handleDeleteSelectedLanguages = async () => {
+    if (selectedLanguageNames.size === 0) return;
+
+    try {
+      await deleteLanguage({ name: Array.from(selectedLanguageNames) });
+      setIsDeleteMode(false);
+      setSelectedLanguageNames(new Set());
+      await refetchLanguages?.();
+    } catch (error) {
+      console.error("Error deleting languages:", error);
+    }
+  };
+
+  return (
+    <LanguagesPageView
+      languagesLoading={languagesLoading}
+      languages={languages}
+      showAddLanguageForm={showAddLanguageForm}
+      isDeleteMode={isDeleteMode}
+      selectedLanguageNames={selectedLanguageNames}
+      deleteLoading={deleteLoading}
+      onOpenAddForm={() => setShowAddLanguageForm(true)}
+      onToggleDeleteMode={handleToggleDeleteMode}
+      onToggleLanguageSelection={handleToggleLanguageSelection}
+      onDeleteSelectedLanguages={handleDeleteSelectedLanguages}
+      onCloseAddForm={() => setShowAddLanguageForm(false)}
+    />
+  );
 }
