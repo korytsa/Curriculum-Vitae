@@ -29,6 +29,7 @@ interface SidebarState {
   currentUserAvatar: string | null;
   userMenuItems: ReturnType<typeof buildUserMenuItems>;
   isUserLoading: boolean;
+  hasCurrentUser: boolean;
 }
 
 export function useSidebarState({
@@ -125,5 +126,6 @@ export function useSidebarState({
     currentUserAvatar,
     userMenuItems,
     isUserLoading,
+    hasCurrentUser: Boolean(currentUser),
   };
 }

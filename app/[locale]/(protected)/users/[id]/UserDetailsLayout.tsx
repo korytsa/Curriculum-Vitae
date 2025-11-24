@@ -65,10 +65,10 @@ export function UserDetailsLayout({
           {t("users.heading")}
         </Link>
         <MdChevronRight className="w-5 h-5 text-neutral-500" />
-        {loading ? (
+        {loading || !user ? (
           <div className="flex items-center gap-2">
             <Skeleton className="w-6 h-6 rounded-full" />
-            <Skeleton className="h-5 w-24 rounded-full" />
+            <Skeleton className="h-4 w-24 rounded-full" />
           </div>
         ) : (
           <>

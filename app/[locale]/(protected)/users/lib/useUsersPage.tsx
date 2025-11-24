@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter, useParams } from "next/navigation";
 import { useUsers } from "@/features/users";
-import { accessTokenVar } from "@/shared/config/apollo";
+import { accessTokenVar, setAccessToken } from "@/shared/config/apollo";
 import { decodeToken } from "@/shared/lib/jwt";
-import type { TableProps, SearchInputProps } from "@/shared/ui";
+import { type TableProps, type SearchInputProps, Button } from "@/shared/ui";
 import { USERS_TABLE_COLUMNS, USERS_SEARCH_FIELDS } from "../config/constants";
 import type { User } from "../types";
 import { UserRowActions } from "../components/UserRowActions";
@@ -40,6 +40,11 @@ export function useUsersPage(): UsersPageHookResult {
     router.push(`${localePrefix}/users/${userId}`);
   };
 
+  const handleLogout = () => {
+    setAccessToken(null);
+    window.location.href = `${localePrefix}/login`;
+  };
+
   const handleSearchResults = (results: User[]) => {
     setFilteredUsers(results);
   };
@@ -66,10 +71,10 @@ export function useUsersPage(): UsersPageHookResult {
   })();
 
   const emptyState = !isSearchActive ? (
-    <div className="py-10 text-center">
-      <p className="text-sm text-neutral-500">
-        {t("users.noUsers") || "No users found"}
-      </p>
+    <div className="py-5 text-center flex justify-center items-center">
+      <Button variant="outline" className="px-10" onClick={handleLogout}>
+        Logout
+      </Button>
     </div>
   ) : (
     <div className="mt-6 flex flex-col items-center justify-center gap-3 py-20 text-center">
@@ -92,7 +97,7 @@ export function useUsersPage(): UsersPageHookResult {
       onNavigate={navigateToUser}
     />
   );
-  
+
   const searchInputProps: SearchInputProps<User> = {
     data: users as User[],
     fields: [...USERS_SEARCH_FIELDS],

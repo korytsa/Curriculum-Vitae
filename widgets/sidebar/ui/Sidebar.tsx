@@ -28,6 +28,7 @@ export default function Sidebar({
     currentUserAvatar,
     userMenuItems,
     isUserLoading,
+    hasCurrentUser,
   } = useSidebarState({
     initialIsCollapsed: initialCollapsed,
     hasInitialPreference,
@@ -71,7 +72,7 @@ export default function Sidebar({
         </div>
 
         <div className="flex items-center gap-4">
-          {isUserLoading ? (
+          {isUserLoading || !hasCurrentUser ? (
             <div className="flex items-center gap-2">
               <Skeleton className="w-8 h-8 rounded-full" />
               <Skeleton className="h-3 w-16 rounded-full" />
@@ -138,7 +139,7 @@ export default function Sidebar({
 
         <div className="flex flex-col gap-3">
           <div className="relative">
-            {isUserLoading ? (
+            {isUserLoading || !hasCurrentUser ? (
               <div
                 className={cn(
                   "flex items-center rounded-r-[28px] py-2",
