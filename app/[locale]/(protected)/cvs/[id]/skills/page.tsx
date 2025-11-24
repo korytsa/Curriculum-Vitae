@@ -1,15 +1,7 @@
 "use client";
 
-import { useTranslation } from "react-i18next";
+import { SkillsPageContainer } from "@/features/skills";
 
 export default function CvSkillsPage() {
-  const { t } = useTranslation();
-
-  return (
-    <div className="mt-10 text-center text-sm text-neutral-400">
-      {t("cvs.details.placeholders.skills", {
-        defaultValue: "CV Skills",
-      })}
-    </div>
-  );
+  return <SkillsPageContainer showHeading={false} />;
 }
