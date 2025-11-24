@@ -10,9 +10,6 @@ export const CVS_QUERY = gql`
       user {
         id
         email
-        profile {
-          full_name
-        }
       }
     }
   }
@@ -39,9 +36,6 @@ export const CV_QUERY = gql`
       user {
         id
         email
-        profile {
-          full_name
-        }
       }
     }
   }

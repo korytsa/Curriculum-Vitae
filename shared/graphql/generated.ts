@@ -781,7 +781,7 @@ export type CreateUserMutation = { __typename: 'Mutation', createUser: { __typen
 export type CvsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CvsQuery = { __typename: 'Query', cvs: Array<{ __typename: 'Cv', id: string, name: string, education?: string | null, description: string, user?: { __typename: 'User', id: string, email: string, profile: { __typename: 'Profile', full_name?: string | null } } | null }> };
+export type CvsQuery = { __typename: 'Query', cvs: Array<{ __typename: 'Cv', id: string, name: string, education?: string | null, description: string, user?: { __typename: 'User', id: string, email: string } | null }> };
 
 export type CreateCvMutationVariables = Exact<{
   cv: CreateCvInput;
@@ -795,7 +795,7 @@ export type CvQueryVariables = Exact<{
 }>;
 
 
-export type CvQuery = { __typename: 'Query', cv: { __typename: 'Cv', id: string, name: string, education?: string | null, description: string, user?: { __typename: 'User', id: string, email: string, profile: { __typename: 'Profile', full_name?: string | null } } | null } };
+export type CvQuery = { __typename: 'Query', cv: { __typename: 'Cv', id: string, name: string, education?: string | null, description: string, user?: { __typename: 'User', id: string, email: string } | null } };
 
 export type UpdateCvMutationVariables = Exact<{
   cv: UpdateCvInput;

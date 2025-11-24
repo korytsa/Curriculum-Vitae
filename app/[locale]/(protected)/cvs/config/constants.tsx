@@ -39,11 +39,10 @@ export const CVS_TABLE_COLUMNS: TableColumn<CvListItem>[] = [
     className: "align-top w-1/4",
     render: (_value, row) => {
       const email = row.user?.email;
-      return (
-        <span className="text-white/80">
-          {email && email.trim() ? email : "—"}
-        </span>
-      );
+      if (email && typeof email === "string" && email.trim()) {
+        return <span className="text-white/80">{email.trim()}</span>;
+      }
+      return <span className="text-white/80">—</span>;
     },
   },
 ];
