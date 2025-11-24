@@ -778,6 +778,27 @@ export type CreateUserMutationVariables = Exact<{
 
 export type CreateUserMutation = { __typename: 'Mutation', createUser: { __typename: 'User', id: string, email: string, role: UserRole } };
 
+export type LanguagesWithProfileQueryVariables = Exact<{
+  userId: Scalars['ID']['input'];
+}>;
+
+
+export type LanguagesWithProfileQuery = { __typename: 'Query', languages: Array<{ __typename: 'Language', id: string, name: string } | null>, profile: { __typename: 'Profile', id: string, languages: Array<{ __typename: 'LanguageProficiency', name: string, proficiency: Proficiency }> } };
+
+export type AddProfileLanguageMutationVariables = Exact<{
+  language: AddProfileLanguageInput;
+}>;
+
+
+export type AddProfileLanguageMutation = { __typename: 'Mutation', addProfileLanguage: { __typename: 'Profile', id: string, languages: Array<{ __typename: 'LanguageProficiency', name: string, proficiency: Proficiency }> } };
+
+export type DeleteProfileLanguageMutationVariables = Exact<{
+  language: DeleteProfileLanguageInput;
+}>;
+
+
+export type DeleteProfileLanguageMutation = { __typename: 'Mutation', deleteProfileLanguage: { __typename: 'Profile', id: string, languages: Array<{ __typename: 'LanguageProficiency', name: string, proficiency: Proficiency }> } };
+
 export type SkillCategoriesForFormQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -814,4 +835,37 @@ export type UpdateSkillMutation = { __typename: 'Mutation', updateSkill: { __typ
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UsersQuery = { __typename: 'Query', users: Array<{ __typename: 'User', id: string, email: string, department_name?: string | null, position_name?: string | null, profile: { __typename: 'Profile', id: string, first_name?: string | null, last_name?: string | null, avatar?: string | null } }> };
+export type UsersQuery = { __typename: 'Query', users: Array<{ __typename: 'User', id: string, email: string, created_at: string, department_name?: string | null, position_name?: string | null, profile: { __typename: 'Profile', id: string, first_name?: string | null, last_name?: string | null, avatar?: string | null }, department?: { __typename: 'Department', id: string, name: string } | null, position?: { __typename: 'Position', id: string, name: string } | null }> };
+
+export type UserQueryVariables = Exact<{
+  userId: Scalars['ID']['input'];
+}>;
+
+
+export type UserQuery = { __typename: 'Query', user: { __typename: 'User', id: string, email: string, created_at: string, department_name?: string | null, position_name?: string | null, profile: { __typename: 'Profile', id: string, first_name?: string | null, last_name?: string | null, avatar?: string | null }, department?: { __typename: 'Department', id: string, name: string } | null, position?: { __typename: 'Position', id: string, name: string } | null } };
+
+export type UserDirectoriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserDirectoriesQuery = { __typename: 'Query', departments: Array<{ __typename: 'Department', id: string, name: string }>, positions: Array<{ __typename: 'Position', id: string, name: string }> };
+
+export type UpdateProfileMutationVariables = Exact<{
+  profile: UpdateProfileInput;
+}>;
+
+
+export type UpdateProfileMutation = { __typename: 'Mutation', updateProfile: { __typename: 'Profile', id: string, first_name?: string | null, last_name?: string | null, avatar?: string | null } };
+
+export type UpdateUserMutationVariables = Exact<{
+  user: UpdateUserInput;
+}>;
+
+
+export type UpdateUserMutation = { __typename: 'Mutation', updateUser: { __typename: 'User', id: string, department_name?: string | null, position_name?: string | null, department?: { __typename: 'Department', id: string, name: string } | null, position?: { __typename: 'Position', id: string, name: string } | null } };
+
+export type UploadAvatarMutationVariables = Exact<{
+  avatar: UploadAvatarInput;
+}>;
+
+
+export type UploadAvatarMutation = { __typename: 'Mutation', uploadAvatar: string };

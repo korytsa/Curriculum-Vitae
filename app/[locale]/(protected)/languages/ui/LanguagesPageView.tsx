@@ -2,81 +2,71 @@
 
 import { Plus, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { AddLanguageForm, LanguagesList } from "@/features/languages";
+import type { LanguageItem } from "@/features/languages";
 import { Button, Loader } from "@/shared/ui";
 import { cn } from "@/shared/lib";
-import { CategoryBlock, AddSkillForm } from "@/features/skills";
-import type { SkillCategory } from "@/features/skills";
 
-interface SkillsPageViewProps {
-  skillsLoading: boolean;
-  displayCategories: SkillCategory[];
-  showAddSkillForm: boolean;
+interface LanguagesPageViewProps {
+  languagesLoading: boolean;
+  languages: LanguageItem[];
+  showAddLanguageForm: boolean;
   isDeleteMode: boolean;
-  selectedSkillIds: Set<string>;
+  selectedLanguageNames: Set<string>;
   deleteLoading?: boolean;
   onOpenAddForm: () => void;
   onToggleDeleteMode: () => void;
-  onToggleSkillSelection: (skillId: string) => void;
-  onDeleteSelectedSkills: () => void;
+  onToggleLanguageSelection: (languageName: string) => void;
+  onDeleteSelectedLanguages: () => void;
   onCloseAddForm: () => void;
   showHeading?: boolean;
 }
 
-export function SkillsPageView({
-  skillsLoading,
-  displayCategories,
-  showAddSkillForm,
+export function LanguagesPageView({
+  languagesLoading,
+  languages,
+  showAddLanguageForm,
   isDeleteMode,
-  selectedSkillIds,
+  selectedLanguageNames,
   deleteLoading,
   onOpenAddForm,
   onToggleDeleteMode,
-  onToggleSkillSelection,
-  onDeleteSelectedSkills,
+  onToggleLanguageSelection,
+  onDeleteSelectedLanguages,
   onCloseAddForm,
   showHeading = true,
-}: SkillsPageViewProps) {
+}: LanguagesPageViewProps) {
   const { t } = useTranslation();
 
-  const hasSkills = displayCategories.some(
-    (cat) =>
-      cat.skills.length > 0 ||
-      cat.children?.some((child) => child.skills.length > 0)
-  );
+  const hasLanguages = languages.length > 0;
 
   return (
     <section className="text-white space-y-10">
       <div className="flex justify-between items-start gap-16">
-        {showHeading && hasSkills && (
+        {showHeading && hasLanguages && (
           <h1 className="font-semibold text-neutral-500 mt-1">
-            {t("skills.heading")}
+            {t("languages.heading")}
           </h1>
         )}
 
         <div className="flex-1 mt-16">
-          {skillsLoading ? (
+          {languagesLoading ? (
             <div className="flex justify-center items-center py-20">
               <Loader size="lg" />
             </div>
           ) : (
-            <div className="space-y-16">
-              {displayCategories.length > 0 &&
-                displayCategories.map((category) => (
-                  <CategoryBlock
-                    key={category.id}
-                    category={category}
-                    isDeleteMode={isDeleteMode}
-                    selectedSkillIds={selectedSkillIds}
-                    onToggleSkillSelection={onToggleSkillSelection}
-                  />
-                ))}
-            </div>
+            <LanguagesList
+              languages={languages}
+              isDeleteMode={isDeleteMode}
+              selectedLanguageNames={selectedLanguageNames}
+              onToggleLanguageSelection={onToggleLanguageSelection}
+            />
           )}
 
           <div
             className={cn(
               "flex flex-wrap items-center gap-10 pr-4 lg:pr-20 text-sm uppercase tracking-wide mt-8",
-              hasSkills ? "justify-end" : "justify-center"
+              hasLanguages ? "justify-end" : "justify-center"
             )}
           >
             <Button
@@ -86,44 +76,45 @@ export function SkillsPageView({
               icon={<Plus className="h-4 w-4" />}
               onClick={onOpenAddForm}
               disabled={
-                skillsLoading ||
+                languagesLoading ||
                 isDeleteMode ||
-                showAddSkillForm ||
+                showAddLanguageForm ||
                 deleteLoading
               }
             >
-              {t("features.skills.page.actions.add")}
+              {t("features.languages.page.actions.add")}
             </Button>
-            {hasSkills && (
+
+            {hasLanguages && (
               <Button
                 type="button"
                 variant="ghost"
                 className="flex items-center gap-2 text-red-500 text-xs md:text-sm tracking-[0.2em] hover:text-red-300 transition-colors"
                 icon={<Trash2 className="h-4 w-4" />}
                 onClick={
-                  isDeleteMode && selectedSkillIds.size > 0
-                    ? onDeleteSelectedSkills
+                  isDeleteMode && selectedLanguageNames.size > 0
+                    ? onDeleteSelectedLanguages
                     : onToggleDeleteMode
                 }
                 disabled={
-                  skillsLoading ||
+                  languagesLoading ||
                   deleteLoading ||
-                  showAddSkillForm ||
-                  (isDeleteMode && selectedSkillIds.size === 0)
+                  showAddLanguageForm ||
+                  (isDeleteMode && selectedLanguageNames.size === 0)
                 }
               >
-                {t("features.skills.page.actions.delete")}
-                {isDeleteMode && selectedSkillIds.size > 0 && (
+                {t("features.languages.page.actions.delete")}
+                {isDeleteMode && selectedLanguageNames.size > 0 && (
                   <span className="ml-1 px-2 py-0.5 bg-red-500 text-white rounded-full text-xs font-semibold">
-                    {selectedSkillIds.size}
+                    {selectedLanguageNames.size}
                   </span>
                 )}
               </Button>
             )}
           </div>
 
-          <AddSkillForm
-            open={showAddSkillForm}
+          <AddLanguageForm
+            open={showAddLanguageForm}
             onSuccess={onCloseAddForm}
             onCancel={onCloseAddForm}
           />
