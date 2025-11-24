@@ -67,10 +67,13 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
     const isActiveState = isActive(isFocused, isOpen);
 
     const isInteractive = !(disabled || readOnly);
+    const isNonEditable = !isInteractive;
     const labelColor = getLabelColor(
       error,
       isInteractive ? isActiveState : false
     );
+    const appliedLabelColor =
+      isNonEditable && !error ? "text-white/50" : labelColor;
     const borderColor = getBorderColor(
       error,
       isInteractive ? isActiveState : false,
@@ -158,7 +161,12 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
             aria-disabled={disabled}
             aria-readonly={readOnly || undefined}
           >
-            <span className={cn("flex-1 text-left text-[#C7C7C7]")}>
+            <span
+              className={cn(
+                "flex-1 text-left text-[#C7C7C7]",
+                isNonEditable && "text-white/30"
+              )}
+            >
               {displayValue}
             </span>
             <ChevronDown
@@ -176,7 +184,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
                 isLabelActiveState
                   ? "top-0 -translate-y-1/2 text-xs bg-[#353535]"
                   : "top-1/2 -translate-y-1/2 text-sm",
-                labelColor
+                appliedLabelColor
               )}
             >
               {label}

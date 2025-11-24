@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-hot-toast";
 import { PiUploadSimpleBold } from "react-icons/pi";
-import { Avatar, Button, Input, Loader, Select } from "@/shared/ui";
+import { Avatar, Button, Loader } from "@/shared/ui";
 import { useUser } from "@/features/users";
 import { getAvatarFallback } from "@/features/users/lib/getAvatarFallback";
 import { getUserFullName } from "@/app/[locale]/(protected)/users/lib/getUserFullName";
@@ -26,6 +26,7 @@ import {
   buildSelectChangeHandler,
   type ProfileFormValues,
 } from "./utils";
+import { ProfileNameDirectoryFields } from "./ProfileNameDirectoryFields";
 import {
   AVATAR_ACCEPT_ATTRIBUTE,
   AVATAR_SIZE_ERROR_FALLBACK,
@@ -265,56 +266,54 @@ export function UserProfileDetails({
       </div>
 
       <div className="space-y-10">
-        <div className="grid gap-8 md:grid-cols-2">
-          <Input
-            value={formValues.firstName}
-            onChange={
-              canEditProfile ? handleInputChange("firstName") : undefined
-            }
-            label={t("users.details.profile.fields.firstName")}
-            placeholder={t("users.details.profile.fields.firstName")}
-            readOnly={!canEditProfile}
-          />
-          <Input
-            value={formValues.lastName}
-            onChange={
-              canEditProfile ? handleInputChange("lastName") : undefined
-            }
-            label={t("users.details.profile.fields.lastName")}
-            placeholder={t("users.details.profile.fields.lastName")}
-            readOnly={!canEditProfile}
-          />
-        </div>
-        <div className="grid gap-8 md:grid-cols-2">
-          <Select
-            options={mergeOptionsWithActiveValue(
+        <ProfileNameDirectoryFields
+          firstNameField={{
+            value: formValues.firstName,
+            onChange: canEditProfile
+              ? handleInputChange("firstName")
+              : undefined,
+            label: t("users.details.profile.fields.firstName"),
+            placeholder: t("users.details.profile.fields.firstName"),
+            readOnly: !canEditProfile,
+          }}
+          lastNameField={{
+            value: formValues.lastName,
+            onChange: canEditProfile
+              ? handleInputChange("lastName")
+              : undefined,
+            label: t("users.details.profile.fields.lastName"),
+            placeholder: t("users.details.profile.fields.lastName"),
+            readOnly: !canEditProfile,
+          }}
+          departmentField={{
+            options: mergeOptionsWithActiveValue(
               departmentOptions,
               formValues.departmentId,
               user.department
-            )}
-            value={formValues.departmentId || NO_SELECTION_VALUE}
-            onChange={
-              canEditProfile ? handleSelectChange("departmentId") : undefined
-            }
-            label={t("users.details.profile.fields.department")}
-            disabled={directoriesLoading}
-            readOnly={!canEditProfile}
-          />
-          <Select
-            options={mergeOptionsWithActiveValue(
+            ),
+            value: formValues.departmentId || NO_SELECTION_VALUE,
+            onChange: canEditProfile
+              ? handleSelectChange("departmentId")
+              : undefined,
+            label: t("users.details.profile.fields.department"),
+            disabled: directoriesLoading,
+            readOnly: !canEditProfile,
+          }}
+          positionField={{
+            options: mergeOptionsWithActiveValue(
               positionOptions,
               formValues.positionId,
               user.position
-            )}
-            value={formValues.positionId || NO_SELECTION_VALUE}
-            onChange={
-              canEditProfile ? handleSelectChange("positionId") : undefined
-            }
-            label={t("users.details.profile.fields.position")}
-            disabled={directoriesLoading}
-            readOnly={!canEditProfile}
-          />
-        </div>
+            ),
+            value: formValues.positionId || NO_SELECTION_VALUE,
+            onChange: canEditProfile
+              ? handleSelectChange("positionId")
+              : undefined,
+            label: t("users.details.profile.fields.position"),
+            disabled: directoriesLoading,
+            readOnly: !canEditProfile,
+          }}
+        />
         {canEditProfile && (
           <div className="flex justify-end">
             <Button
