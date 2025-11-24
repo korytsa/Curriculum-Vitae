@@ -156,30 +156,58 @@ export function Table<T extends Record<string, unknown>>({
             ) : (
               data.map((row, index) => {
                 const key = resolveTableRowKey(row, index, keyExtractor);
+                const description = (row as { description?: string | null })
+                  .description;
+                const hasDescription = Boolean(description?.trim());
+                const descriptionColSpan = columns.length;
                 return (
-                  <tr key={key} className="border-b border-white/15">
-                    {columns.map((column) => {
-                      const cellContent = getTableCellContent(column, row);
-                      return (
+                  <React.Fragment key={key}>
+                    <tr>
+                      {columns.map((column) => {
+                        const cellContent = getTableCellContent(column, row);
+                        return (
+                          <td
+                            key={String(column.key)}
+                            className={cn(
+                              "px-4 py-4 text-sm text-white",
+                              column.className
+                            )}
+                            style={{
+                              wordBreak: "break-word",
+                              overflowWrap: "break-word",
+                            }}
+                          >
+                            {cellContent}
+                          </td>
+                        );
+                      })}
+                      {renderActions && (
                         <td
-                          key={String(column.key)}
-                          className={cn(
-                            "px-4 py-4 text-sm text-white",
-                            column.className
-                          )}
+                          className="px-4 py-4"
+                          rowSpan={hasDescription ? 2 : 1}
                         >
-                          {cellContent}
+                          <div className="flex items-center justify-center">
+                            {renderActions(row)}
+                          </div>
                         </td>
-                      );
-                    })}
-                    {renderActions && (
-                      <td className="px-4 py-4">
-                        <div className="flex items-center justify-center">
-                          {renderActions(row)}
-                        </div>
-                      </td>
+                      )}
+                    </tr>
+                    {hasDescription && (
+                      <tr>
+                        <td
+                          colSpan={descriptionColSpan}
+                          className="px-4 py-2 text-sm text-white/70 "
+                          style={{
+                            wordBreak: "break-word",
+                            overflowWrap: "break-word",
+                          }}
+                        >
+                          {description}
+                        </td>
+                        {renderActions && <td />}
+                      </tr>
                     )}
-                  </tr>
+                  </React.Fragment>
                 );
               })
             )}

@@ -36,7 +36,7 @@ export default function Sidebar({
 
   const userMenuDropdownProps = {
     items: userMenuItems,
-    align: "bottom" as const,
+    align: "top" as const,
     menuBgColor: "#353535",
     menuClassName: "shadow-xl border border-white/5",
   };
@@ -154,7 +154,7 @@ export default function Sidebar({
               <DropdownMenu
                 {...userMenuDropdownProps}
                 className="w-full"
-                menuWidth="100%"
+                menuWidth="190px"
                 menuClassName="ml-3 border border-white/5"
               >
                 <div

@@ -4,7 +4,67 @@
     "heading": "Навыки"
   },
   "cvs": {
-    "heading": "Резюме"
+    "heading": "Резюме",
+    "actions": {
+      "create": "Создать резюме",
+      "details": "Детали",
+      "delete": "Удалить резюме"
+    },
+    "states": {
+      "empty": "Пока нет резюме.",
+      "searchEmpty": "Ничего не найдено.",
+      "reset": "Сбросить поиск"
+    },
+    "table": {
+      "searchPlaceholder": "Поиск резюме"
+    },
+    "createModal": {
+      "title": "Создать резюме",
+      "labels": {
+        "name": "Название",
+        "education": "Образование",
+        "description": "Описание"
+      },
+      "errors": {
+        "nameRequired": "Введите название"
+      },
+      "actions": {
+        "create": "СОЗДАТЬ",
+        "cancel": "ОТМЕНА"
+      }
+    },
+    "details": {
+      "tabs": {
+        "details": "ДЕТАЛИ",
+        "skills": "НАВЫКИ",
+        "projects": "ПРОЕКТЫ",
+        "preview": "ПРЕДПРОСМОТР"
+      },
+      "actions": {
+        "update": "ОБНОВИТЬ"
+      },
+      "placeholders": {
+        "skills": "Навыки резюме",
+        "projects": "Проекты резюме",
+        "preview": "Предпросмотр резюме"
+      },
+      "notifications": {
+        "success": "Резюме успешно обновлено",
+        "error": "Не удалось обновить резюме"
+      }
+    },
+    "deleteModal": {
+      "title": "Удалить резюме",
+      "warning": "Вы уверены, что хотите удалить это резюме? Это действие нельзя отменить.",
+      "cvName": "Резюме: {{name}}",
+      "actions": {
+        "delete": "УДАЛИТЬ",
+        "cancel": "ОТМЕНА"
+      },
+      "notifications": {
+        "success": "Резюме успешно удалено"
+      }
+    }
   },
   "languages": {
     "heading": "Языки"
