@@ -4,7 +4,67 @@
     "heading": "Skills"
   },
   "cvs": {
-    "heading": "CVs"
+    "heading": "CVs",
+    "actions": {
+      "create": "Create CV",
+      "details": "Details",
+      "delete": "Delete CV"
+    },
+    "states": {
+      "empty": "No CVs added yet.",
+      "searchEmpty": "No CVs match your search.",
+      "reset": "Reset search"
+    },
+    "table": {
+      "searchPlaceholder": "Search CVs"
+    },
+    "createModal": {
+      "title": "Create CV",
+      "labels": {
+        "name": "Name",
+        "education": "Education",
+        "description": "Description"
+      },
+      "errors": {
+        "nameRequired": "Name is required"
+      },
+      "actions": {
+        "create": "CREATE",
+        "cancel": "CANCEL"
+      }
+    },
+    "details": {
+      "tabs": {
+        "details": "DETAILS",
+        "skills": "SKILLS",
+        "projects": "PROJECTS",
+        "preview": "PREVIEW"
+      },
+      "actions": {
+        "update": "UPDATE"
+      },
+      "placeholders": {
+        "skills": "CV Skills",
+        "projects": "CV Projects",
+        "preview": "CV Preview"
+      },
+      "notifications": {
+        "success": "CV updated successfully",
+        "error": "Failed to update CV"
+      }
+    },
+    "deleteModal": {
+      "title": "Delete CV",
+      "warning": "Are you sure you want to delete this CV? This action cannot be undone.",
+      "cvName": "CV: {{name}}",
+      "actions": {
+        "delete": "DELETE",
+        "cancel": "CANCEL"
+      },
+      "notifications": {
+        "success": "CV deleted successfully"
+      }
+    }
   },
   "languages": {
     "heading": "Languages"

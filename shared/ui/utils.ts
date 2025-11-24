@@ -8,7 +8,7 @@ import type {
 } from "react";
 import type { TableColumn } from "./table";
 
-export type DropdownAlign = "left" | "right" | "bottom";
+export type DropdownAlign = "left" | "right" | "bottom" | "top";
 
 export const useLocale = (): string => {
   const pathname = usePathname();
