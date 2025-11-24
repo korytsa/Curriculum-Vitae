@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { cn } from "@/shared/lib";
 import { IoClose } from "react-icons/io5";
 import { useState, useEffect, forwardRef } from "react";
+import { Button } from "./button";
 
 export interface ModalProps {
   open: boolean;
@@ -74,7 +75,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         <div
           onClick={handleBackdropClick}
           className={cn(
-            "absolute inset-0 bg-[#1F1F1F]/80",
+            "absolute inset-0 bg-black/50",
             open ? "opacity-100" : "opacity-0",
             "transition-opacity duration-200"
           )}
@@ -83,14 +84,14 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         <div
           ref={ref}
           className={cn(
-            "relative z-10 w-full max-w-xl mx-4 bg-[#353535] rounded-lg shadow-xl overflow-hidden",
+            "relative z-10 w-full max-w-xl mx-4 bg-[#353535] rounded-[5px] shadow-xl overflow-hidden",
             "transform transition-all duration-200",
             open ? "scale-100 opacity-100" : "scale-95 opacity-0",
             className
           )}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="flex items-center justify-between px-6 pt-6 pb-4">
+          <div className="flex items-center justify-between px-6 pt-4 mb-8">
             <h2 className="text-xl font-semibold text-white">{title}</h2>
             <button
               onClick={onClose}
@@ -104,24 +105,27 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
           <div className="px-6 pb-6">{children}</div>
 
           {(primaryAction || secondaryAction) && (
-            <div className="flex items-center justify-end gap-4 px-6 pb-6 border-t border-white/10 pt-4">
+            <div className="flex items-center justify-end gap-4 px-3 pb-3">
               {secondaryAction && (
-                <button
+                <Button
+                  variant="outline"
                   onClick={secondaryAction.onClick}
                   disabled={secondaryAction.disabled}
-                  className="px-6 py-2 text-sm font-semibold uppercase tracking-wide text-white/70 bg-[#2F2F2F] border border-white/20 rounded-lg hover:bg-[#3A3A3A] hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-[200px] font-normal"
                 >
                   {secondaryAction.label}
-                </button>
+                </Button>
               )}
               {primaryAction && (
-                <button
+                <Button
+                  type="submit"
+                  variant="danger"
                   onClick={primaryAction.onClick}
+                  className="w-[200px] font-normal"
                   disabled={primaryAction.disabled}
-                  className="px-6 py-2 text-sm font-semibold uppercase tracking-wide text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {primaryAction.label}
-                </button>
+                </Button>
               )}
             </div>
           )}

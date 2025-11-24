@@ -8,6 +8,7 @@ export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
   label?: string;
+  hidePasswordToggle?: boolean;
 }
 
 const INPUT_BASE_CLASSES =
@@ -35,6 +36,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       label,
       disabled,
       readOnly,
+      hidePasswordToggle = false,
       ...props
     },
     ref
@@ -42,13 +44,21 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const [showPassword, setShowPassword] = React.useState(false);
     const [isFocused, setIsFocused] = React.useState(false);
     const isPassword = type === "password";
+    const showPasswordToggle = isPassword && !hidePasswordToggle;
     const hasValue = Boolean(value);
     const isLabelActive = isFocused || hasValue;
-    const inputType = isPassword ? (showPassword ? "text" : "password") : type;
+    const inputType = isPassword
+      ? showPassword && showPasswordToggle
+        ? "text"
+        : "password"
+      : type;
     const isInteractive = !disabled && !readOnly;
+    const isNonEditable = !isInteractive;
     const shouldHighlight = isFocused && isInteractive;
     const placeholderClass = getPlaceholderClassName(label, isLabelActive);
     const labelColor = getLabelColor(error, shouldHighlight);
+    const appliedLabelColor =
+      isNonEditable && !error ? "text-white/50" : labelColor;
     const borderColor = getBorderColor(error, shouldHighlight, isInteractive);
 
     const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
@@ -75,6 +85,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             placeholderClass,
             isPassword && "pr-10",
             readOnly && "pointer-events-none",
+            isNonEditable && "text-white/30",
             className
           )}
           ref={ref}
@@ -93,13 +104,13 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
               isLabelActive
                 ? "top-0 -translate-y-1/2 text-xs bg-[#353535]"
                 : "top-1/2 -translate-y-1/2 text-sm",
-              labelColor
+              appliedLabelColor
             )}
           >
             {label}
           </label>
         )}
-        {isPassword && (
+        {showPasswordToggle && (
           <Button
             type="button"
             variant="ghost"
