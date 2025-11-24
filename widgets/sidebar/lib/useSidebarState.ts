@@ -26,8 +26,10 @@ interface SidebarState {
   applyLocaleToPath: (path: string) => string;
   currentUserName: string | null;
   currentUserInitials: string;
+  currentUserAvatar: string | null;
   userMenuItems: ReturnType<typeof buildUserMenuItems>;
   isUserLoading: boolean;
+  hasCurrentUser: boolean;
 }
 
 export function useSidebarState({
@@ -99,6 +101,7 @@ export function useSidebarState({
   const initialsFallback = t("features.sidebar.avatar.initials");
   const currentUserName = getUserDisplayName(currentUser);
   const currentUserInitials = getUserInitials(currentUser, initialsFallback);
+  const currentUserAvatar = currentUser?.profile?.avatar || null;
 
   const handleLogout = () => {
     setAccessToken(null);
@@ -120,7 +123,9 @@ export function useSidebarState({
     applyLocaleToPath,
     currentUserName,
     currentUserInitials,
+    currentUserAvatar,
     userMenuItems,
     isUserLoading,
+    hasCurrentUser: Boolean(currentUser),
   };
 }

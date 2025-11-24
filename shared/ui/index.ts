@@ -36,6 +36,9 @@ export type { TableProps, TableColumn } from "./table";
 export { Avatar } from "./avatar";
 export type { AvatarProps } from "./avatar";
 
+export { Skeleton } from "./skeleton";
+export type { SkeletonProps } from "./skeleton";
+
 export { DropdownMenu } from "./dropdown-menu";
 export type { DropdownMenuItem } from "./dropdown-menu";
 export { Select } from "./select";

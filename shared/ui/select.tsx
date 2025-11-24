@@ -11,20 +11,20 @@ import {
 import { createPortal } from "react-dom";
 import {
   findSelectedOption,
-  isNoPositionValue as checkIsNoPositionValue,
+  isNoSelectionValue,
+  isNoOptionLabel,
   getDisplayValue,
   hasValue as checkHasValue,
   isLabelActive,
   isActive,
   getLabelColor,
   getBorderColor,
-  createCloseSelectHandler,
-  createClickOutsideHandler,
-  createKeyDownHandler,
   type SelectOption,
 } from "./utils";
 
 export type { SelectOption };
+
+type SelectAlign = "center" | "bottom";
 
 export interface SelectProps
   extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
@@ -34,62 +34,91 @@ export interface SelectProps
   error?: string;
   label?: string;
   disabled?: boolean;
+  readOnly?: boolean;
+  align?: SelectAlign;
 }
 
 const Select = forwardRef<HTMLDivElement, SelectProps>(
   (
-    { className, options, value, onChange, error, label, disabled, ...props },
+    {
+      className,
+      options,
+      value,
+      onChange,
+      error,
+      label,
+      disabled,
+      readOnly,
+      align = "center",
+      ...props
+    },
     ref
   ) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
-    const [isMounted, setIsMounted] = useState(false);
     const selectRef = useRef<HTMLDivElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const listboxId = useId();
-
-    useEffect(() => {
-      setIsMounted(true);
-    }, []);
-
     const selectedOption = findSelectedOption(options, value);
-    const isNoPosition = checkIsNoPositionValue(value, selectedOption);
-    const displayValue = getDisplayValue(selectedOption, isNoPosition);
-    const hasValue = checkHasValue(value, selectedOption, isNoPosition);
+    const isNoSelection = isNoSelectionValue(value, selectedOption);
+    const displayValue = getDisplayValue(selectedOption, isNoSelection);
+    const hasValue = checkHasValue(value, selectedOption, isNoSelection);
     const isLabelActiveState = isLabelActive(isFocused, hasValue, isOpen);
     const isActiveState = isActive(isFocused, isOpen);
 
-    const labelColor = getLabelColor(error, isActiveState);
-    const borderColor = getBorderColor(error, isActiveState);
+    const isInteractive = !(disabled || readOnly);
+    const labelColor = getLabelColor(
+      error,
+      isInteractive ? isActiveState : false
+    );
+    const borderColor = getBorderColor(
+      error,
+      isInteractive ? isActiveState : false,
+      isInteractive
+    );
 
     useEffect(() => {
       if (!isOpen) return;
 
-      const closeSelect = createCloseSelectHandler(setIsOpen, setIsFocused);
-      const handleClickOutside = createClickOutsideHandler(
-        selectRef,
-        dropdownRef,
-        closeSelect
-      );
-      const handleKeyDown = createKeyDownHandler(closeSelect);
+      const closeDropdown = () => {
+        setIsOpen(false);
+        setIsFocused(false);
+      };
 
-      document.addEventListener("mousedown", handleClickOutside);
-      document.addEventListener("keydown", handleKeyDown);
+      const handleDocumentMouseDown = (event: MouseEvent) => {
+        const target = event.target as Node;
+        if (
+          selectRef.current?.contains(target) ||
+          dropdownRef.current?.contains(target)
+        ) {
+          return;
+        }
+        closeDropdown();
+      };
+
+      const handleDocumentKeyDown = (event: KeyboardEvent) => {
+        if (event.key === "Escape") {
+          closeDropdown();
+        }
+      };
+
+      document.addEventListener("mousedown", handleDocumentMouseDown);
+      document.addEventListener("keydown", handleDocumentKeyDown);
 
       return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-        document.removeEventListener("keydown", handleKeyDown);
+        document.removeEventListener("mousedown", handleDocumentMouseDown);
+        document.removeEventListener("keydown", handleDocumentKeyDown);
       };
     }, [isOpen]);
 
     const handleSelect = (optionValue: string) => {
       onChange?.(optionValue);
-      const closeSelect = createCloseSelectHandler(setIsOpen, setIsFocused);
-      closeSelect();
+      setIsOpen(false);
+      setIsFocused(false);
     };
 
     const handleToggle = () => {
-      if (disabled) return;
+      if (disabled || readOnly) return;
       const newIsOpen = !isOpen;
       setIsOpen(newIsOpen);
       setIsFocused(newIsOpen);
@@ -111,9 +140,13 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
               disabled && "opacity-50 cursor-not-allowed"
             )}
             onClick={handleToggle}
-            onFocus={() => setIsFocused(true)}
+            onFocus={() => {
+              if (isInteractive) {
+                setIsFocused(true);
+              }
+            }}
             onBlur={() => {
-              if (!isOpen) {
+              if (!isOpen && isInteractive) {
                 setIsFocused(false);
               }
             }}
@@ -123,6 +156,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
             aria-controls={listboxId}
             aria-haspopup="listbox"
             aria-disabled={disabled}
+            aria-readonly={readOnly || undefined}
           >
             <span className={cn("flex-1 text-left text-[#C7C7C7]")}>
               {displayValue}
@@ -150,33 +184,70 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
           )}
 
           {isOpen &&
-            isMounted &&
             (() => {
               const selectRect = selectRef.current?.getBoundingClientRect();
               const viewportHeight = window.innerHeight;
+              const viewportPadding = 8;
               const spaceBelow = selectRect
-                ? viewportHeight - selectRect.bottom - 4
+                ? viewportHeight - selectRect.bottom - viewportPadding
                 : 0;
+              const dropdownOffset = 4;
               const itemHeight = 40;
-              const defaultHeight = itemHeight * 6;
+              const groupHeaderHeight = 32;
+              const estimatedContentHeight = options.reduce(
+                (total, option) =>
+                  total +
+                  (option.isGroupHeader ? groupHeaderHeight : itemHeight),
+                0
+              );
+              const safeViewportHeight = Math.max(
+                viewportHeight - viewportPadding * 2,
+                itemHeight
+              );
               const maxHeight = Math.min(
                 500,
-                Math.max(spaceBelow, defaultHeight)
+                safeViewportHeight,
+                Math.max(spaceBelow, estimatedContentHeight)
               );
+              const baseDropdownHeight = Math.min(
+                estimatedContentHeight,
+                maxHeight
+              );
+              const dropdownHeight =
+                align === "bottom"
+                  ? Math.min(baseDropdownHeight, 320)
+                  : baseDropdownHeight;
+              const selectCenter = selectRect
+                ? selectRect.top + selectRect.height / 2
+                : viewportPadding;
+              const maxTop = viewportHeight - dropdownHeight - viewportPadding;
+              const centeredTop = selectCenter - dropdownHeight / 2;
+              const clampTop = (desiredTop: number) =>
+                Math.min(
+                  Math.max(desiredTop, viewportPadding),
+                  Math.max(maxTop, viewportPadding)
+                );
+              const topPosition =
+                align === "bottom"
+                  ? clampTop(
+                      (selectRect ? selectRect.bottom : viewportPadding) +
+                        dropdownOffset
+                    )
+                  : clampTop(centeredTop);
 
               const dropdownContent = (
                 <div
                   ref={dropdownRef}
                   id={listboxId}
-                  className="fixed z-[10000] bg-[#2F2F2F] border-none shadow-lg overflow-auto [&::-webkit-scrollbar]:hidden"
+                  className="fixed top-20 z-[10000] bg-[#2F2F2F] shadow-lg overflow-auto [&::-webkit-scrollbar]:hidden"
                   style={{
                     scrollbarWidth: "none",
                     msOverflowStyle: "none",
-                    top: selectRect ? selectRect.bottom + 4 : 0,
+                    top: topPosition,
                     left: selectRect ? selectRect.left : 0,
                     width: selectRect ? selectRect.width : "auto",
                     maxHeight: `${maxHeight}px`,
-                    height: `${Math.min(defaultHeight, maxHeight)}px`,
+                    height: `${dropdownHeight}px`,
                   }}
                   role="listbox"
                 >
@@ -194,7 +265,10 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
                       );
                     }
 
-                    const isSelected = option.value === value;
+                    const isPlaceholderOption = isNoOptionLabel(option.label);
+                    const isSelected =
+                      option.value === value ||
+                      (!value && isNoSelection && isPlaceholderOption);
 
                     return (
                       <div

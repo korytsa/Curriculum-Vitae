@@ -16,7 +16,7 @@ export function Loader({ size = "md", className }: LoaderProps) {
   return (
     <div
       className={cn(
-        "inline-block rounded-full border-red-500 border-t-transparent animate-spin",
+        "inline-block rounded-full border-red-600 border-t-transparent animate-spin",
         sizeClasses[size],
         className
       )}

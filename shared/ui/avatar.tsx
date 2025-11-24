@@ -36,7 +36,7 @@ export const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
       >
         {" "}
         {displayFallback ? (
-          <span className="font-medium">{initials}</span>
+          <span className="font-medium text-neutral-800">{initials}</span>
         ) : (
           <Image
             src={src!}

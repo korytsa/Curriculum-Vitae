@@ -4,7 +4,7 @@ import { IoChevronBackOutline } from "react-icons/io5";
 import Link from "next/link";
 import { menuItems } from "../config/menuItems";
 import { cn } from "@/shared/lib";
-import { Button, DropdownMenu } from "@/shared/ui";
+import { Avatar, Button, DropdownMenu } from "@/shared/ui";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { useSidebarState } from "../lib/useSidebarState";
 
@@ -25,8 +25,10 @@ export default function Sidebar({
     applyLocaleToPath,
     currentUserInitials,
     currentUserName,
+    currentUserAvatar,
     userMenuItems,
     isUserLoading,
+    hasCurrentUser,
   } = useSidebarState({
     initialIsCollapsed: initialCollapsed,
     hasInitialPreference,
@@ -70,7 +72,7 @@ export default function Sidebar({
         </div>
 
         <div className="flex items-center gap-4">
-          {isUserLoading ? (
+          {isUserLoading || !hasCurrentUser ? (
             <div className="flex items-center gap-2">
               <Skeleton className="w-8 h-8 rounded-full" />
               <Skeleton className="h-3 w-16 rounded-full" />
@@ -81,11 +83,15 @@ export default function Sidebar({
               className="w-full"
               menuWidth="200px"
             >
-              <div className="flex items-center cursor-pointer gap-2">
-                <div className="w-8 h-8 rounded-full bg-red-600 text-white flex items-center justify-center font-semibold text-sm">
-                  {currentUserInitials}
-                </div>
-                <span className="text-sm font-normal text-white whitespace-nowrap overflow-hidden text-ellipsis max-w-[60px]">
+              <div className="flex items-center cursor-pointer gap-2 px-3 py-1.5 rounded-full bg-[#353535]">
+                <Avatar
+                  size="sm"
+                  className="bg-red-600 text-white"
+                  src={currentUserAvatar || undefined}
+                  alt={currentUserName || t("features.sidebar.avatar.name")}
+                  fallback={currentUserInitials}
+                />
+                <span className="text-sm font-normal text-white whitespace-nowrap overflow-hidden text-ellipsis max-w-[80px]">
                   {currentUserName || t("features.sidebar.avatar.name")}
                 </span>
               </div>
@@ -133,7 +139,7 @@ export default function Sidebar({
 
         <div className="flex flex-col gap-3">
           <div className="relative">
-            {isUserLoading ? (
+            {isUserLoading || !hasCurrentUser ? (
               <div
                 className={cn(
                   "flex items-center rounded-r-[28px] py-2",
@@ -153,15 +159,19 @@ export default function Sidebar({
               >
                 <div
                   className={cn(
-                    "flex py-2 items-center cursor-pointer rounded-r-[28px] transition-colors duration-200 ease-in-out hover:bg-sidebar-hover",
+                    "flex gap-3 py-2 w-[190px] items-center cursor-pointer rounded-r-[28px] transition-colors duration-200 ease-in-out hover:bg-sidebar-hover",
                     isCollapsed ? "justify-center px-3" : "px-[10px] py-2"
                   )}
                 >
-                  <div className="w-10 h-10 rounded-full bg-sidebar-avatar-bg text-sidebar-avatar-text flex items-center justify-center font-semibold">
-                    {currentUserInitials}
-                  </div>
+                  <Avatar
+                    size={isCollapsed ? "sm" : "md"}
+                    className="bg-red-600 text-white"
+                    src={currentUserAvatar || undefined}
+                    alt={currentUserName || t("features.sidebar.avatar.name")}
+                    fallback={currentUserInitials}
+                  />
                   {!isCollapsed && (
-                    <span className="ml-3 text-sm font-normal text-white whitespace-nowrap overflow-hidden text-ellipsis">
+                    <span className="font-normal whitespace-nowrap overflow-hidden text-ellipsis">
                       {currentUserName || t("features.sidebar.avatar.name")}
                     </span>
                   )}
