@@ -3,6 +3,7 @@
 import { useLazyQuery } from "@apollo/client/react";
 import { usePathname, useRouter } from "next/navigation";
 import { setAccessToken } from "@/shared/config/apollo";
+import { decodeToken } from "@/shared/lib/jwt";
 import { LOGIN_QUERY } from "./graphql";
 import type {
   LoginQuery,
@@ -51,7 +52,13 @@ export function useLogin() {
       const token = result.data.login.access_token;
       if (token) {
         setAccessToken(token);
-        router.push(`/${locale}/users`);
+        const decodedToken = decodeToken(token);
+        const userId = decodedToken?.sub?.toString();
+        if (userId) {
+          router.push(`/${locale}/users/${userId}`);
+        } else {
+          router.push(`/${locale}/users/`);
+        }
       } else {
         console.error("[Login error] No token received");
         throw new Error("No access token received");

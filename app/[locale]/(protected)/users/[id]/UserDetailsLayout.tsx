@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { Tabs, type TabItem } from "@/shared/ui";
+import { Tabs, type TabItem, Skeleton } from "@/shared/ui";
 import { useUser } from "@/features/users";
 import { getUserFullName } from "../lib/getUserFullName";
 import { TfiUser } from "react-icons/tfi";
@@ -23,7 +23,7 @@ export function UserDetailsLayout({
 }: UserDetailsLayoutProps) {
   const pathname = usePathname();
   const { t } = useTranslation();
-  const { user } = useUser(userId);
+  const { user, loading } = useUser(userId);
   const activeTabId = pathname?.includes("/skills")
     ? "skills"
     : pathname?.includes("/languages")
@@ -49,10 +49,7 @@ export function UserDetailsLayout({
     },
   ];
 
-  const userFullName =
-    getUserFullName(user) ||
-    user?.email ||
-    t("users.details.unknownUser", { id: userId, defaultValue: "User {{id}}" });
+  const userFullName = getUserFullName(user) || user?.email || null;
 
   const activeTabLabel =
     tabs.find((tab) => tab.id === activeTabId)?.label ||
@@ -68,13 +65,24 @@ export function UserDetailsLayout({
           {t("users.heading")}
         </Link>
         <MdChevronRight className="w-5 h-5 text-neutral-500" />
-        <TfiUser className="w-4 h-4 text-red-600" />
-        <Link
-          href={`/${locale}/users/${userId}`}
-          className="text-red-600 transition-colors hover:underline"
-        >
-          {userFullName}
-        </Link>
+        {loading ? (
+          <div className="flex items-center gap-2">
+            <Skeleton className="w-6 h-6 rounded-full" />
+            <Skeleton className="h-5 w-24 rounded-full" />
+          </div>
+        ) : (
+          <>
+            <TfiUser className="w-4 h-4 text-red-600" />
+            {userFullName && (
+              <Link
+                href={`/${locale}/users/${userId}`}
+                className="text-red-600 transition-colors hover:underline"
+              >
+                {userFullName}
+              </Link>
+            )}
+          </>
+        )}
         {activeTabId !== "profile" && (
           <>
             <MdChevronRight className="w-5 h-5 text-neutral-500" />

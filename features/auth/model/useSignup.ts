@@ -2,6 +2,7 @@
 import { useMutation } from "@apollo/client/react";
 import { useRouter, usePathname } from "next/navigation";
 import { setAccessToken } from "@/shared/config/apollo";
+import { decodeToken } from "@/shared/lib/jwt";
 import { SIGNUP_MUTATION } from "./graphql";
 import type {
   SignupMutation,
@@ -36,7 +37,13 @@ export function useSignup() {
     const token = result.data?.signup.access_token;
     if (token) {
       setAccessToken(token);
-      router.push(`/${locale}/cvs`);
+      const decodedToken = decodeToken(token);
+      const userId = decodedToken?.sub?.toString();
+      if (userId) {
+        router.push(`/${locale}/users/${userId}`);
+      } else {
+        router.push(`/${locale}/users`);
+      }
     }
   };
 
@@ -46,4 +53,3 @@ export function useSignup() {
     error,
   };
 }
-
