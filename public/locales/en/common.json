@@ -90,6 +90,23 @@
   },
   "users": {
     "heading": "Employees",
+    "createUser": "Create user",
+    "actions": {
+      "profile": "Profile",
+      "update": "Update user",
+      "delete": "Delete user",
+      "openMenu": "Open actions"
+    },
+    "deleteModal": {
+      "title": "Delete user",
+      "warning": "Are you sure you want to delete this user? This action cannot be undone.",
+      "userLabel": "User: {{name}}",
+      "actions": {
+        "delete": "DELETE",
+        "cancel": "CANCEL"
+      },
+      "toast": "User deleted"
+    },
     "details": {
       "tabs": {
         "profile": "Profile",
@@ -137,6 +154,8 @@
   },
   "features": {
     "createUserForm": {
+      "heading": "Create user",
+      "description": "Fill out the fields below to create a new Employee or Admin account.",
       "roles": {
         "employee": "Employee",
         "admin": "Admin"
