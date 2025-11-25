@@ -46,14 +46,14 @@ export function SkillsPageView({
 
   return (
     <section className="text-white space-y-10">
-      <div className="flex justify-between items-start gap-16">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-6">
         {showHeading && hasSkills && (
           <h1 className="font-semibold text-neutral-500 mt-1">
             {t("skills.heading")}
           </h1>
         )}
 
-        <div className="flex-1 mt-16">
+        <div className="flex-1 md:mt-16">
           {skillsLoading ? (
             <div className="flex justify-center items-center py-20">
               <Loader size="lg" />
@@ -75,8 +75,8 @@ export function SkillsPageView({
 
           <div
             className={cn(
-              "flex flex-wrap items-center gap-10 pr-4 lg:pr-20 text-sm uppercase tracking-wide mt-8",
-              hasSkills ? "justify-end" : "justify-center"
+              "flex flex-col sm:flex-row items-center gap-4 sm:gap-10 pr-4 lg:pr-20 text-sm uppercase tracking-wide mt-8 w-full",
+              "justify-center sm:justify-end"
             )}
           >
             <Button

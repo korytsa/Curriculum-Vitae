@@ -34,6 +34,7 @@ export const USERS_TABLE_COLUMNS: TableColumn<User>[] = [
         <span>First Name</span>
       </div>
     ),
+    mobileHeaderLabel: "First Name",
     render: (_value: unknown, row: User) => (
       <span className="text-white/80">{row.profile.first_name}</span>
     ),
@@ -67,6 +68,7 @@ export const USERS_TABLE_COLUMNS: TableColumn<User>[] = [
         <span>Department</span>
       </div>
     ),
+    mobileHeaderLabel: "Department",
     render: (value: unknown) => (
       <span className="text-white/80">{value ? String(value) : ""}</span>
     ),
@@ -83,4 +85,3 @@ export const USERS_TABLE_COLUMNS: TableColumn<User>[] = [
     ),
   },
 ];
-
