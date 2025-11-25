@@ -52,7 +52,9 @@ export function LanguagesList({
             <span className={cn("tracking-wide", levelColor)}>
               {language.proficiency}
             </span>
-            <span className="text-gray-300">{language.name}</span>
+            <span className="text-[var(--color-text-muted)]">
+              {language.name}
+            </span>
           </div>
         );
       })}

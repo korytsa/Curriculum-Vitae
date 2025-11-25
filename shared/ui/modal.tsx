@@ -16,6 +16,13 @@ export interface ModalProps {
     label: string;
     onClick: () => void;
     disabled?: boolean;
+    variant?:
+      | "primary"
+      | "secondary"
+      | "outline"
+      | "ghost"
+      | "danger"
+      | "dangerGhost";
   };
   secondaryAction?: {
     label: string;
@@ -84,7 +91,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         <div
           ref={ref}
           className={cn(
-            "relative z-10 w-full max-w-xl mx-4 bg-[#353535] rounded-[5px] shadow-xl overflow-hidden",
+            "relative z-10 w-full max-w-xl mx-4 bg-[var(--color-surface)] rounded-[5px] shadow-xl overflow-hidden",
             "transform transition-all duration-200",
             open ? "scale-100 opacity-100" : "scale-95 opacity-0",
             className
@@ -95,7 +102,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
             <h2 className="text-xl font-semibold text-white">{title}</h2>
             <button
               onClick={onClose}
-              className="inline-flex items-center justify-center w-8 h-8 rounded-full text-[#C7C7C7] hover:text-white hover:bg-[#3A3A3A] transition-colors"
+              className="inline-flex items-center justify-center w-8 h-8 rounded-full text-[var(--color-text-subtle)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface)] transition-colors"
               aria-label="Close modal"
             >
               <IoClose className="w-5 h-5" />
@@ -119,7 +126,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
               {primaryAction && (
                 <Button
                   type="submit"
-                  variant="danger"
+                  variant={primaryAction.variant ?? "danger"}
                   onClick={primaryAction.onClick}
                   className="w-[200px] font-normal"
                   disabled={primaryAction.disabled}

@@ -31,9 +31,33 @@ export default async function RootLayout({
     "--sidebar-width": sidebarCollapsedCookie ? "60px" : "200px",
   } as CSSProperties;
 
+  const themeInitScript = `
+    (function() {
+      try {
+        const storageKey = 'theme-preference';
+        const stored = window.localStorage.getItem(storageKey);
+        const preference = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system';
+        const media = window.matchMedia('(prefers-color-scheme: dark)');
+        const mode = preference === 'system' ? (media.matches ? 'dark' : 'light') : preference;
+        document.documentElement.dataset.theme = mode;
+        document.documentElement.style.colorScheme = mode;
+      } catch (error) {
+        document.documentElement.dataset.theme = 'dark';
+        document.documentElement.style.colorScheme = 'dark';
+      }
+    })();
+  `;
+
   return (
     <html lang={params.locale} style={htmlStyle}>
-      <body className={`${inter.variable} antialiased`}>{children}</body>
+      <body className={`${inter.variable} antialiased`}>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: themeInitScript,
+          }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

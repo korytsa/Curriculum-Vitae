@@ -225,7 +225,7 @@ export const isActive = (isFocused: boolean, isOpen: boolean): boolean => {
 };
 
 export const getLabelColor = (error?: string, isActive?: boolean): string => {
-  return error || isActive ? "text-red-500" : "text-[#C7C7C7]";
+  return error || isActive ? "text-red-500" : "text-[var(--color-text-subtle)]";
 };
 
 export const getBorderColor = (
@@ -236,6 +236,8 @@ export const getBorderColor = (
   if (error || isActive) {
     return "border-red-500";
   }
-  const baseBorder = "border-[#656565]";
-  return isInteractive ? `${baseBorder} hover:border-white/80` : baseBorder;
+  const baseBorder = "border-[var(--color-border)]";
+  return isInteractive
+    ? `${baseBorder} hover:border-[var(--color-border-hover)]`
+    : baseBorder;
 };

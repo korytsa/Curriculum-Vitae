@@ -28,7 +28,7 @@ export const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
       <div
         ref={ref}
         className={cn(
-          "relative flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#757575] text-neutral-800",
+          "relative flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--color-neutral)] text-[var(--color-neutral-text)]",
           sizeClasses[size],
           className
         )}
@@ -36,7 +36,7 @@ export const Avatar = React.forwardRef<HTMLDivElement, AvatarProps>(
       >
         {" "}
         {displayFallback ? (
-          <span className="font-medium text-neutral-800">{initials}</span>
+          <span className="font-medium">{initials}</span>
         ) : (
           <Image
             src={src!}

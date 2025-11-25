@@ -58,8 +58,12 @@ export function LoginForm() {
     <form className="space-y-6" onSubmit={formik.handleSubmit}>
       <FormStatus
         errorMessage={error?.message ?? null}
-        successMessage={forgotFeedback?.type === "success" ? forgotFeedback.message : null}
-        noticeMessage={forgotFeedback?.type === "error" ? forgotFeedback.message : null}
+        successMessage={
+          forgotFeedback?.type === "success" ? forgotFeedback.message : null
+        }
+        noticeMessage={
+          forgotFeedback?.type === "error" ? forgotFeedback.message : null
+        }
       />
       <div>
         <Input
@@ -104,7 +108,7 @@ export function LoginForm() {
         <Button
           type="button"
           variant="ghost"
-          className="text-sm text-white/60 hover:text-white transition-colors disabled:opacity-60"
+          className="text-sm text-white/40 hover:text-white/80 transition-colors disabled:opacity-60"
           onClick={async () => {
             const trimmedEmail = formik.values.email.trim();
             if (!trimmedEmail) {
