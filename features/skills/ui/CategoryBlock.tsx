@@ -17,7 +17,7 @@ export function CategoryBlock({
 }: CategoryBlockProps) {
   return (
     <div className="space-y-4">
-      <div className="text-sm font-semibold text-gray-300 uppercase tracking-widest mb-5">
+      <div className="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-widest mb-5">
         {category.name}
       </div>
       <div className="flex flex-wrap items-start gap-16">
@@ -49,7 +49,9 @@ export function CategoryBlock({
 
       {category.children?.map((child) => (
         <div key={child.id} className="pl-6 border-l border-white/10 space-y-3">
-          <div className="text-xs uppercase text-gray-500">{child.name}</div>
+          <div className="text-xs uppercase text-[var(--color-text-subtle)]">
+            {child.name}
+          </div>
           <div className="flex flex-wrap items-start gap-16">
             {child.skills.map((skill) => {
               const isSelected = selectedSkillIds.has(skill.id);

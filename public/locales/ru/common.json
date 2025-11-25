@@ -3,6 +3,25 @@
   "skills": {
     "heading": "Навыки"
   },
+  "settings": {
+    "heading": "Настройки",
+    "description": "Настройте тему и язык интерфейса",
+    "appearance": {
+      "title": "Внешний вид",
+      "options": {
+        "system": "Как в системе",
+        "light": "Светлая тема",
+        "dark": "Тёмная тема"
+      }
+    },
+    "language": {
+      "title": "Язык",
+      "options": {
+        "en": "Английский",
+        "ru": "Русский"
+      }
+    }
+  },
   "cvs": {
     "heading": "Резюме",
     "actions": {

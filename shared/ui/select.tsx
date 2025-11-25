@@ -73,7 +73,9 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
       isInteractive ? isActiveState : false
     );
     const appliedLabelColor =
-      isNonEditable && !error ? "text-white/50" : labelColor;
+      isNonEditable && !error
+        ? "text-[var(--color-disabled-text)]"
+        : labelColor;
     const borderColor = getBorderColor(
       error,
       isInteractive ? isActiveState : false,
@@ -136,7 +138,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
         <div className="relative" ref={selectRef}>
           <div
             className={cn(
-              "w-full h-12 rounded-md border bg-transparent px-3 py-3 text-[#C7C7C7] transition-all cursor-pointer",
+              "w-full h-12 rounded-md border px-3 py-3 transition-all cursor-pointer bg-[var(--color-surface)]",
               "focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
               "flex items-center justify-between",
               borderColor,
@@ -163,8 +165,8 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
           >
             <span
               className={cn(
-                "flex-1 text-left text-[#C7C7C7]",
-                isNonEditable && "text-white/30"
+                "flex-1 text-left text-[var(--color-text)]",
+                isNonEditable && "text-[var(--color-disabled-text)]"
               )}
             >
               {displayValue}
@@ -182,7 +184,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
               className={cn(
                 "absolute left-3 transition-all duration-200 pointer-events-none px-2 z-10",
                 isLabelActiveState
-                  ? "top-0 -translate-y-1/2 text-xs bg-[#353535]"
+                  ? "top-0 -translate-y-1/2 text-xs bg-[var(--color-bg)]"
                   : "top-1/2 -translate-y-1/2 text-sm",
                 appliedLabelColor
               )}
@@ -247,7 +249,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
                 <div
                   ref={dropdownRef}
                   id={listboxId}
-                  className="fixed top-20 z-[10000] bg-[#2F2F2F] shadow-lg overflow-auto [&::-webkit-scrollbar]:hidden"
+                  className="fixed top-20 z-[10000] bg-[var(--color-surface)] shadow-lg overflow-auto [&::-webkit-scrollbar]:hidden"
                   style={{
                     scrollbarWidth: "none",
                     msOverflowStyle: "none",
@@ -264,7 +266,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
                       return (
                         <div
                           key={option.value}
-                          className="px-3 py-2 text-red-500 text-xs font-semibold uppercase tracking-wider bg-[#3a3a3a]"
+                          className="px-3 py-2 text-red-500 text-xs font-semibold uppercase tracking-wider bg-[var(--color-option-group-bg)]"
                           role="group"
                           aria-label={option.label}
                         >
@@ -284,8 +286,8 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
                         className={cn(
                           "px-3 py-2 cursor-pointer transition-colors",
                           isSelected
-                            ? "bg-[#652727] text-white"
-                            : "text-[#C7C7C7] hover:bg-[#3e3e3e] hover:text-white"
+                            ? "bg-[var(--color-option-selected-bg)] text-[var(--color-accent-text)]"
+                            : "text-[var(--color-text-subtle)] hover:bg-[var(--color-option-hover-bg)] hover:text-[var(--color-text)]"
                         )}
                         onClick={() => handleSelect(option.value)}
                         role="option"

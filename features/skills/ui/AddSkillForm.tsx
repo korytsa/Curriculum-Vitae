@@ -97,6 +97,8 @@ export function AddSkillForm({ open, onSuccess, onCancel }: AddSkillFormProps) {
     },
   });
 
+  const hasSkillSelected = Boolean(formik.values.skillId);
+
   return (
     <Modal
       open={open}
@@ -106,6 +108,7 @@ export function AddSkillForm({ open, onSuccess, onCancel }: AddSkillFormProps) {
         label: t("features.skills.common.confirm"),
         onClick: () => formik.handleSubmit(),
         disabled: loading || !formik.isValid || formik.isSubmitting,
+        variant: hasSkillSelected ? "danger" : "secondary",
       }}
       secondaryAction={{
         label: t("features.skills.common.cancel"),

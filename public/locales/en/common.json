@@ -3,6 +3,25 @@
   "skills": {
     "heading": "Skills"
   },
+  "settings": {
+    "heading": "Settings",
+    "description": "Personalize your appearance and language",
+    "appearance": {
+      "title": "Appearance",
+      "options": {
+        "system": "Device settings",
+        "light": "Light",
+        "dark": "Dark"
+      }
+    },
+    "language": {
+      "title": "Language",
+      "options": {
+        "en": "English",
+        "ru": "Russian"
+      }
+    }
+  },
   "cvs": {
     "heading": "CVs",
     "actions": {

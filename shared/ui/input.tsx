@@ -12,10 +12,10 @@ export interface InputProps
 }
 
 const INPUT_BASE_CLASSES =
-  "w-full h-12 rounded-md border bg-transparent px-3 py-3 text-[#C7C7C7] placeholder:font-medium transition-all focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 read-only:cursor-default read-only:opacity-100";
+  "w-full h-12 rounded-md border bg-[var(--color-surface)] px-3 py-3 text-[var(--color-text)] placeholder:font-medium transition-all focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 read-only:cursor-default read-only:opacity-100";
 
-const PLACEHOLDER_DEFAULT = "placeholder:text-[#c4c4c4]";
-const PLACEHOLDER_ACTIVE = "placeholder:text-[#bdbdbd]";
+const PLACEHOLDER_DEFAULT = "placeholder:text-[var(--color-placeholder)]";
+const PLACEHOLDER_ACTIVE = "placeholder:text-[var(--color-placeholder-active)]";
 const PLACEHOLDER_MASKED = "placeholder:text-transparent";
 
 const getPlaceholderClassName = (label?: string, isLabelActive?: boolean) => {
@@ -58,7 +58,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const placeholderClass = getPlaceholderClassName(label, isLabelActive);
     const labelColor = getLabelColor(error, shouldHighlight);
     const appliedLabelColor =
-      isNonEditable && !error ? "text-white/50" : labelColor;
+      isNonEditable && !error
+        ? "text-[var(--color-disabled-text)]"
+        : labelColor;
     const borderColor = getBorderColor(error, shouldHighlight, isInteractive);
 
     const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
@@ -85,7 +87,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             placeholderClass,
             isPassword && "pr-10",
             readOnly && "pointer-events-none",
-            isNonEditable && "text-white/30",
+            isNonEditable && "text-[var(--color-disabled-text)]",
             className
           )}
           ref={ref}
@@ -102,7 +104,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             className={cn(
               "absolute left-3 transition-all duration-200 pointer-events-none px-2",
               isLabelActive
-                ? "top-0 -translate-y-1/2 text-xs bg-[#353535]"
+                ? "top-0 -translate-y-1/2 text-xs bg-[var(--color-bg)]"
                 : "top-1/2 -translate-y-1/2 text-sm",
               appliedLabelColor
             )}
@@ -116,7 +118,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             variant="ghost"
             size="icon"
             onClick={() => setShowPassword((prev) => !prev)}
-            className="absolute right-1 top-1/2 -translate-y-1/2 text-white hover:text-white/80 z-10"
+            className="absolute right-1 top-1/2 -translate-y-1/2 text-[var(--color-text)] hover:opacity-70 z-10"
             aria-label={showPassword ? "Hide password" : "Show password"}
             icon={
               showPassword ? (

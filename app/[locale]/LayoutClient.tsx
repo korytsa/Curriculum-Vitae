@@ -5,6 +5,12 @@ import { I18nextProvider } from "react-i18next";
 import i18n from "@/shared/lib/i18n";
 import { apolloClient, ApolloProvider } from "@/shared/lib/apollo-client";
 import Sidebar from "@/widgets/sidebar/ui/Sidebar";
+import {
+  applyThemePreference,
+  ensureThemePreferenceApplied,
+  getStoredThemePreference,
+  listenToSystemThemeChanges,
+} from "@/shared/lib/theme";
 
 type LayoutClientProps = {
   children: ReactNode;
@@ -24,6 +30,21 @@ export function LayoutClient({
   useEffect(() => {
     i18n.changeLanguage(locale);
   }, [locale]);
+
+  useEffect(() => {
+    ensureThemePreferenceApplied();
+
+    const unsubscribe = listenToSystemThemeChanges(() => {
+      const preference = getStoredThemePreference() ?? "system";
+      if (preference === "system") {
+        applyThemePreference("system");
+      }
+    });
+
+    return () => {
+      unsubscribe?.();
+    };
+  }, []);
 
   return (
     <ApolloProvider client={apolloClient}>

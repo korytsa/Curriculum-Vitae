@@ -224,16 +224,16 @@ export function UserProfileDetails({
                 <button
                   type="button"
                   onClick={handleAvatarClick}
-                  className="inline-flex items-center gap-3 text-xl font-semibold text-white"
+                  className="inline-flex items-center gap-3 text-xl font-semibold text-[var(--color-text)]"
                 >
                   <PiUploadSimpleBold className="h-7 w-7" />
                   {t("users.details.profile.upload.button")}
                 </button>
-                <p className="text-neutral-400 font-semibold">
+                <p className="text-[var(--color-text-muted)] font-semibold">
                   {t("users.details.profile.upload.hint")}
                 </p>
                 {selectedAvatarName && (
-                  <p className="text-xs text-neutral-400">
+                  <p className="text-xs text-[var(--color-text-muted)]">
                     {t("users.details.profile.upload.selected", {
                       file: selectedAvatarName,
                     })}
@@ -251,12 +251,12 @@ export function UserProfileDetails({
           )}
         </div>
         <div className="space-y-2">
-          <h2 className="sm:text-2xl font-semibold text-white">
+          <h2 className="sm:text-2xl font-semibold text-[var(--color-text)]">
             {fullName || user.email}
           </h2>
-          <p className="text-sm text-neutral-300">{user.email}</p>
+          <p className="text-sm text-[var(--color-text-muted)]">{user.email}</p>
           {memberSinceText && (
-            <p className="text-sm sm:text-md">
+            <p className="text-sm sm:text-md text-[var(--color-text-muted)]">
               {t("users.details.profile.memberSince", {
                 date: memberSinceText,
               })}

@@ -37,7 +37,7 @@ export default function Sidebar({
   const userMenuDropdownProps = {
     items: userMenuItems,
     align: "top" as const,
-    menuBgColor: "#353535",
+    menuBgColor: "var(--color-surface)",
     menuClassName: "shadow-xl border border-white/5",
   };
 
@@ -83,7 +83,7 @@ export default function Sidebar({
               className="w-full"
               menuWidth="200px"
             >
-              <div className="flex items-center cursor-pointer gap-2 px-3 py-1.5 rounded-full bg-[#353535]">
+              <div className="flex items-center cursor-pointer gap-2 px-3 py-1.5 rounded-full bg-[var(--color-surface)]">
                 <Avatar
                   size="sm"
                   className="bg-red-600 text-white"
