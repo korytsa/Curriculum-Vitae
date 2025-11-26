@@ -12,7 +12,7 @@ export interface InputProps
 }
 
 const INPUT_BASE_CLASSES =
-  "w-full h-12 rounded-md border bg-[var(--color-surface)] px-3 py-3 text-[var(--color-text)] placeholder:font-medium transition-all focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 read-only:cursor-default read-only:opacity-100";
+	"w-full h-12 rounded-md border bg-transparent px-3 py-3 text-[var(--color-text)] placeholder:font-medium transition-all focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 read-only:cursor-default read-only:opacity-100";
 
 const PLACEHOLDER_DEFAULT = "placeholder:text-[var(--color-placeholder)]";
 const PLACEHOLDER_ACTIVE = "placeholder:text-[var(--color-placeholder-active)]";

@@ -384,9 +384,12 @@
     "sidebar": {
       "menu": {
         "employees": "Сотрудники",
+        "projects": "Проекты",
+        "cvs": "Резюме",
+        "departments": "Отделы",
+        "positions": "Должности",
         "skills": "Навыки",
-        "languages": "Языки",
-        "cvs": "Резюме"
+        "languages": "Языки"
       },
       "avatar": {
         "initials": "R",

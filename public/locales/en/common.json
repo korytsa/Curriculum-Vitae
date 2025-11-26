@@ -384,9 +384,12 @@
     "sidebar": {
       "menu": {
         "employees": "Employees",
+        "projects": "Projects",
+        "cvs": "CVs",
+        "departments": "Departments",
+        "positions": "Positions",
         "skills": "Skills",
-        "languages": "Languages",
-        "cvs": "CVs"
+        "languages": "Languages"
       },
       "avatar": {
         "initials": "R",
