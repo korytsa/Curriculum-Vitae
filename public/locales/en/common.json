@@ -1,4 +1,382 @@
 {
-  "title": "Curriculum Vitae"
+  "title": "Curriculum Vitae",
+  "skills": {
+    "heading": "Skills"
+  },
+  "settings": {
+    "heading": "Settings",
+    "description": "Personalize your appearance and language",
+    "appearance": {
+      "title": "Appearance",
+      "options": {
+        "system": "Device settings",
+        "light": "Light",
+        "dark": "Dark"
+      }
+    },
+    "language": {
+      "title": "Language",
+      "options": {
+        "en": "English",
+        "ru": "Russian"
+      }
+    }
+  },
+  "cvs": {
+    "heading": "CVs",
+    "actions": {
+      "create": "Create CV",
+      "details": "Details",
+      "delete": "Delete CV"
+    },
+    "states": {
+      "empty": "No CVs added yet.",
+      "searchEmpty": "No CVs match your search.",
+      "reset": "Reset search"
+    },
+    "table": {
+      "searchPlaceholder": "Search CVs"
+    },
+    "createModal": {
+      "title": "Create CV",
+      "labels": {
+        "name": "Name",
+        "education": "Education",
+        "description": "Description"
+      },
+      "errors": {
+        "nameRequired": "Name is required"
+      },
+      "actions": {
+        "create": "CREATE",
+        "cancel": "CANCEL"
+      }
+    },
+    "details": {
+      "tabs": {
+        "details": "DETAILS",
+        "skills": "SKILLS",
+        "projects": "PROJECTS",
+        "preview": "PREVIEW"
+      },
+      "actions": {
+        "update": "UPDATE"
+      },
+      "placeholders": {
+        "skills": "CV Skills",
+        "projects": "CV Projects",
+        "preview": "CV Preview"
+      },
+      "notifications": {
+        "success": "CV updated successfully",
+        "error": "Failed to update CV"
+      }
+    },
+    "deleteModal": {
+      "title": "Delete CV",
+      "warning": "Are you sure you want to delete this CV? This action cannot be undone.",
+      "cvName": "CV: {{name}}",
+      "actions": {
+        "delete": "DELETE",
+        "cancel": "CANCEL"
+      },
+      "notifications": {
+        "success": "CV deleted successfully"
+      }
+    }
+  },
+  "languages": {
+    "heading": "Languages"
+  },
+  "users": {
+    "heading": "Employees",
+    "details": {
+      "tabs": {
+        "profile": "Profile",
+        "skills": "Skills",
+        "languages": "Languages"
+      },
+      "unknownUser": "User {{id}}",
+      "placeholders": {
+        "profile": "Profile",
+        "skills": "Skills",
+        "languages": "Languages"
+      },
+      "profile": {
+        "heading": "Profile overview",
+        "empty": "No profile information is available yet.",
+        "notSet": "Not specified",
+        "memberSince": "A member since {{date}}",
+        "upload": {
+          "button": "Upload avatar image",
+          "hint": "png, jpg or gif no more than 0.5MB",
+          "selected": "Selected: {{file}}",
+          "maxSize": "Avatar must be no larger than 0.5MB."
+        },
+        "fields": {
+          "firstName": "First Name",
+          "lastName": "Last Name",
+          "department": "Department",
+          "position": "Position",
+          "email": "Email"
+        },
+        "selects": {
+          "departmentPlaceholder": "Department",
+          "positionPlaceholder": "Position",
+          "notProvided": "Not specified"
+        },
+        "actions": {
+          "update": "Update"
+        },
+        "notifications": {
+          "success": "Profile updated successfully.",
+          "error": "Unable to update profile. Please try again."
+        }
+      }
+    }
+  },
+  "features": {
+    "createUserForm": {
+      "roles": {
+        "employee": "Employee",
+        "admin": "Admin"
+      },
+      "labels": {
+        "email": "Email",
+        "password": "Password",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "departmentId": "Department ID",
+        "positionId": "Position ID",
+        "role": "Role"
+      },
+      "placeholders": {
+        "email": "user@example.com",
+        "password": "Strong password",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "numericId": "Numeric ID"
+      },
+      "buttons": {
+        "creating": "CREATING...",
+        "create": "CREATE"
+      },
+      "errors": {
+        "emailRequired": "Email is required",
+        "emailInvalid": "Invalid email address",
+        "passwordRequired": "Password is required",
+        "submitFailed": "Failed to create user. Please try again."
+      },
+      "notifications": {
+        "success": "User {{email}} created as {{role}}."
+      }
+    },
+    "loginForm": {
+      "labels": {
+        "email": "Email",
+        "password": "Password"
+      },
+      "placeholders": {
+        "email": "Enter your email",
+        "password": "Enter your password"
+      },
+      "buttons": {
+        "loggingIn": "LOGGING IN...",
+        "login": "LOG IN"
+      },
+      "errors": {
+        "emailRequired": "Email is required",
+        "emailInvalid": "Invalid email address",
+        "passwordRequired": "Password is required"
+      },
+      "forgotPassword": {
+        "emailMissing": "Please enter your email above so we know where to send the reset link.",
+        "emailInvalid": "Please enter a valid email address.",
+        "success": "If this email exists, we just sent password reset instructions.",
+        "genericError": "Unable to send reset instructions right now.",
+        "sending": "SENDING...",
+        "cta": "FORGOT PASSWORD"
+      }
+    },
+    "signupForm": {
+      "labels": {
+        "email": "Email",
+        "password": "Password"
+      },
+      "placeholders": {
+        "email": "Email",
+        "password": "Password"
+      },
+      "buttons": {
+        "creating": "CREATING ACCOUNT...",
+        "create": "CREATE ACCOUNT"
+      },
+      "errors": {
+        "emailRequired": "Email is required",
+        "emailInvalid": "Invalid email address",
+        "passwordRequired": "Password is required"
+      },
+      "links": {
+        "haveAccount": "I HAVE AN ACCOUNT"
+      }
+    },
+    "resetPassword": {
+      "headings": {
+        "title": "Reset password",
+        "subtitle": "Enter a new password to finish the reset flow"
+      },
+      "labels": {
+        "password": "New password",
+        "confirmPassword": "Confirm password"
+      },
+      "placeholders": {
+        "password": "Enter your new password",
+        "confirmPassword": "Repeat the new password"
+      },
+      "buttons": {
+        "updating": "UPDATING...",
+        "submit": "SET NEW PASSWORD"
+      },
+      "errors": {
+        "passwordRequired": "Password is required",
+        "passwordLength": "Password must contain at least 5 characters.",
+        "confirmRequired": "Please confirm your password",
+        "passwordMismatch": "Passwords do not match."
+      },
+      "feedback": {
+        "missingToken": "Reset token is missing or invalid. Please request a new email.",
+        "success": "Password updated successfully. You can now log in with the new password.",
+        "genericError": "Unable to reset password right now."
+      }
+    },
+    "skills": {
+      "page": {
+        "actions": {
+          "add": "Add Skill",
+          "update": "Update Skill",
+          "delete": "Remove Skills"
+        }
+      },
+      "common": {
+        "confirm": "CONFIRM",
+        "cancel": "CANCEL"
+      },
+      "addForm": {
+        "title": "Add skill",
+        "labels": {
+          "name": "Skill name",
+          "category": "Category",
+          "skill": "Skill",
+          "mastery": "Skill mastery"
+        },
+        "placeholders": {
+          "name": "Enter skill name",
+          "selectSkill": "Select a skill"
+        },
+        "errors": {
+          "nameRequired": "Skill name is required",
+          "categoryRequired": "Category is required",
+          "categoryInvalid": "Invalid category ID",
+          "skillRequired": "Skill is required",
+          "masteryRequired": "Mastery level is required"
+        }
+      },
+      "updateForm": {
+        "title": "Update skill",
+        "labels": {
+          "selectSkill": "Select Skill",
+          "skillName": "New Skill Name",
+          "category": "Category (optional)"
+        },
+        "placeholders": {
+          "selectSkill": "Select a skill...",
+          "skillName": "Enter new skill name",
+          "category": "Keep current category"
+        },
+        "errors": {
+          "skillRequired": "Please select a skill",
+          "nameRequired": "Skill name is required",
+          "categoryInvalid": "Invalid category ID"
+        }
+      },
+      "deleteModal": {
+        "title": "Remove skill",
+        "confirmTitle": "Confirm Deletion",
+        "warning": "Are you sure you want to delete this skill? This action cannot be undone.",
+        "labels": {
+          "skill": "Skill",
+          "skillToDelete": "Skill to delete:"
+        },
+        "placeholders": {
+          "skill": "Select a skill..."
+        },
+        "delete": "DELETE",
+        "errors": {
+          "skillRequired": "Please select a skill to delete"
+        }
+      }
+    },
+    "languages": {
+      "page": {
+        "actions": {
+          "add": "Add Language",
+          "delete": "Remove Languages"
+        }
+      },
+      "common": {
+        "confirm": "CONFIRM",
+        "cancel": "CANCEL"
+      },
+      "addForm": {
+        "title": "Add language",
+        "labels": {
+          "language": "Language",
+          "proficiency": "Language proficiency"
+        },
+        "errors": {
+          "languageRequired": "Language is required",
+          "proficiencyRequired": "Proficiency is required"
+        }
+      },
+      "levels": {
+        "A1": "A1",
+        "A2": "A2",
+        "B1": "B1",
+        "B2": "B2",
+        "C1": "C1",
+        "C2": "C2",
+        "Native": "Native"
+      }
+    },
+    "authPage": {
+      "tabs": {
+        "login": "LOG IN",
+        "signup": "SIGN UP"
+      },
+      "loginPage": {
+        "title": "Welcome back",
+        "subtitle": "Hello again! Log in to continue"
+      },
+      "signupPage": {
+        "title": "Register now",
+        "subtitle": "Welcome! Sign up to continue"
+      }
+    },
+    "sidebar": {
+      "menu": {
+        "employees": "Employees",
+        "skills": "Skills",
+        "languages": "Languages",
+        "cvs": "CVs"
+      },
+      "avatar": {
+        "initials": "R",
+        "name": "Rostislav Harlanov"
+      },
+      "aria": {
+        "expand": "Expand sidebar",
+        "collapse": "Collapse sidebar"
+      }
+    }
+  }
 }
-
