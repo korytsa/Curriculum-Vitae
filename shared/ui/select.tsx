@@ -137,8 +137,8 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
       >
         <div className="relative" ref={selectRef}>
           <div
-            className={cn(
-              "w-full h-12 rounded-md border px-3 py-3 transition-all cursor-pointer bg-[var(--color-surface)]",
+          className={cn(
+              "w-full h-12 rounded-md border px-3 py-3 transition-all cursor-pointer bg-transparent",
               "focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
               "flex items-center justify-between",
               borderColor,

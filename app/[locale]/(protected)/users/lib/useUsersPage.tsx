@@ -13,6 +13,9 @@ interface UsersPageHookResult {
   heading: string;
   searchInputProps: SearchInputProps<User>;
   tableProps: TableProps<User>;
+  canCreateUser: boolean;
+  createUserLabel: string;
+  refreshUsers: () => Promise<void>;
 }
 
 export function useUsersPage(): UsersPageHookResult {
@@ -20,7 +23,7 @@ export function useUsersPage(): UsersPageHookResult {
   const router = useRouter();
   const params = useParams();
   const locale = typeof params?.locale === "string" ? params.locale : undefined;
-  const { users, loading } = useUsers();
+  const { users, loading, refetch } = useUsers();
 
   const [filteredUsers, setFilteredUsers] = useState<User[]>(users);
   const [searchQuery, setSearchQuery] = useState("");
@@ -33,6 +36,7 @@ export function useUsersPage(): UsersPageHookResult {
   const token = accessTokenVar();
   const decodedToken = token ? decodeToken(token) : null;
   const currentUserId = decodedToken?.sub?.toString() || null;
+  const isAdmin = decodedToken?.role === "Admin";
 
   const localePrefix = locale ? `/${locale}` : "";
 
@@ -90,11 +94,17 @@ export function useUsersPage(): UsersPageHookResult {
     </div>
   );
 
+  const refreshUsers = async () => {
+    await refetch();
+  };
+
   const renderRowActions = (row: User) => (
     <UserRowActions
       row={row}
       currentUserId={currentUserId}
       onNavigate={navigateToUser}
+      isAdmin={isAdmin}
+      onDeleted={refreshUsers}
     />
   );
 
@@ -121,5 +131,9 @@ export function useUsersPage(): UsersPageHookResult {
     heading: t("users.heading") || "Employees",
     searchInputProps,
     tableProps,
+    canCreateUser: isAdmin,
+    createUserLabel:
+      t("users.createUser", { defaultValue: "Create user" }) || "Create user",
+    refreshUsers,
   };
 }

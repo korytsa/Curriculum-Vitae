@@ -1,35 +1,24 @@
 import type { ReactNode } from "react";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { requireAuth } from "@/shared/lib/auth-server";
 import { LayoutClient } from "../LayoutClient";
 
 type ProtectedLayoutProps = {
-  children: ReactNode;
-  params: { locale: string };
+	children: ReactNode;
+	params: { locale: string };
 };
 
-export default function ProtectedLayout({
-  children,
-  params,
-}: ProtectedLayoutProps) {
-  const cookieStore = cookies();
-  const token = cookieStore.get("access_token")?.value;
-  const sidebarPreferenceCookie = cookieStore.get("sidebar-collapsed");
-  const hasSidebarPreference = Boolean(sidebarPreferenceCookie);
-  const isSidebarCollapsed = sidebarPreferenceCookie?.value === "true";
+export default function ProtectedLayout({ children, params }: ProtectedLayoutProps) {
+	requireAuth(params.locale);
 
-  if (!token) {
-    redirect(`/${params.locale}/login`);
-  }
+	const cookieStore = cookies();
+	const sidebarPreferenceCookie = cookieStore.get("sidebar-collapsed");
+	const hasSidebarPreference = Boolean(sidebarPreferenceCookie);
+	const isSidebarCollapsed = sidebarPreferenceCookie?.value === "true";
 
-  return (
-    <LayoutClient
-      locale={params.locale}
-      showSidebar
-      initialSidebarCollapsed={isSidebarCollapsed}
-      hasSidebarPreference={hasSidebarPreference}
-    >
-      {children}
-    </LayoutClient>
-  );
+	return (
+		<LayoutClient locale={params.locale} showSidebar initialSidebarCollapsed={isSidebarCollapsed} hasSidebarPreference={hasSidebarPreference}>
+			{children}
+		</LayoutClient>
+	);
 }

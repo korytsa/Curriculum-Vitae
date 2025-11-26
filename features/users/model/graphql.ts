@@ -99,3 +99,11 @@ export const UPLOAD_AVATAR_MUTATION = gql`
     uploadAvatar(avatar: $avatar)
   }
 `;
+
+export const DELETE_USER_MUTATION = gql`
+  mutation DeleteUser($userId: ID!) {
+    deleteUser(userId: $userId) {
+      affected
+    }
+  }
+`;

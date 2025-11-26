@@ -136,6 +136,7 @@ export function useCvsPage(options?: {
     keyExtractor: (row) => row.id,
     emptyState,
     renderActions: renderRowActions,
+    mobileSummaryKeys: ["name", "employee"],
   };
 
   return {

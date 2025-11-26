@@ -19,6 +19,7 @@ export const CVS_TABLE_COLUMNS: TableColumn<CvListItem>[] = [
       </div>
     ),
     className: "align-top w-1/4",
+    mobileHeaderLabel: "Name",
     render: (_value, row) => (
       <span className="text-white font-semibold leading-snug break-words">
         {row.name}
@@ -37,6 +38,7 @@ export const CVS_TABLE_COLUMNS: TableColumn<CvListItem>[] = [
     key: "employee",
     header: "Employee",
     className: "align-top w-1/4",
+    mobileHeaderLabel: "Employee",
     render: (_value, row) => {
       const email = row.user?.email;
       if (email && typeof email === "string" && email.trim()) {
