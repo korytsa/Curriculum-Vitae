@@ -1,8 +1,10 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
+import toast from "react-hot-toast";
 import { Modal, FormStatus } from "@/shared/ui";
 import { useDeleteUser } from "@/features/users";
+import { withErrorToast } from "@/shared/lib";
 import type { User } from "../types";
 
 interface DeleteUserModalProps {
@@ -22,20 +24,25 @@ export default function DeleteUserModal({
   const { deleteUser, loading, error } = useDeleteUser();
 
   const handleDelete = async () => {
-    try {
-      await deleteUser(user.id);
-      await onDeleted?.();
-      onClose();
-    } catch (err) {
-      console.error("Failed to delete user:", err);
-    }
+    await withErrorToast(
+      async () => {
+        await deleteUser(user.id);
+        await onDeleted?.();
+      },
+      {
+        messageKey: "users.deleteModal.notifications.error",
+        defaultMessage: "Failed to delete user. Please try again.",
+      }
+    );
+    toast.success(
+      t("users.deleteModal.toast", { defaultValue: "User deleted" })
+    );
+    onClose();
   };
 
   const fullName = `${user.profile.first_name ?? ""} ${
     user.profile.last_name ?? ""
-  }`
-    .trim()
-    .replace(/\s+/g, " ");
+  }`.trim();
 
   const displayName = fullName || user.email;
 

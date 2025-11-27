@@ -6,6 +6,7 @@ import { MdChevronRight } from "react-icons/md";
 import { IoEllipsisVertical } from "react-icons/io5";
 import toast from "react-hot-toast";
 import { DropdownMenu, type DropdownMenuItem } from "@/shared/ui";
+import { withErrorToast } from "@/shared/lib";
 import type { User } from "../types";
 import UpdateUserModal from "./UpdateUserModal";
 import DeleteUserModal from "./DeleteUserModal";
@@ -58,7 +59,16 @@ export function UserRowActions({
   };
 
   const handleDeleted = async () => {
-    await onDeleted?.();
+    await withErrorToast(
+      async () => {
+        await onDeleted?.();
+      },
+      {
+        messageKey: "users.deleteModal.notifications.refreshError",
+        defaultMessage: "Deletion completed, but something went wrong",
+      }
+    );
+
     toast.success(
       t("users.deleteModal.toast", { defaultValue: "User deleted" })
     );

@@ -1,5 +1,10 @@
 {
   "title": "Curriculum Vitae",
+  "errors": {
+    "unexpected": "Something went wrong. Please try again.",
+    "network": "Network error. Please check your connection.",
+    "unauthorized": "Your session expired. Please log in again."
+  },
   "skills": {
     "heading": "Skills"
   },
@@ -12,7 +17,7 @@
         "system": "Device settings",
         "light": "Light",
         "dark": "Dark"
-      }
+      } 
     },
     "language": {
       "title": "Language",
@@ -104,6 +109,10 @@
       "actions": {
         "delete": "DELETE",
         "cancel": "CANCEL"
+      },
+      "notifications": {
+        "error": "Failed to delete user. Please try again.",
+        "refreshError": "Deletion completed, but something went wrong."
       },
       "toast": "User deleted"
     },

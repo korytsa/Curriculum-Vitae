@@ -3,7 +3,8 @@ import type { CodegenConfig } from "@graphql-codegen/cli";
 const schema =
   process.env.GRAPHQL_SCHEMA_URL ||
   process.env.NEXT_PUBLIC_GRAPHQL_URI ||
-  "https://cv-project-js.inno.ws/api/graphql";
+  "http://localhost:3002/api/graphql"
+  // "https://cv-project-js.inno.ws/api/graphql";
 
 const config: CodegenConfig = {
   schema,
