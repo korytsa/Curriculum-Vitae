@@ -17,7 +17,7 @@
         "system": "Device settings",
         "light": "Light",
         "dark": "Dark"
-      } 
+      }
     },
     "language": {
       "title": "Language",
@@ -40,7 +40,12 @@
       "reset": "Reset search"
     },
     "table": {
-      "searchPlaceholder": "Search CVs"
+      "searchPlaceholder": "Search CVs",
+      "columns": {
+        "name": "Name",
+        "education": "Education",
+        "employee": "Employee"
+      }
     },
     "createModal": {
       "title": "Create CV",
@@ -96,6 +101,15 @@
   "users": {
     "heading": "Employees",
     "createUser": "Create user",
+    "table": {
+      "columns": {
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "department": "Department",
+        "position": "Position"
+      }
+    },
     "actions": {
       "profile": "Profile",
       "update": "Update user",

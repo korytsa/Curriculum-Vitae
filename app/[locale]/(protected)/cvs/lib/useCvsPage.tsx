@@ -1,8 +1,8 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, type SearchInputProps, type TableProps } from "@/shared/ui";
 import { useCvs, type CvListItem } from "@/features/cvs";
-import { CVS_SEARCH_FIELDS, useCvsTableColumns } from "../config/constants";
+import { CVS_SEARCH_FIELDS, getCvsTableColumns } from "../config/constants";
 import { CvRowActions } from "../components/CvRowActions";
 
 type SortDirection = "asc" | "desc" | null;
@@ -31,28 +31,26 @@ export function useCvsPage(options?: {
     setFilteredCvs(cvs);
   }, [cvs]);
 
-  const handleSort = useCallback(() => {
+  const handleSort = () => {
     setSortDirection((prev) => {
       if (prev === "asc") return "desc";
       if (prev === "desc") return "asc";
       return "asc";
     });
-  }, []);
+  };
 
-  const sortedCvs = useMemo(() => {
-    if (!sortDirection) return filteredCvs;
+  const sortedCvs = !sortDirection
+    ? filteredCvs
+    : [...filteredCvs].sort((a, b) => {
+        const aName = a.name.toLowerCase();
+        const bName = b.name.toLowerCase();
 
-    return [...filteredCvs].sort((a, b) => {
-      const aName = a.name.toLowerCase();
-      const bName = b.name.toLowerCase();
-
-      if (sortDirection === "asc") {
-        return aName.localeCompare(bName);
-      } else {
-        return bName.localeCompare(aName);
-      }
-    });
-  }, [filteredCvs, sortDirection]);
+        if (sortDirection === "asc") {
+          return aName.localeCompare(bName);
+        } else {
+          return bName.localeCompare(aName);
+        }
+      });
 
   const handleSearchResults = (results: CvListItem[]) => {
     setFilteredCvs(results);
@@ -105,39 +103,34 @@ export function useCvsPage(options?: {
     />
   );
 
-  const baseColumns = useCvsTableColumns();
+  const baseColumns = getCvsTableColumns(t);
+  const nameColumnLabel = t("cvs.table.columns.name");
 
-  const nameColumnLabel = t("cvs.table.columns.name", { defaultValue: "Name" });
-
-  const columns = useMemo(
-    () =>
-      baseColumns.map((col) => {
-        if (col.key === "name") {
-          return {
-            ...col,
-            header: (
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={handleSort}
-                className="flex items-center gap-2 hover:opacity-80 transition-opacity h-auto p-0 border-none text-white"
-              >
-                <span>{nameColumnLabel}</span>
-                <span className="text-xs text-white/50">
-                  {sortDirection === "asc"
-                    ? " ↑"
-                    : sortDirection === "desc"
-                      ? " ↓"
-                      : " ↑"}
-                </span>
-              </Button>
-            ),
-          };
-        }
-        return col;
-      }),
-    [baseColumns, handleSort, nameColumnLabel, sortDirection]
-  );
+  const columns = baseColumns.map((col) => {
+    if (col.key === "name") {
+      return {
+        ...col,
+        header: (
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={handleSort}
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity h-auto p-0 border-none text-white"
+          >
+            <span>{nameColumnLabel}</span>
+            <span className="text-xs text-white/50">
+              {sortDirection === "asc"
+                ? " ↑"
+                : sortDirection === "desc"
+                  ? " ↓"
+                  : " ↑"}
+            </span>
+          </Button>
+        ),
+      };
+    }
+    return col;
+  });
 
   const tableProps: TableProps<CvListItem> = {
     data: sortedCvs,

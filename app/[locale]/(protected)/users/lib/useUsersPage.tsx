@@ -5,7 +5,7 @@ import { useUsers } from "@/features/users";
 import { accessTokenVar, setAccessToken } from "@/shared/config/apollo";
 import { decodeToken } from "@/shared/lib/jwt";
 import { type TableProps, type SearchInputProps, Button } from "@/shared/ui";
-import { USERS_SEARCH_FIELDS, useUsersTableColumns } from "../config/constants";
+import { USERS_SEARCH_FIELDS, getUsersTableColumns } from "../config/constants";
 import type { User } from "../types";
 import { UserRowActions } from "../components/UserRowActions";
 
@@ -24,7 +24,7 @@ export function useUsersPage(): UsersPageHookResult {
   const params = useParams();
   const locale = typeof params?.locale === "string" ? params.locale : undefined;
   const { users, loading, refetch } = useUsers();
-  const columns = useUsersTableColumns();
+  const columns = getUsersTableColumns(t);
 
   const [filteredUsers, setFilteredUsers] = useState<User[]>(users);
   const [searchQuery, setSearchQuery] = useState("");

@@ -6,7 +6,6 @@ import { MdChevronRight } from "react-icons/md";
 import { IoEllipsisVertical } from "react-icons/io5";
 import toast from "react-hot-toast";
 import { DropdownMenu, type DropdownMenuItem } from "@/shared/ui";
-import { withErrorToast } from "@/shared/lib";
 import type { User } from "../types";
 import UpdateUserModal from "./UpdateUserModal";
 import DeleteUserModal from "./DeleteUserModal";
@@ -33,13 +32,9 @@ export function UserRowActions({
   const isCurrentUser = Boolean(currentUserId && row.id === currentUserId);
   const canDeleteUser = isAdmin && !isCurrentUser;
 
-  const navigateToUser = () => {
-    onNavigate(row.id);
-  };
-
   const handleNavigate = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    navigateToUser();
+    onNavigate(row.id);
   };
 
   const handleOpenModal = () => {
@@ -59,26 +54,22 @@ export function UserRowActions({
   };
 
   const handleDeleted = async () => {
-    await withErrorToast(
-      async () => {
-        await onDeleted?.();
-      },
-      {
-        messageKey: "users.deleteModal.notifications.refreshError",
-        defaultMessage: "Deletion completed, but something went wrong",
-      }
-    );
-
-    toast.success(
-      t("users.deleteModal.toast", { defaultValue: "User deleted" })
-    );
+    try {
+      await onDeleted?.();
+    } catch (error) {
+      toast.error(
+        t("users.deleteModal.notifications.refreshError", {
+          defaultValue: "Deletion completed, but something went wrong",
+        })
+      );
+    }
   };
 
   if (isCurrentUser || isAdmin) {
     const menuItems: DropdownMenuItem[] = [
       {
         label: t("users.actions.profile", { defaultValue: "Profile" }),
-        onClick: navigateToUser,
+        onClick: () => onNavigate(row.id),
       },
       {
         label: t("users.actions.update", { defaultValue: "Update user" }),

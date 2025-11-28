@@ -37,7 +37,18 @@ const getNetworkErrorMessage = () =>
 const getFallbackErrorMessage = () =>
   translate("errors.unexpected", "Something went wrong. Please try again.");
 
-const errorLink = onError(({ error }) => {
+export type ErrorHandler = (message: string, error: unknown) => void;
+
+export interface ApolloErrorContext {
+  skipErrorToast?: boolean;
+  errorHandler?: ErrorHandler;
+}
+
+const errorLink = onError(({ error, operation }) => {
+  const context = operation.getContext() as ApolloErrorContext;
+  const skipErrorToast = context.skipErrorToast === true;
+  const customErrorHandler = context.errorHandler;
+
   const graphQLErrors = CombinedGraphQLErrors.is(error)
     ? (error.errors as readonly GraphQLError[])
     : undefined;
@@ -66,6 +77,43 @@ const errorLink = onError(({ error }) => {
     toast.error(getUnauthorizedMessage());
     setAccessToken(null);
     redirectToLogin();
+    return;
+  }
+
+  if (customErrorHandler) {
+    const userFacingMessages: string[] = [];
+
+    graphQLErrors?.forEach((graphQLError: GraphQLError) => {
+      const userMessage =
+        (graphQLError.extensions?.userMessage as string | undefined) ||
+        graphQLError.message;
+      if (userMessage) {
+        userFacingMessages.push(userMessage);
+      }
+    });
+
+    if (networkError && !hasAuthNetworkError) {
+      userFacingMessages.push(
+        (networkError as Error)?.message || getNetworkErrorMessage()
+      );
+    } else if (!CombinedGraphQLErrors.is(error) && error) {
+      userFacingMessages.push(error.message ?? getNetworkErrorMessage());
+    }
+
+    if (!userFacingMessages.length) {
+      userFacingMessages.push(getFallbackErrorMessage());
+    }
+
+    customErrorHandler(
+      userFacingMessages.length > 0
+        ? userFacingMessages[0]
+        : getFallbackErrorMessage(),
+      error
+    );
+    return;
+  }
+
+  if (skipErrorToast) {
     return;
   }
 
