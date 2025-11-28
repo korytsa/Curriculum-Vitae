@@ -17,6 +17,10 @@ export interface CreateUserFormValues {
   role: CreateUserFormRole;
 }
 
+interface UseCreateUserFormOptions {
+  onSuccess?: (message: string) => void;
+}
+
 export interface CreateUserFormHook {
   formik: FormikProps<CreateUserFormValues>;
   successMessage: string | null;
@@ -24,11 +28,14 @@ export interface CreateUserFormHook {
   errorMessage: string | null;
 }
 
-export function useCreateUserForm(): CreateUserFormHook {
+export function useCreateUserForm(
+  options: UseCreateUserFormOptions = {}
+): CreateUserFormHook {
   const { createUser, loading, error } = useCreateUser();
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const { t } = useTranslation();
+  const { onSuccess } = options;
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const initialValues: CreateUserFormValues = {
@@ -85,13 +92,13 @@ export function useCreateUserForm(): CreateUserFormHook {
       try {
         const payload = mapValuesToCreatePayload(values);
         await createUser(payload);
+        const successText = t("features.createUserForm.notifications.success", {
+          email: payload.auth.email,
+          role: payload.role,
+        });
 
-        setSuccessMessage(
-          t("features.createUserForm.notifications.success", {
-            email: payload.auth.email,
-            role: payload.role,
-          })
-        );
+        setSuccessMessage(successText);
+        onSuccess?.(successText);
         helpers.resetForm();
       } catch (submitError) {
         const fallbackMessage =

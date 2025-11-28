@@ -7,17 +7,18 @@ import {
   resolveTableRowKey,
 } from "./utils";
 
-const MOBILE_SUMMARY_COLUMN_KEYS = new Set([
+const DEFAULT_MOBILE_SUMMARY_KEYS = [
   "avatar",
   "first_name",
   "department_name",
-]);
+] as const;
 
 export interface TableColumn<T> {
   key: keyof T | string;
   header: string | React.ReactNode;
   render?: (value: unknown, row: T) => React.ReactNode;
   className?: string;
+  mobileHeaderLabel?: string;
 }
 
 export interface TableProps<T> {
@@ -30,6 +31,7 @@ export interface TableProps<T> {
   emptyState?: React.ReactNode;
   loading?: boolean;
   skeletonRows?: number;
+  mobileSummaryKeys?: Array<keyof T | string>;
 }
 
 export function Table<T extends Record<string, unknown>>({
@@ -42,19 +44,51 @@ export function Table<T extends Record<string, unknown>>({
   emptyState,
   loading = false,
   skeletonRows = 8,
+  mobileSummaryKeys,
 }: TableProps<T>) {
   const skeletonRowIndices = createSkeletonArray(skeletonRows);
 
-  const mobileColumnMap = React.useMemo(() => {
-    const map = new Map<string, TableColumn<T>>();
-    columns.forEach((column) => {
-      const key = String(column.key);
-      if (MOBILE_SUMMARY_COLUMN_KEYS.has(key)) {
-        map.set(key, column);
-      }
-    });
-    return map;
-  }, [columns]);
+  const mobileSummaryConfig = React.useMemo(() => {
+    const keysToUse =
+      mobileSummaryKeys && mobileSummaryKeys.length > 0
+        ? mobileSummaryKeys.map((key) => String(key))
+        : Array.from(DEFAULT_MOBILE_SUMMARY_KEYS);
+
+    const columnsByKey = new Map(
+      columns.map((column) => [String(column.key), column])
+    );
+
+    const summaryColumns = keysToUse
+      .map((key) => columnsByKey.get(key))
+      .filter((column): column is TableColumn<T> => Boolean(column));
+
+    const avatarColumn =
+      summaryColumns.find((column) => String(column.key) === "avatar") ?? null;
+    const textColumns = summaryColumns.filter(
+      (column) => String(column.key) !== "avatar"
+    );
+
+    return {
+      avatarColumn,
+      primaryColumn: textColumns[0] ?? null,
+      secondaryColumn: textColumns[1] ?? null,
+      hasSummary: summaryColumns.length > 0,
+    };
+  }, [columns, mobileSummaryKeys]);
+
+  const {
+    avatarColumn,
+    primaryColumn,
+    secondaryColumn,
+    hasSummary: hasMobileSummary,
+  } = mobileSummaryConfig;
+
+  const getMobileHeaderLabel = (column?: TableColumn<T> | null) => {
+    if (!column) return "";
+    if (column.mobileHeaderLabel) return column.mobileHeaderLabel;
+    if (typeof column.header === "string") return column.header;
+    return "";
+  };
 
   const defaultEmptyState = (
     <span className="text-sm text-neutral-500">No data available</span>
@@ -64,9 +98,6 @@ export function Table<T extends Record<string, unknown>>({
 
   const renderMobileRow = (row: T, index: number) => {
     const key = resolveTableRowKey(row, index, keyExtractor);
-    const avatarColumn = mobileColumnMap.get("avatar");
-    const firstNameColumn = mobileColumnMap.get("first_name");
-    const departmentColumn = mobileColumnMap.get("department_name");
 
     return (
       <div key={key} className="px-4 py-3 border-b border-white/15">
@@ -76,15 +107,15 @@ export function Table<T extends Record<string, unknown>>({
               {getTableCellContent(avatarColumn, row)}
             </div>
           )}
-          <div className="flex-1 flex items-center justify-between min-w-0">
-            {firstNameColumn && (
-              <div className="text-white/80 text-sm font-medium truncate">
-                {getTableCellContent(firstNameColumn, row)}
+          <div className="flex-1 flex items-center justify-between min-w-0 gap-4">
+            {primaryColumn && (
+              <div className="text-white/80 text-sm font-medium truncate flex-1">
+                {getTableCellContent(primaryColumn, row)}
               </div>
             )}
-            {departmentColumn && (
-              <div className="text-white/80 text-sm ml-4 flex-shrink-0">
-                {getTableCellContent(departmentColumn, row)}
+            {secondaryColumn && (
+              <div className="text-white/80 text-sm text-right flex-shrink-0">
+                {getTableCellContent(secondaryColumn, row)}
               </div>
             )}
           </div>
@@ -98,7 +129,13 @@ export function Table<T extends Record<string, unknown>>({
 
   return (
     <>
-      <div className={cn("w-full overflow-x-auto hidden md:block", className)}>
+      <div
+        className={cn(
+          "w-full overflow-x-auto",
+          hasMobileSummary ? "hidden md:block" : "",
+          className
+        )}
+      >
         <table className="w-full border-collapse">
           <thead>
             <tr className="border-b border-white/15">
@@ -215,42 +252,57 @@ export function Table<T extends Record<string, unknown>>({
         </table>
       </div>
 
-      <div className={cn("w-full md:hidden", className)}>
-        <div className="flex items-center gap-4 px-4 py-3 border-b border-white/15 mb-2">
-          <div className="flex-1 flex">
-            <span className="text-sm font-bold text-white">First Name</span>
-            <div className="flex-1"></div>
-            <span className="text-sm font-bold text-white">Department</span>
-          </div>
-          {renderActions && <div className="w-10"></div>}
-        </div>
-
-        <div>
-          {loading ? (
-            skeletonRowIndices.map((index) => (
-              <div
-                key={`skeleton-mobile-${index}`}
-                className="px-4 py-3 border-b border-white/15"
-              >
-                <div className="flex items-center gap-4">
-                  <Skeleton className="h-10 w-10 rounded-full flex-shrink-0" />
-                  <div className="flex-1 flex items-center justify-between">
-                    <Skeleton className="h-5 w-32" />
-                    <Skeleton className="h-4 w-24" />
-                  </div>
-                  {renderActions && (
-                    <Skeleton className="h-5 w-5 rounded flex-shrink-0" />
-                  )}
-                </div>
+      {hasMobileSummary && (
+        <div className={cn("w-full md:hidden", className)}>
+          {(primaryColumn || secondaryColumn) && (
+            <div className="flex items-center gap-4 px-4 py-3 border-b border-white/15 mb-2">
+              {avatarColumn && <div className="w-10" />}
+              <div className="flex-1 flex items-center">
+                {primaryColumn && (
+                  <span className="text-sm font-bold text-white">
+                    {getMobileHeaderLabel(primaryColumn)}
+                  </span>
+                )}
+                <div className="flex-1" />
+                {secondaryColumn && (
+                  <span className="text-sm font-bold text-white">
+                    {getMobileHeaderLabel(secondaryColumn)}
+                  </span>
+                )}
               </div>
-            ))
-          ) : data.length === 0 ? (
-            <div className="px-4 py-8 text-center">{emptyStateContent}</div>
-          ) : (
-            data.map((row, index) => renderMobileRow(row, index))
+              {renderActions && <div className="w-10" />}
+            </div>
           )}
+
+          <div>
+            {loading ? (
+              skeletonRowIndices.map((index) => (
+                <div
+                  key={`skeleton-mobile-${index}`}
+                  className="px-4 py-3 border-b border-white/15"
+                >
+                  <div className="flex items-center gap-4">
+                    {avatarColumn ? (
+                      <Skeleton className="h-10 w-10 rounded-full flex-shrink-0" />
+                    ) : null}
+                    <div className="flex-1 flex items-center justify-between">
+                      <Skeleton className="h-5 w-32" />
+                      {secondaryColumn && <Skeleton className="h-4 w-24" />}
+                    </div>
+                    {renderActions && (
+                      <Skeleton className="h-5 w-5 rounded flex-shrink-0" />
+                    )}
+                  </div>
+                </div>
+              ))
+            ) : data.length === 0 ? (
+              <div className="px-4 py-8 text-center">{emptyStateContent}</div>
+            ) : (
+              data.map((row, index) => renderMobileRow(row, index))
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 }
