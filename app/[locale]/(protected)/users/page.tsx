@@ -1,20 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import toast from "react-hot-toast";
 import { Table, SearchInput, Button, Modal } from "@/shared/ui";
 import { CreateUserForm } from "@/features/create-user-form";
 import { useUsersPage } from "./lib/useUsersPage";
 
 export default function UsersPage() {
-  const {
-    heading,
-    searchInputProps,
-    tableProps,
-    canCreateUser,
-    createUserLabel,
-    refreshUsers,
-  } = useUsersPage();
+  const pathname = usePathname();
+  const { heading, searchInputProps, tableProps, canCreateUser, createUserLabel, refreshUsers } = useUsersPage();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const handleOpenCreateModal = () => setIsCreateModalOpen(true);
   const handleCloseCreateModal = () => setIsCreateModalOpen(false);
@@ -28,6 +23,8 @@ export default function UsersPage() {
     }
   };
 
+  const isUsersRootPath = pathname ? /\/[a-z]{2}\/users\/?$|\/users\/?$/i.test(pathname) : false;
+
   return (
     <section>
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -39,12 +36,7 @@ export default function UsersPage() {
         </div>
         {canCreateUser ? (
           <div className="pr-10 pt-3">
-            <Button
-              variant="dangerGhost"
-              size="sm"
-              className="mt-1"
-              onClick={handleOpenCreateModal}
-            >
+            <Button variant="dangerGhost" size="sm" className="mt-1" onClick={handleOpenCreateModal}>
               <span className="text-xl leading-none">+</span>
               {createUserLabel}
             </Button>
@@ -52,15 +44,10 @@ export default function UsersPage() {
         ) : null}
       </div>
       <div className="mt-4">
-        <Table {...tableProps} />
+        <Table {...tableProps} showRowBorders={isUsersRootPath} />
       </div>
       {canCreateUser ? (
-        <Modal
-          open={isCreateModalOpen}
-          onClose={handleCloseCreateModal}
-          title={createUserLabel}
-          className="max-w-3xl"
-        >
+        <Modal open={isCreateModalOpen} onClose={handleCloseCreateModal} title={createUserLabel} className="max-w-3xl">
           <CreateUserForm showHeading={false} onSuccess={handleCreateSuccess} />
         </Modal>
       ) : null}

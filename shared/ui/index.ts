@@ -50,3 +50,5 @@ export { EnvironmentField, SelectLikeField } from "./environment-field";
 export type { EnvironmentFieldProps, SelectLikeFieldProps } from "./environment-field";
 export { ConfirmDeleteModal } from "./confirm-delete-modal";
 export type { ConfirmDeleteModalProps } from "./confirm-delete-modal";
+export { TableRowActions } from "./table-row-actions";
+export type { TableRowActionsProps } from "./table-row-actions";

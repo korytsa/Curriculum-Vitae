@@ -24,6 +24,7 @@ export interface TableProps<T> {
   loading?: boolean;
   skeletonRows?: number;
   mobileSummaryKeys?: Array<keyof T | string>;
+  showRowBorders?: boolean;
 }
 
 export function Table<T extends Record<string, unknown>>({
@@ -37,6 +38,7 @@ export function Table<T extends Record<string, unknown>>({
   loading = false,
   skeletonRows = 8,
   mobileSummaryKeys,
+  showRowBorders = false,
 }: TableProps<T>) {
   const skeletonRowIndices = createSkeletonArray(skeletonRows);
 
@@ -135,7 +137,7 @@ export function Table<T extends Record<string, unknown>>({
                 const extraRowColSpan = columns.length;
                 return (
                   <React.Fragment key={key}>
-                    <tr>
+                    <tr className={cn(showRowBorders && "border-b border-white/15")}>
                       {columns.map((column) => {
                         const cellContent = getTableCellContent(column, row);
                         return (
@@ -158,7 +160,7 @@ export function Table<T extends Record<string, unknown>>({
                       )}
                     </tr>
                     {hasDescription && (
-                      <tr>
+                      <tr className={cn(showRowBorders && "border-b border-white/15")}>
                         <td
                           colSpan={extraRowColSpan}
                           className="px-4 py-2 text-sm text-white/70 "
@@ -173,7 +175,7 @@ export function Table<T extends Record<string, unknown>>({
                       </tr>
                     )}
                     {hasResponsibilities && (
-                      <tr>
+                      <tr className={cn(showRowBorders && "border-b border-white/15")}>
                         <td colSpan={extraRowColSpan} className="px-4 pb-4 pt-1 text-xs text-white/80">
                           <div className="flex flex-wrap gap-2">
                             {responsibilities.map((item) => (

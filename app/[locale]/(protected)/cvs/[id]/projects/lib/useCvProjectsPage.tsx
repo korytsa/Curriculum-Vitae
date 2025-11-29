@@ -6,17 +6,17 @@ import { useTranslation } from "react-i18next";
 import { useAddCvProject, useCv, useRemoveCvProject, useUpdateCvProject } from "@/features/cvs";
 import { useProjects } from "@/features/projects";
 import type { CvProject, Project } from "@/shared/graphql/generated";
-import { Loader, type SearchInputProps, type TableProps } from "@/shared/ui";
+import { Loader, type SearchInputProps, type TableProps, TableRowActions, type DropdownMenuItem } from "@/shared/ui";
 import {
   CV_PROJECTS_SEARCH_FIELDS_LIST,
   buildCvProjectsColumnLabels,
   createCvProjectsColumns,
+  buildProjectRowActionsLabels,
   type CvProjectsActiveField,
   type CvProjectsDirection,
   type ProjectModalMode,
 } from "../config/constants";
 import type { AddProjectFormInitialProject, AddProjectModalSubmitPayload } from "./useAddProjectForm";
-import { ProjectRowActions } from "../components/ProjectRowActions";
 
 type ProjectSearchState = {
   searchInputProps: SearchInputProps<CvProject>;
@@ -312,6 +312,8 @@ export function useCvProjectsPage({ cvId, locale }: UseCvProjectsPageParams): Us
     });
   };
 
+  const projectRowActionsLabels = buildProjectRowActionsLabels(translate);
+
   const columns = createCvProjectsColumns({
     labels: columnLabels,
     formatDate,
@@ -321,7 +323,28 @@ export function useCvProjectsPage({ cvId, locale }: UseCvProjectsPageParams): Us
     onToggleEndDate: () => toggleField("end_date"),
     activeField,
     direction,
-    renderRowActions: (row) => <ProjectRowActions row={row} onUpdate={handleEditProject} onDeleteRequest={handleDeleteRequest} />,
+    renderRowActions: (row) => {
+      const menuItems: DropdownMenuItem[] = [
+        {
+          label: projectRowActionsLabels.update,
+          onClick: () => handleEditProject(row),
+        },
+        {
+          label: projectRowActionsLabels.remove,
+          onClick: () => handleDeleteRequest(row),
+        },
+      ];
+
+      return (
+        <TableRowActions
+          items={menuItems}
+          ariaLabel={projectRowActionsLabels.openMenu}
+          menuWidth="155px"
+          buttonClassName="text-white hover:bg-white/10"
+          iconClassName="w-5 h-5 text-white"
+        />
+      );
+    },
   });
 
   const tableProps: TableProps<CvProject> = {

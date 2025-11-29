@@ -3,9 +3,8 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { MdChevronRight } from "react-icons/md";
-import { IoEllipsisVertical } from "react-icons/io5";
 import toast from "react-hot-toast";
-import { Button, DropdownMenu, type DropdownMenuItem } from "@/shared/ui";
+import { Button, TableRowActions, type DropdownMenuItem } from "@/shared/ui";
 import type { User } from "../types";
 import UpdateUserModal from "./UpdateUserModal";
 import DeleteUserModal from "./DeleteUserModal";
@@ -24,7 +23,6 @@ export function UserRowActions({ row, onNavigate, currentUserId, isAdmin = false
   const { t } = useTranslation();
   const labelTarget = row.profile.first_name || row.email;
   const isCurrentUser = Boolean(currentUserId && row.id === currentUserId);
-  const canDeleteUser = isAdmin && !isCurrentUser;
 
   const navigateToUser = () => {
     onNavigate(row.id);
@@ -68,43 +66,38 @@ export function UserRowActions({ row, onNavigate, currentUserId, isAdmin = false
       },
     ];
 
-    if (isAdmin) {
-      menuItems.push({ type: "separator" });
-      menuItems.push({
-        label: t("users.actions.delete", { defaultValue: "Delete user" }),
-        onClick: handleOpenDeleteModal,
-        disabled: !canDeleteUser,
-      });
-    }
+    menuItems.push({
+      label: t("users.actions.delete", { defaultValue: "Delete user" }),
+      onClick: isAdmin ? handleOpenDeleteModal : undefined,
+      disabled: !isAdmin,
+    });
 
     return (
       <>
-        <DropdownMenu offsetY={40} align="right" menuWidth="130px" items={menuItems} menuBgColor="#2F2F2F" menuClassName="border border-white/5 shadow-xl">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="text-white/80 hover:bg-white/10"
-            aria-label={t("users.actions.openMenu", {
-              defaultValue: "Open actions",
-            })}
-            icon={<IoEllipsisVertical className="w-5 h-5 text-white/80" />}
-          />
-        </DropdownMenu>
+        <TableRowActions
+          items={menuItems}
+          ariaLabel={t("users.actions.openMenu", {
+            defaultValue: "Open actions",
+          })}
+          menuWidth="130px"
+        />
         <UpdateUserModal user={row} open={isModalOpen} onClose={handleCloseModal} />
-        {isAdmin ? <DeleteUserModal user={row} open={isDeleteModalOpen && canDeleteUser} onClose={handleCloseDeleteModal} onDeleted={handleDeleted} /> : null}
+        {isAdmin ? <DeleteUserModal user={row} open={isDeleteModalOpen} onClose={handleCloseDeleteModal} onDeleted={handleDeleted} /> : null}
       </>
     );
   }
 
   return (
-    <button
+    <Button
       type="button"
+      variant="ghost"
       onClick={handleNavigate}
-      className="flex h-10 w-10 items-center justify-center rounded-full text-white/80 transition-colors hover:bg-white/10"
-      aria-label={`Navigate to ${labelTarget} profile`}
-    >
-      <MdChevronRight className="w-5 h-5 text-white/80" />
-    </button>
+      size="icon"
+      className="text-white/80 hover:bg-white/10"
+      aria-label={t("users.actions.openMenu", {
+        defaultValue: "Open actions",
+      })}
+      icon={<MdChevronRight className="w-5 h-5 text-white/80" />}
+    />
   );
 }
