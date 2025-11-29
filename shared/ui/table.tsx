@@ -1,17 +1,9 @@
 import * as React from "react";
 import { cn } from "@/shared/lib";
 import { Skeleton } from "./skeleton";
-import {
-  createSkeletonArray,
-  getTableCellContent,
-  resolveTableRowKey,
-} from "./utils";
+import { createSkeletonArray, getTableCellContent, resolveTableRowKey } from "./utils/table";
 
-const DEFAULT_MOBILE_SUMMARY_KEYS = [
-  "avatar",
-  "first_name",
-  "department_name",
-] as const;
+const DEFAULT_MOBILE_SUMMARY_KEYS = ["avatar", "first_name", "department_name"] as const;
 
 export interface TableColumn<T> {
   key: keyof T | string;
@@ -49,24 +41,14 @@ export function Table<T extends Record<string, unknown>>({
   const skeletonRowIndices = createSkeletonArray(skeletonRows);
 
   const mobileSummaryConfig = React.useMemo(() => {
-    const keysToUse =
-      mobileSummaryKeys && mobileSummaryKeys.length > 0
-        ? mobileSummaryKeys.map((key) => String(key))
-        : Array.from(DEFAULT_MOBILE_SUMMARY_KEYS);
+    const keysToUse = mobileSummaryKeys && mobileSummaryKeys.length > 0 ? mobileSummaryKeys.map((key) => String(key)) : Array.from(DEFAULT_MOBILE_SUMMARY_KEYS);
 
-    const columnsByKey = new Map(
-      columns.map((column) => [String(column.key), column])
-    );
+    const columnsByKey = new Map(columns.map((column) => [String(column.key), column]));
 
-    const summaryColumns = keysToUse
-      .map((key) => columnsByKey.get(key))
-      .filter((column): column is TableColumn<T> => Boolean(column));
+    const summaryColumns = keysToUse.map((key) => columnsByKey.get(key)).filter((column): column is TableColumn<T> => Boolean(column));
 
-    const avatarColumn =
-      summaryColumns.find((column) => String(column.key) === "avatar") ?? null;
-    const textColumns = summaryColumns.filter(
-      (column) => String(column.key) !== "avatar"
-    );
+    const avatarColumn = summaryColumns.find((column) => String(column.key) === "avatar") ?? null;
+    const textColumns = summaryColumns.filter((column) => String(column.key) !== "avatar");
 
     return {
       avatarColumn,
@@ -76,12 +58,7 @@ export function Table<T extends Record<string, unknown>>({
     };
   }, [columns, mobileSummaryKeys]);
 
-  const {
-    avatarColumn,
-    primaryColumn,
-    secondaryColumn,
-    hasSummary: hasMobileSummary,
-  } = mobileSummaryConfig;
+  const { avatarColumn, primaryColumn, secondaryColumn, hasSummary: hasMobileSummary } = mobileSummaryConfig;
 
   const getMobileHeaderLabel = (column?: TableColumn<T> | null) => {
     if (!column) return "";
@@ -90,9 +67,7 @@ export function Table<T extends Record<string, unknown>>({
     return "";
   };
 
-  const defaultEmptyState = (
-    <span className="text-sm text-neutral-500">No data available</span>
-  );
+  const defaultEmptyState = <span className="text-sm text-neutral-500">No data available</span>;
 
   const emptyStateContent = emptyState || defaultEmptyState;
 
@@ -102,26 +77,12 @@ export function Table<T extends Record<string, unknown>>({
     return (
       <div key={key} className="px-4 py-3 border-b border-white/15">
         <div className="flex items-center gap-4">
-          {avatarColumn && (
-            <div className="flex-shrink-0">
-              {getTableCellContent(avatarColumn, row)}
-            </div>
-          )}
+          {avatarColumn && <div className="flex-shrink-0">{getTableCellContent(avatarColumn, row)}</div>}
           <div className="flex-1 flex items-center justify-between min-w-0 gap-4">
-            {primaryColumn && (
-              <div className="text-white/80 text-sm font-medium truncate flex-1">
-                {getTableCellContent(primaryColumn, row)}
-              </div>
-            )}
-            {secondaryColumn && (
-              <div className="text-white/80 text-sm text-right flex-shrink-0">
-                {getTableCellContent(secondaryColumn, row)}
-              </div>
-            )}
+            {primaryColumn && <div className="text-white/80 text-sm font-medium truncate flex-1">{getTableCellContent(primaryColumn, row)}</div>}
+            {secondaryColumn && <div className="text-white/80 text-sm text-right flex-shrink-0">{getTableCellContent(secondaryColumn, row)}</div>}
           </div>
-          {renderActions && (
-            <div className="flex-shrink-0">{renderActions(row)}</div>
-          )}
+          {renderActions && <div className="flex-shrink-0">{renderActions(row)}</div>}
         </div>
       </div>
     );
@@ -129,74 +90,49 @@ export function Table<T extends Record<string, unknown>>({
 
   return (
     <>
-      <div
-        className={cn(
-          "w-full overflow-x-auto",
-          hasMobileSummary ? "hidden md:block" : "",
-          className
-        )}
-      >
+      <div className={cn("w-full overflow-x-auto", hasMobileSummary ? "hidden md:block" : "", className)}>
         <table className="w-full border-collapse">
           <thead>
             <tr className="border-b border-white/15">
               {columns.map((column) => (
-                <th
-                  key={String(column.key)}
-                  className={cn(
-                    "px-4 py-4 text-left text-sm font-bold text-white",
-                    column.className
-                  )}
-                >
+                <th key={String(column.key)} className={cn("px-4 py-4 text-left text-sm font-bold text-white", column.className)}>
                   {column.header}
                 </th>
               ))}
-              {renderActions && (
-                <th className="px-4 py-4 text-left text-sm font-bold text-white/80" />
-              )}
+              {renderActions && <th className="px-4 py-4 text-right text-sm font-bold text-white/80 w-10" />}
             </tr>
           </thead>
           <tbody>
             {loading ? (
               skeletonRowIndices.map((index) => (
-                <tr
-                  key={`skeleton-${index}`}
-                  className="border-b border-white/15"
-                >
+                <tr key={`skeleton-${index}`} className="border-b border-white/15">
                   {columns.map((column) => (
-                    <td
-                      key={String(column.key)}
-                      className={cn("px-4 py-4", column.className)}
-                    >
-                      {column.key === "avatar" ? (
-                        <Skeleton className="h-10 w-10 rounded-full" />
-                      ) : (
-                        <Skeleton className="h-5 w-full" />
-                      )}
+                    <td key={String(column.key)} className={cn("px-4 py-4", column.className)}>
+                      {column.key === "avatar" ? <Skeleton className="h-10 w-10 rounded-full" /> : <Skeleton className="h-5 w-full" />}
                     </td>
                   ))}
                   {renderActions && (
-                    <td className="px-4 py-4">
-                      <Skeleton className="h-5 w-5 rounded" />
+                    <td className="px-4 py-4 text-right">
+                      <Skeleton className="h-5 w-5 rounded inline-block" />
                     </td>
                   )}
                 </tr>
               ))
             ) : data.length === 0 ? (
               <tr>
-                <td
-                  colSpan={columns.length + (renderActions ? 1 : 0)}
-                  className="px-4 py-8 text-center"
-                >
+                <td colSpan={columns.length + (renderActions ? 1 : 0)} className="px-4 py-8 text-center">
                   {emptyStateContent}
                 </td>
               </tr>
             ) : (
               data.map((row, index) => {
                 const key = resolveTableRowKey(row, index, keyExtractor);
-                const description = (row as { description?: string | null })
-                  .description;
+                const description = (row as { description?: string | null }).description;
+                const rawResponsibilities = (row as { responsibilities?: string[] | null }).responsibilities;
+                const responsibilities = Array.isArray(rawResponsibilities) ? rawResponsibilities.map((value) => value?.trim()).filter(Boolean) : [];
                 const hasDescription = Boolean(description?.trim());
-                const descriptionColSpan = columns.length;
+                const hasResponsibilities = responsibilities.length > 0;
+                const extraRowColSpan = columns.length;
                 return (
                   <React.Fragment key={key}>
                     <tr>
@@ -205,10 +141,7 @@ export function Table<T extends Record<string, unknown>>({
                         return (
                           <td
                             key={String(column.key)}
-                            className={cn(
-                              "px-4 py-4 text-sm text-white",
-                              column.className
-                            )}
+                            className={cn("px-4 py-4 text-sm text-white", column.className)}
                             style={{
                               wordBreak: "break-word",
                               overflowWrap: "break-word",
@@ -219,20 +152,15 @@ export function Table<T extends Record<string, unknown>>({
                         );
                       })}
                       {renderActions && (
-                        <td
-                          className="px-4 py-4"
-                          rowSpan={hasDescription ? 2 : 1}
-                        >
-                          <div className="flex items-center justify-center">
-                            {renderActions(row)}
-                          </div>
+                        <td className="px-4 py-4 text-right align-top" rowSpan={hasDescription ? 2 + (hasResponsibilities ? 1 : 0) : hasResponsibilities ? 2 : 1}>
+                          <div className="flex items-center justify-end">{renderActions(row)}</div>
                         </td>
                       )}
                     </tr>
                     {hasDescription && (
                       <tr>
                         <td
-                          colSpan={descriptionColSpan}
+                          colSpan={extraRowColSpan}
                           className="px-4 py-2 text-sm text-white/70 "
                           style={{
                             wordBreak: "break-word",
@@ -241,7 +169,21 @@ export function Table<T extends Record<string, unknown>>({
                         >
                           {description}
                         </td>
-                        {renderActions && <td />}
+                        {renderActions && <td className="w-10" />}
+                      </tr>
+                    )}
+                    {hasResponsibilities && (
+                      <tr>
+                        <td colSpan={extraRowColSpan} className="px-4 pb-4 pt-1 text-xs text-white/80">
+                          <div className="flex flex-wrap gap-2">
+                            {responsibilities.map((item) => (
+                              <span key={`${key}-${item}`} className="rounded-full bg-white/10 px-2 py-1 text-xs text-white/90">
+                                {item}
+                              </span>
+                            ))}
+                          </div>
+                        </td>
+                        {renderActions && <td className="w-10" />}
                       </tr>
                     )}
                   </React.Fragment>
@@ -258,17 +200,9 @@ export function Table<T extends Record<string, unknown>>({
             <div className="flex items-center gap-4 px-4 py-3 border-b border-white/15 mb-2">
               {avatarColumn && <div className="w-10" />}
               <div className="flex-1 flex items-center">
-                {primaryColumn && (
-                  <span className="text-sm font-bold text-white">
-                    {getMobileHeaderLabel(primaryColumn)}
-                  </span>
-                )}
+                {primaryColumn && <span className="text-sm font-bold text-white">{getMobileHeaderLabel(primaryColumn)}</span>}
                 <div className="flex-1" />
-                {secondaryColumn && (
-                  <span className="text-sm font-bold text-white">
-                    {getMobileHeaderLabel(secondaryColumn)}
-                  </span>
-                )}
+                {secondaryColumn && <span className="text-sm font-bold text-white">{getMobileHeaderLabel(secondaryColumn)}</span>}
               </div>
               {renderActions && <div className="w-10" />}
             </div>
@@ -277,21 +211,14 @@ export function Table<T extends Record<string, unknown>>({
           <div>
             {loading ? (
               skeletonRowIndices.map((index) => (
-                <div
-                  key={`skeleton-mobile-${index}`}
-                  className="px-4 py-3 border-b border-white/15"
-                >
+                <div key={`skeleton-mobile-${index}`} className="px-4 py-3 border-b border-white/15">
                   <div className="flex items-center gap-4">
-                    {avatarColumn ? (
-                      <Skeleton className="h-10 w-10 rounded-full flex-shrink-0" />
-                    ) : null}
+                    {avatarColumn ? <Skeleton className="h-10 w-10 rounded-full flex-shrink-0" /> : null}
                     <div className="flex-1 flex items-center justify-between">
                       <Skeleton className="h-5 w-32" />
                       {secondaryColumn && <Skeleton className="h-4 w-24" />}
                     </div>
-                    {renderActions && (
-                      <Skeleton className="h-5 w-5 rounded flex-shrink-0" />
-                    )}
+                    {renderActions && <Skeleton className="h-5 w-5 rounded flex-shrink-0" />}
                   </div>
                 </div>
               ))

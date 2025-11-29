@@ -2,7 +2,8 @@ import * as React from "react";
 import { cn } from "@/shared/lib";
 import { Button } from "./button";
 import { IoEyeOffSharp, IoEyeSharp } from "react-icons/io5";
-import { getBorderColor, getLabelColor } from "./utils";
+import { getBorderColor, getLabelColor } from "./utils/form-field";
+import { forwardRef, useState } from "react";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -12,7 +13,7 @@ export interface InputProps
 }
 
 const INPUT_BASE_CLASSES =
-	"w-full h-12 rounded-md border bg-transparent px-3 py-3 text-[var(--color-text)] placeholder:font-medium transition-all focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 read-only:cursor-default read-only:opacity-100";
+  "w-full h-12 rounded-md border bg-transparent px-3 py-3 text-[var(--color-text)] placeholder:font-medium transition-all focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 read-only:cursor-default read-only:opacity-100";
 
 const PLACEHOLDER_DEFAULT = "placeholder:text-[var(--color-placeholder)]";
 const PLACEHOLDER_ACTIVE = "placeholder:text-[var(--color-placeholder-active)]";
@@ -25,7 +26,7 @@ const getPlaceholderClassName = (label?: string, isLabelActive?: boolean) => {
   return isLabelActive ? PLACEHOLDER_ACTIVE : PLACEHOLDER_MASKED;
 };
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>(
+const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
       className,
@@ -41,12 +42,15 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     },
     ref
   ) => {
-    const [showPassword, setShowPassword] = React.useState(false);
-    const [isFocused, setIsFocused] = React.useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [isFocused, setIsFocused] = useState(false);
     const isPassword = type === "password";
+    const isDateInput = type === "date";
     const showPasswordToggle = isPassword && !hidePasswordToggle;
     const hasValue = Boolean(value);
     const isLabelActive = isFocused || hasValue;
+    const shouldMaskDatePlaceholder =
+      isDateInput && Boolean(label) && !isLabelActive;
     const inputType = isPassword
       ? showPassword && showPasswordToggle
         ? "text"
@@ -97,15 +101,18 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           readOnly={readOnly}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          data-date-placeholder={
+            shouldMaskDatePlaceholder ? "masked" : undefined
+          }
           {...props}
         />
         {label && (
           <label
             className={cn(
-              "absolute left-3 transition-all duration-200 pointer-events-none px-2",
+              "absolute left-3 transition-all duration-200 pointer-events-none px-1",
               isLabelActive
                 ? "top-0 -translate-y-1/2 text-xs bg-[var(--color-bg)]"
-                : "top-1/2 -translate-y-1/2 text-sm",
+                : "top-1/2 -translate-y-1/2",
               appliedLabelColor
             )}
           >

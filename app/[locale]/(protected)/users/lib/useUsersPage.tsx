@@ -5,7 +5,7 @@ import { useUsers } from "@/features/users";
 import { accessTokenVar, setAccessToken } from "@/shared/config/apollo";
 import { decodeToken } from "@/shared/lib/jwt";
 import { type TableProps, type SearchInputProps, Button } from "@/shared/ui";
-import { USERS_TABLE_COLUMNS, USERS_SEARCH_FIELDS } from "../config/constants";
+import { USERS_SEARCH_FIELDS, createUsersTableColumns } from "../config/constants";
 import type { User } from "../types";
 import { UserRowActions } from "../components/UserRowActions";
 
@@ -67,29 +67,47 @@ export function useUsersPage(): UsersPageHookResult {
     const currentUser = filteredUsers.find((user) => user.id === currentUserId);
     if (!currentUser) return filteredUsers;
 
-    const otherUsers = filteredUsers.filter(
-      (user) => user.id !== currentUserId
-    );
+    const otherUsers = filteredUsers.filter((user) => user.id !== currentUserId);
 
     return [currentUser, ...otherUsers];
   })();
 
+  const translate = (key: string, defaultValue: string) => t(key, { defaultValue }) || defaultValue;
+
+  const searchText = {
+    placeholder: translate("users.search.placeholder", "Search users"),
+    reset: translate("users.search.reset", "Reset search"),
+    noResultsTitle: translate("users.search.noResults.title", "No results found"),
+    noResultsDescription: translate("users.search.noResults.description", "Try another search, check the spelling or use a broader term"),
+    logout: translate("users.search.logout", "Logout"),
+  };
+
+  const tableColumnLabels = {
+    firstName: translate("users.table.columns.firstName", "First Name"),
+    lastName: translate("users.table.columns.lastName", "Last Name"),
+    email: translate("users.table.columns.email", "Email"),
+    department: translate("users.table.columns.department", "Department"),
+    position: translate("users.table.columns.position", "Position"),
+  };
+
+  const tableColumns = createUsersTableColumns(tableColumnLabels);
+
   const emptyState = !isSearchActive ? (
     <div className="py-5 text-center flex justify-center items-center">
       <Button variant="outline" className="px-10" onClick={handleLogout}>
-        Logout
+        {searchText.logout}
       </Button>
     </div>
   ) : (
     <div className="mt-6 flex flex-col items-center justify-center gap-3 py-20 text-center">
-      <h3 className="text-xl text-white">No results found</h3>
-      <p>Try another search, check the spelling or use a broader term</p>
+      <h3 className="text-xl text-white">{searchText.noResultsTitle}</h3>
+      <p className="text-white/70">{searchText.noResultsDescription}</p>
       <button
         type="button"
         className="mt-2 rounded-full px-10 py-3 text-sm font-medium uppercase tracking-wide text-neutral-500 transition-colors hover:bg-[#454545]"
         onClick={handleResetSearch}
       >
-        Reset search
+        {searchText.reset}
       </button>
     </div>
   );
@@ -98,15 +116,7 @@ export function useUsersPage(): UsersPageHookResult {
     await refetch();
   };
 
-  const renderRowActions = (row: User) => (
-    <UserRowActions
-      row={row}
-      currentUserId={currentUserId}
-      onNavigate={navigateToUser}
-      isAdmin={isAdmin}
-      onDeleted={refreshUsers}
-    />
-  );
+  const renderRowActions = (row: User) => <UserRowActions row={row} currentUserId={currentUserId} onNavigate={navigateToUser} isAdmin={isAdmin} onDeleted={refreshUsers} />;
 
   const searchInputProps: SearchInputProps<User> = {
     data: users as User[],
@@ -115,12 +125,12 @@ export function useUsersPage(): UsersPageHookResult {
     onQueryChange: setSearchQuery,
     resetKey: searchResetKey,
     hasError: isSearchActive && sortedUsers.length === 0,
-    placeholder: "Search",
+    placeholder: searchText.placeholder,
   };
 
   const tableProps: TableProps<User> = {
     data: sortedUsers as User[],
-    columns: USERS_TABLE_COLUMNS,
+    columns: tableColumns,
     loading,
     keyExtractor: (row: User) => row.id,
     renderActions: renderRowActions,
@@ -128,12 +138,11 @@ export function useUsersPage(): UsersPageHookResult {
   };
 
   return {
-    heading: t("users.heading") || "Employees",
+    heading: translate("users.heading", "Employees"),
     searchInputProps,
     tableProps,
     canCreateUser: isAdmin,
-    createUserLabel:
-      t("users.createUser", { defaultValue: "Create user" }) || "Create user",
+    createUserLabel: t("users.createUser", { defaultValue: "Create user" }) || "Create user",
     refreshUsers,
   };
 }

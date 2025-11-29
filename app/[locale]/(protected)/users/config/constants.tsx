@@ -2,13 +2,17 @@ import { Avatar, type TableColumn } from "@/shared/ui";
 import { getAvatarFallback } from "@/features/users/lib/getAvatarFallback";
 import type { User } from "../types";
 
-export const USERS_SEARCH_FIELDS = [
-  "profile.first_name",
-  "profile.last_name",
-  "email",
-] as const;
+export const USERS_SEARCH_FIELDS = ["profile.first_name", "profile.last_name", "email"] as const;
 
-export const USERS_TABLE_COLUMNS: TableColumn<User>[] = [
+type UserTableLabels = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  department: string;
+  position: string;
+};
+
+export const createUsersTableColumns = (labels: UserTableLabels): TableColumn<User>[] => [
   {
     key: "avatar",
     header: "",
@@ -31,57 +35,50 @@ export const USERS_TABLE_COLUMNS: TableColumn<User>[] = [
     key: "first_name",
     header: (
       <div className="flex items-center gap-2">
-        <span>First Name</span>
+        <span>{labels.firstName}</span>
       </div>
     ),
-    mobileHeaderLabel: "First Name",
-    render: (_value: unknown, row: User) => (
-      <span className="text-white/80">{row.profile.first_name}</span>
-    ),
+    mobileHeaderLabel: labels.firstName,
+    render: (_value: unknown, row: User) => <span className="text-white/80">{row.profile.first_name}</span>,
   },
   {
     key: "last_name",
     header: (
       <div className="flex items-center gap-2">
-        <span>Last Name</span>
+        <span>{labels.lastName}</span>
       </div>
     ),
-    render: (_value: unknown, row: User) => (
-      <span className="text-white/80">{row.profile.last_name}</span>
-    ),
+    mobileHeaderLabel: labels.lastName,
+    render: (_value: unknown, row: User) => <span className="text-white/80">{row.profile.last_name}</span>,
   },
   {
     key: "email",
     header: (
       <div className="flex items-center gap-2">
-        <span>Email</span>
+        <span>{labels.email}</span>
       </div>
     ),
-    render: (value: unknown) => (
-      <span className="text-white/80">{String(value)}</span>
-    ),
+    mobileHeaderLabel: labels.email,
+    render: (value: unknown) => <span className="text-white/80">{String(value)}</span>,
   },
   {
     key: "department_name",
     header: (
       <div className="flex items-center gap-2">
-        <span>Department</span>
+        <span>{labels.department}</span>
       </div>
     ),
-    mobileHeaderLabel: "Department",
-    render: (value: unknown) => (
-      <span className="text-white/80">{value ? String(value) : ""}</span>
-    ),
+    mobileHeaderLabel: labels.department,
+    render: (value: unknown) => <span className="text-white/80">{value ? String(value) : ""}</span>,
   },
   {
     key: "position_name",
     header: (
       <div className="flex items-center gap-2">
-        <span>Position</span>
+        <span>{labels.position}</span>
       </div>
     ),
-    render: (value: unknown) => (
-      <span className="text-white/80">{value ? String(value) : ""}</span>
-    ),
+    mobileHeaderLabel: labels.position,
+    render: (value: unknown) => <span className="text-white/80">{value ? String(value) : ""}</span>,
   },
 ];

@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { Plus } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { useRouter, useParams } from "next/navigation";
 import toast from "react-hot-toast";
-import { Button, SearchInput, Table } from "@/shared/ui";
+import { Button, ConfirmDeleteModal, SearchInput, Table } from "@/shared/ui";
 import { useCvsPage } from "./lib/useCvsPage";
-import { CreateCvModal, DeleteCvModal, useCvs } from "@/features/cvs";
+import { CreateCvModal, useCvs, useDeleteCv } from "@/features/cvs";
 
 export default function CvsPage() {
   const { t } = useTranslation();
@@ -21,7 +21,8 @@ export default function CvsPage() {
     cvName?: string;
   }>({ open: false, cvId: "" });
 
-  const { cvs} = useCvs();
+  const { cvs } = useCvs();
+  const { deleteCv, loading: isDeleteLoading, error: deleteError } = useDeleteCv();
 
   const handleCloseModal = () => setShowCreateModal(false);
 
@@ -43,7 +44,7 @@ export default function CvsPage() {
   };
 
   const handleCloseDeleteModal = () => {
-    setDeleteModalState({ open: false, cvId: "" });
+    setDeleteModalState({ open: false, cvId: "", cvName: undefined });
   };
 
   const handleDeleteSuccess = async () => {
@@ -53,6 +54,20 @@ export default function CvsPage() {
         defaultValue: "CV deleted successfully",
       })
     );
+  };
+
+  const handleConfirmDeleteCv = async () => {
+    if (!deleteModalState.cvId) {
+      return;
+    }
+
+    try {
+      await deleteCv({ cvId: deleteModalState.cvId });
+      await handleDeleteSuccess();
+      handleCloseDeleteModal();
+    } catch (err) {
+      console.error("Error deleting CV:", err);
+    }
   };
 
   const { heading, searchInputProps, tableProps, refetch } = useCvsPage({
@@ -86,19 +101,25 @@ export default function CvsPage() {
         <Table {...tableProps} />
       </section>
 
-      <CreateCvModal
-        open={showCreateModal}
-        onClose={handleCloseModal}
-        onSuccess={handleCreated}
-      />
+      <CreateCvModal open={showCreateModal} onClose={handleCloseModal} onSuccess={handleCreated} />
 
-      <DeleteCvModal
+      <ConfirmDeleteModal
         open={deleteModalState.open}
-        cvId={deleteModalState.cvId}
-        cvName={deleteModalState.cvName}
+        title={t("cvs.deleteModal.title", { defaultValue: "Delete CV" })}
+        onConfirm={handleConfirmDeleteCv}
         onClose={handleCloseDeleteModal}
-        onSuccess={handleDeleteSuccess}
-      />
+        isLoading={isDeleteLoading}
+        errorMessage={deleteError?.message ?? null}
+      >
+        <p className="font-normal">
+          <Trans
+            i18nKey="cvs.deleteModal.warning"
+            values={{ name: deleteModalState.cvName || "" }}
+            components={{ strong: <span className="font-semibold" /> }}
+            defaultValue="Are you sure you want to delete CV <strong>{{name}}</strong>?"
+          />
+        </p>
+      </ConfirmDeleteModal>
     </>
   );
 }

@@ -4,5 +4,7 @@ export { useCreateCv } from "./model/useCreateCv";
 export { useCv } from "./model/useCv";
 export { useUpdateCv } from "./model/useUpdateCv";
 export { useDeleteCv } from "./model/useDeleteCv";
+export { useAddCvProject } from "./model/useAddCvProject";
+export { useUpdateCvProject } from "./model/useUpdateCvProject";
+export { useRemoveCvProject } from "./model/useRemoveCvProject";
 export { CreateCvModal } from "./ui/CreateCvModal";
-export { DeleteCvModal } from "./ui/DeleteCvModal";

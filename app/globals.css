@@ -40,6 +40,7 @@
     --color-option-hover-bg: #3a3a3a;
     --color-option-selected-bg: #652727;
     --color-option-group-bg: #3a3a3a;
+    --color-select-dropdown-bg: #303030;
   }
 
   [data-theme="dark"] {
@@ -83,6 +84,7 @@
     --color-option-hover-bg: #ededed;
     --color-option-selected-bg: #e2d7d7;
     --color-option-group-bg: #f7f7f7;
+    --color-select-dropdown-bg: #fefefe;
   }
 }
 
@@ -138,11 +140,6 @@ body {
     transform: scale(4);
     opacity: 0;
   }
-}
-
-input[type="search"]::-webkit-search-cancel-button {
-  appearance: none;
-  -webkit-appearance: none;
 }
 
 [data-theme="light"] .text-white {
@@ -217,4 +214,17 @@ input[type="search"]::-webkit-search-cancel-button {
 [data-theme="light"] .bg-\[\#454545\] {
   background-color: #ffffff !important;
   color: var(--color-text);
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+input[data-date-placeholder="masked"]::-webkit-datetime-edit,
+input[data-date-placeholder="masked"]::-webkit-datetime-edit-text,
+input[data-date-placeholder="masked"]::-webkit-datetime-edit-month-field,
+input[data-date-placeholder="masked"]::-webkit-datetime-edit-day-field,
+input[data-date-placeholder="masked"]::-webkit-datetime-edit-year-field {
+  color: transparent;
 }

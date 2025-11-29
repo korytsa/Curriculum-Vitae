@@ -1,15 +1,68 @@
 "use client";
 
-import { useTranslation } from "react-i18next";
+import { Plus } from "lucide-react";
+import { Trans, useTranslation } from "react-i18next";
+import { Button, ConfirmDeleteModal, SearchInput, Table } from "@/shared/ui";
+import { AddProjectModal } from "./components/AddProjectModal";
+import { useCvProjectsPage } from "./lib/useCvProjectsPage";
 
-export default function CvProjectsPage() {
+type CvProjectsPageProps = {
+  params: { locale: string; id: string };
+};
+
+export default function CvProjectsPageRoute({ params }: CvProjectsPageProps) {
+  const { id: cvId, locale } = params;
   const { t } = useTranslation();
+  const { searchInputProps, tableProps, addProjectLabel, handleAddProject, addProjectModal, deleteProjectModal } = useCvProjectsPage({
+    cvId,
+    locale,
+  });
 
   return (
-    <div className="mt-10 text-center text-sm text-neutral-400">
-      {t("cvs.details.placeholders.projects", {
-        defaultValue: "CV Projects",
-      })}
-    </div>
+    <>
+      <section className="pr-4">
+        <div className="mt-6 mb-1 flex flex-wrap items-start justify-between gap-4">
+          <div className="w-full sm:w-[325px]">
+            <SearchInput {...searchInputProps} />
+          </div>
+          <Button
+            type="button"
+            className="bg-transparent font-medium text-red-500 hover:bg-[#413535]"
+            icon={<Plus className="h-5 w-5" />}
+            iconPosition="left"
+            onClick={handleAddProject}
+          >
+            {addProjectLabel}
+          </Button>
+        </div>
+        <Table {...tableProps} />
+      </section>
+      <AddProjectModal
+        open={addProjectModal.open}
+        onClose={addProjectModal.onClose}
+        projects={addProjectModal.projects}
+        isProjectListLoading={addProjectModal.isLoading}
+        onSubmit={addProjectModal.onSubmit}
+        initialProject={addProjectModal.initialProject}
+        mode={addProjectModal.mode}
+      />
+      <ConfirmDeleteModal
+        open={deleteProjectModal.open}
+        onClose={deleteProjectModal.onClose}
+        onConfirm={deleteProjectModal.onConfirm}
+        isLoading={deleteProjectModal.isLoading}
+        errorMessage={deleteProjectModal.errorMessage}
+        title={t("cvs.projectsPage.deleteModal.title", { defaultValue: "Remove project" })}
+      >
+        <p className="font-normal">
+          <Trans
+            i18nKey="cvs.projectsPage.deleteModal.message"
+            values={{ name: deleteProjectModal.projectName ?? "" }}
+            components={{ strong: <span className="font-semibold" /> }}
+            defaultValue="Are you sure you want to remove project <strong>{{name}}</strong>?"
+          />
+        </p>
+      </ConfirmDeleteModal>
+    </>
   );
 }

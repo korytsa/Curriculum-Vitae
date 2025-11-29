@@ -15,6 +15,9 @@ export type { ModalProps } from "./modal";
 export { Input } from "./input";
 export type { InputProps } from "./input";
 
+export { TextArea } from "./textarea";
+export type { TextAreaProps } from "./textarea";
+
 export { Loader } from "./loader";
 export type { LoaderProps } from "./loader";
 
@@ -43,3 +46,7 @@ export { DropdownMenu } from "./dropdown-menu";
 export type { DropdownMenuItem } from "./dropdown-menu";
 export { Select } from "./select";
 export type { SelectProps, SelectOption } from "./select";
+export { EnvironmentField, SelectLikeField } from "./environment-field";
+export type { EnvironmentFieldProps, SelectLikeFieldProps } from "./environment-field";
+export { ConfirmDeleteModal } from "./confirm-delete-modal";
+export type { ConfirmDeleteModalProps } from "./confirm-delete-modal";

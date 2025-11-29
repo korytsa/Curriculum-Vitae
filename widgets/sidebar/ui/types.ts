@@ -1,4 +1,4 @@
-import type { DropdownAlign } from "@/shared/ui/utils";
+import type { DropdownAlign } from "@/shared/ui/utils/dropdown-menu";
 import type { DropdownMenuItem } from "@/shared/ui";
 
 export type SidebarUserMenuDropdownProps = {

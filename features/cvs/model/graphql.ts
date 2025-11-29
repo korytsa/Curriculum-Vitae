@@ -1,5 +1,25 @@
 import { gql } from "@apollo/client";
 
+const CV_PROJECT_FIELDS = gql`
+  fragment CvProjectFields on CvProject {
+    id
+    name
+    internal_name
+    domain
+    start_date
+    end_date
+    description
+    environment
+    responsibilities
+    roles
+    project {
+      id
+      name
+      internal_name
+    }
+  }
+`;
+
 export const CVS_QUERY = gql`
   query Cvs {
     cvs {
@@ -33,12 +53,28 @@ export const CV_QUERY = gql`
       name
       education
       description
+      projects {
+        ...CvProjectFields
+      }
       user {
         id
         email
       }
     }
   }
+  ${CV_PROJECT_FIELDS}
+`;
+
+export const ADD_CV_PROJECT_MUTATION = gql`
+  mutation AddCvProject($project: AddCvProjectInput!) {
+    addCvProject(project: $project) {
+      id
+      projects {
+        ...CvProjectFields
+      }
+    }
+  }
+  ${CV_PROJECT_FIELDS}
 `;
 
 export const UPDATE_CV_MUTATION = gql`
@@ -58,4 +94,28 @@ export const DELETE_CV_MUTATION = gql`
       affected
     }
   }
+`;
+
+export const UPDATE_CV_PROJECT_MUTATION = gql`
+  mutation UpdateCvProject($project: UpdateCvProjectInput!) {
+    updateCvProject(project: $project) {
+      id
+      projects {
+        ...CvProjectFields
+      }
+    }
+  }
+  ${CV_PROJECT_FIELDS}
+`;
+
+export const REMOVE_CV_PROJECT_MUTATION = gql`
+  mutation RemoveCvProject($project: RemoveCvProjectInput!) {
+    removeCvProject(project: $project) {
+      id
+      projects {
+        ...CvProjectFields
+      }
+    }
+  }
+  ${CV_PROJECT_FIELDS}
 `;

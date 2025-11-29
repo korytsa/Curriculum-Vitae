@@ -54,10 +54,10 @@
     },
     "details": {
       "tabs": {
-        "details": "ДЕТАЛИ",
-        "skills": "НАВЫКИ",
-        "projects": "ПРОЕКТЫ",
-        "preview": "ПРЕДПРОСМОТР"
+        "details": "Детали",
+        "skills": "Навыки",
+        "projects": "Проекты",
+        "preview": "Предпросмотр"
       },
       "actions": {
         "update": "ОБНОВИТЬ"
@@ -72,9 +72,67 @@
         "error": "Не удалось обновить резюме"
       }
     },
+    "projectsPage": {
+      "actions": {
+        "add": "ДОБАВИТЬ ПРОЕКТ"
+      },
+      "search": {
+        "placeholder": "Поиск проектов",
+        "reset": "Сбросить поиск"
+      },
+      "states": {
+        "empty": {
+          "title": "Проектов пока нет",
+          "description": "Добавьте первый проект в это резюме."
+        },
+        "noResults": {
+          "title": "Ничего не найдено",
+          "description": "Попробуйте изменить запрос, проверьте написание или используйте более общий термин"
+        }
+      },
+      "table": {
+        "columns": {
+          "name": "Название",
+          "domain": "Домен",
+          "startDate": "Дата начала",
+          "endDate": "Дата окончания"
+        },
+        "labels": {
+          "present": "По настоящее время"
+        },
+        "sort": {
+          "name": "Сортировать по названию",
+          "domain": "Сортировать по домену",
+          "startDate": "Сортировать по дате начала",
+          "endDate": "Сортировать по дате окончания"
+        }
+      },
+      "modal": {
+        "title": "Добавить проект",
+        "fields": {
+          "project": "Проект",
+          "domain": "Домен",
+          "startDate": "Дата начала",
+          "endDate": "Дата окончания",
+          "description": "Описание",
+          "environment": "Технологии",
+          "environmentPlaceholder": "Укажите технологии через запятую",
+          "responsibilities": "Обязанности",
+          "responsibilitiesPlaceholder": "Список обязанностей"
+        },
+        "actions": {
+          "cancel": "ОТМЕНА",
+          "submit": "ДОБАВИТЬ"
+        }
+      },
+      "deleteModal": {
+        "title": "Удалить проект",
+        "message": "Вы уверены, что хотите удалить проект <strong>{{name}}</strong>?"
+      }
+    },
     "deleteModal": {
       "title": "Удалить резюме",
-      "warning": "Вы уверены, что хотите удалить это резюме? Это действие нельзя отменить.",
+      "warning": "Вы уверены, что хотите удалить резюме <strong>{{name}}</strong>?",
       "cvName": "Резюме: {{name}}",
       "actions": {
         "delete": "УДАЛИТЬ",
@@ -83,6 +141,12 @@
       "notifications": {
         "success": "Резюме успешно удалено"
       }
+    }
+  },
+  "confirmDeleteModal": {
+    "actions": {
+      "delete": "УДАЛИТЬ",
+      "cancel": "ОТМЕНА"
     }
   },
   "languages": {
@@ -149,6 +213,24 @@
           "success": "Профиль успешно обновлён.",
           "error": "Не удалось обновить профиль. Попробуйте позже."
         }
+      }
+    },
+    "search": {
+      "placeholder": "Поиск сотрудников",
+      "reset": "Сбросить поиск",
+      "noResults": {
+        "title": "Ничего не найдено",
+        "description": "Попробуйте другой запрос, проверьте правописание или используйте более общий термин"
+      },
+      "logout": "Выйти"
+    },
+    "table": {
+      "columns": {
+        "firstName": "Имя",
+        "lastName": "Фамилия",
+        "email": "Email",
+        "department": "Отдел",
+        "position": "Должность"
       }
     }
   },
@@ -398,6 +480,11 @@
       "aria": {
         "expand": "Раскрыть боковую панель",
         "collapse": "Свернуть боковую панель"
+      },
+      "userMenu": {
+        "profile": "Профиль",
+        "settings": "Настройки",
+        "logout": "Выйти"
       }
     }
   }

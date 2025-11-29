@@ -1,25 +1,11 @@
 "use client";
 
-import type {
-  ReactNode,
-  ReactElement,
-  MouseEvent as ReactMouseEvent,
-} from "react";
-import {
-  cloneElement,
-  isValidElement,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import type { ReactNode, ReactElement, MouseEvent as ReactMouseEvent } from "react";
+import { cloneElement, isValidElement, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { cn } from "@/shared/lib";
-import {
-  buildDropdownMenuStyles,
-  isClickOutside,
-  type DropdownAlign,
-} from "./utils";
+import { buildDropdownMenuStyles, isClickOutside, type DropdownAlign } from "./utils/dropdown-menu";
 
 type DropdownMenuSeparatorItem = {
   type: "separator";
@@ -35,9 +21,7 @@ type DropdownMenuActionItem = {
   href?: string;
 };
 
-export type DropdownMenuItem =
-  | DropdownMenuSeparatorItem
-  | DropdownMenuActionItem;
+export type DropdownMenuItem = DropdownMenuSeparatorItem | DropdownMenuActionItem;
 
 interface DropdownMenuProps {
   children: ReactNode;
@@ -47,21 +31,13 @@ interface DropdownMenuProps {
   menuClassName?: string;
   menuWidth?: string;
   menuBgColor?: string;
+  offsetX?: number;
+  offsetY?: number;
 }
 
-const isSeparatorItem = (
-  item: DropdownMenuItem
-): item is DropdownMenuSeparatorItem => item.type === "separator";
+const isSeparatorItem = (item: DropdownMenuItem): item is DropdownMenuSeparatorItem => item.type === "separator";
 
-export function DropdownMenu({
-  children,
-  items,
-  align = "right",
-  className,
-  menuClassName,
-  menuWidth,
-  menuBgColor,
-}: DropdownMenuProps) {
+export function DropdownMenu({ children, items, align = "right", className, menuClassName, menuWidth, menuBgColor, offsetX = 0, offsetY = 0 }: DropdownMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -96,16 +72,16 @@ export function DropdownMenu({
       const menu = menuRef.current;
 
       if (align === "right") {
-        menu.style.left = `${triggerRect.right}px`;
-        menu.style.top = `${triggerRect.top}px`;
+        menu.style.left = `${triggerRect.right + offsetX}px`;
+        menu.style.top = `${triggerRect.top + offsetY}px`;
         menu.style.transform = "translateX(-100%)";
       } else if (align === "top") {
-        menu.style.left = `${triggerRect.left}px`;
-        menu.style.bottom = `${window.innerHeight - triggerRect.top}px`;
+        menu.style.left = `${triggerRect.left + offsetX}px`;
+        menu.style.bottom = `${window.innerHeight - triggerRect.top - offsetY}px`;
         menu.style.transform = "none";
       } else {
-        menu.style.left = `${triggerRect.left}px`;
-        menu.style.top = `${triggerRect.bottom}px`;
+        menu.style.left = `${triggerRect.left + offsetX}px`;
+        menu.style.top = `${triggerRect.bottom + offsetY}px`;
       }
     };
 
@@ -137,7 +113,7 @@ export function DropdownMenu({
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isOpen, isMounted, align]);
+  }, [isOpen, isMounted, align, offsetX, offsetY]);
 
   const renderTrigger = () => {
     if (isValidElement(children)) {
@@ -158,13 +134,7 @@ export function DropdownMenu({
     }
 
     return (
-      <button
-        type="button"
-        onClick={toggleMenu}
-        aria-haspopup="menu"
-        aria-expanded={isOpen}
-        className="inline-flex items-center justify-center"
-      >
+      <button type="button" onClick={toggleMenu} aria-haspopup="menu" aria-expanded={isOpen} className="inline-flex items-center justify-center">
         {children}
       </button>
     );
@@ -174,35 +144,19 @@ export function DropdownMenu({
 
   if (!isMounted) {
     return (
-      <div
-        ref={triggerRef}
-        className={cn("relative inline-flex", className)}
-        data-state="closed"
-      >
+      <div ref={triggerRef} className={cn("relative inline-flex", className)} data-state="closed">
         {renderTrigger()}
       </div>
     );
   }
 
   const menuContent = isOpen && (
-    <div
-      ref={menuRef}
-      className={cn(
-        "fixed z-[9999] min-w-[150px] border rounded-[8px] bg-[#2F2F2F] overflow-hidden shadow-lg",
-        menuClassName
-      )}
-      style={menuStyles}
-    >
+    <div ref={menuRef} className={cn("fixed z-[9999] w-[150px] border rounded-[8px] bg-[#2F2F2F] overflow-hidden shadow-lg", menuClassName)} style={menuStyles}>
       <div className="py-2">
         {items.map((item, index) => {
           if (isSeparatorItem(item)) {
             const key = item.id ?? index;
-            return (
-              <div
-                key={`separator-${key}`}
-                className="border-t border-white/15 my-1"
-              />
-            );
+            return <div key={`separator-${key}`} className="border-t border-white/15 my-1" />;
           }
 
           const content = (
@@ -210,28 +164,17 @@ export function DropdownMenu({
               onClick={() => handleItemClick(item)}
               className={cn(
                 "flex items-center gap-3 px-4 py-2 transition-colors",
-                item.disabled
-                  ? "text-gray-400 cursor-not-allowed"
-                  : "text-white hover:bg-white/10 cursor-pointer"
+                item.disabled ? "text-gray-400 cursor-not-allowed" : "text-white hover:bg-white/10 cursor-pointer"
               )}
             >
-              {item.icon && (
-                <span className="w-5 h-5 flex items-center justify-center">
-                  {item.icon}
-                </span>
-              )}
+              {item.icon && <span className="w-5 h-5 flex items-center justify-center">{item.icon}</span>}
               <span className="font-medium">{item.label}</span>
             </div>
           );
 
           if (item.href) {
             return (
-              <Link
-                key={`${item.label}-${index}`}
-                href={item.href}
-                className="block no-underline"
-                onClick={closeMenu}
-              >
+              <Link key={`${item.label}-${index}`} href={item.href} className="block no-underline" onClick={closeMenu}>
                 {content}
               </Link>
             );
@@ -245,11 +188,7 @@ export function DropdownMenu({
 
   return (
     <>
-      <div
-        ref={triggerRef}
-        className={cn("relative inline-flex", className)}
-        data-state={isOpen ? "open" : "closed"}
-      >
+      <div ref={triggerRef} className={cn("relative inline-flex", className)} data-state={isOpen ? "open" : "closed"}>
         {renderTrigger()}
       </div>
       {isMounted && menuContent && createPortal(menuContent, document.body)}

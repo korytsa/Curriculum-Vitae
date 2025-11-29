@@ -778,6 +778,8 @@ export type CreateUserMutationVariables = Exact<{
 
 export type CreateUserMutation = { __typename: 'Mutation', createUser: { __typename: 'User', id: string, email: string, role: UserRole } };
 
+export type CvProjectFieldsFragment = { __typename: 'CvProject', id: string, name: string, internal_name: string, domain: string, start_date: string, end_date?: string | null, description: string, environment: Array<string>, responsibilities: Array<string>, roles: Array<string>, project: { __typename: 'Project', id: string, name: string, internal_name: string } };
+
 export type CvsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -795,7 +797,14 @@ export type CvQueryVariables = Exact<{
 }>;
 
 
-export type CvQuery = { __typename: 'Query', cv: { __typename: 'Cv', id: string, name: string, education?: string | null, description: string, user?: { __typename: 'User', id: string, email: string } | null } };
+export type CvQuery = { __typename: 'Query', cv: { __typename: 'Cv', id: string, name: string, education?: string | null, description: string, projects?: Array<{ __typename: 'CvProject', id: string, name: string, internal_name: string, domain: string, start_date: string, end_date?: string | null, description: string, environment: Array<string>, responsibilities: Array<string>, roles: Array<string>, project: { __typename: 'Project', id: string, name: string, internal_name: string } }> | null, user?: { __typename: 'User', id: string, email: string } | null } };
+
+export type AddCvProjectMutationVariables = Exact<{
+  project: AddCvProjectInput;
+}>;
+
+
+export type AddCvProjectMutation = { __typename: 'Mutation', addCvProject: { __typename: 'Cv', id: string, projects?: Array<{ __typename: 'CvProject', id: string, name: string, internal_name: string, domain: string, start_date: string, end_date?: string | null, description: string, environment: Array<string>, responsibilities: Array<string>, roles: Array<string>, project: { __typename: 'Project', id: string, name: string, internal_name: string } }> | null } };
 
 export type UpdateCvMutationVariables = Exact<{
   cv: UpdateCvInput;
@@ -902,3 +911,10 @@ export type UploadAvatarMutationVariables = Exact<{
 
 
 export type UploadAvatarMutation = { __typename: 'Mutation', uploadAvatar: string };
+
+export type DeleteUserMutationVariables = Exact<{
+  userId: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteUserMutation = { __typename: 'Mutation', deleteUser: { __typename: 'DeleteResult', affected: number } };

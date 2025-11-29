@@ -35,13 +35,7 @@ export function CvRowActions({ row, onDetails, onDelete }: CvRowActionsProps) {
   ];
 
   return (
-    <DropdownMenu
-      items={menuItems}
-      align="right"
-      menuBgColor="#2F2F2F"
-      menuClassName="border border-white/5 shadow-xl"
-      menuWidth="140px"
-    >
+    <DropdownMenu offsetY={40} align="right" menuWidth="120px" items={menuItems} menuBgColor="#2F2F2F" menuClassName="border border-white/5 shadow-xl">
       <Button
         type="button"
         variant="ghost"
