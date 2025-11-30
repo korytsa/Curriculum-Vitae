@@ -820,6 +820,20 @@ export type DeleteCvMutationVariables = Exact<{
 
 export type DeleteCvMutation = { __typename: 'Mutation', deleteCv: { __typename: 'DeleteResult', affected: number } };
 
+export type UpdateCvProjectMutationVariables = Exact<{
+  project: UpdateCvProjectInput;
+}>;
+
+
+export type UpdateCvProjectMutation = { __typename: 'Mutation', updateCvProject: { __typename: 'Cv', id: string, projects?: Array<{ __typename: 'CvProject', id: string, name: string, internal_name: string, domain: string, start_date: string, end_date?: string | null, description: string, environment: Array<string>, responsibilities: Array<string>, roles: Array<string>, project: { __typename: 'Project', id: string, name: string, internal_name: string } }> | null } };
+
+export type RemoveCvProjectMutationVariables = Exact<{
+  project: RemoveCvProjectInput;
+}>;
+
+
+export type RemoveCvProjectMutation = { __typename: 'Mutation', removeCvProject: { __typename: 'Cv', id: string, projects?: Array<{ __typename: 'CvProject', id: string, name: string, internal_name: string, domain: string, start_date: string, end_date?: string | null, description: string, environment: Array<string>, responsibilities: Array<string>, roles: Array<string>, project: { __typename: 'Project', id: string, name: string, internal_name: string } }> | null } };
+
 export type LanguagesWithProfileQueryVariables = Exact<{
   userId: Scalars['ID']['input'];
 }>;
