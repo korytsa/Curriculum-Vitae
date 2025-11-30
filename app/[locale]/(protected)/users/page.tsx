@@ -16,11 +16,7 @@ export default function UsersPage() {
   const handleCreateSuccess = async (message: string) => {
     toast.success(message);
     handleCloseCreateModal();
-    try {
-      await refreshUsers();
-    } catch (error) {
-      console.error("Failed to refresh users after creation:", error);
-    }
+    await refreshUsers();
   };
 
   const isUsersRootPath = pathname ? /\/[a-z]{2}\/users\/?$|\/users\/?$/i.test(pathname) : false;

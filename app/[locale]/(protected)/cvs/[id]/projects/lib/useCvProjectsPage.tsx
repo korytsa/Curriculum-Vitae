@@ -172,6 +172,7 @@ export function useCvProjectsPage({ cvId, locale }: UseCvProjectsPageParams): Us
   const resetSearchLabel = translate("cvs.projectsPage.search.reset");
   const noResultsTitle = translate("cvs.projectsPage.states.noResults.title");
   const presentLabel = translate("cvs.projectsPage.table.labels.present");
+  const dateTimeLocale = locale && Intl.DateTimeFormat.supportedLocalesOf([locale]).length ? locale : undefined;
 
   const { searchInputProps, filteredProjects, hasSearchQuery, handleResetSearch } = useProjectSearchState(projects, searchPlaceholder);
   const sortedProjects = sortProjects(filteredProjects, activeField, direction);
@@ -186,15 +187,12 @@ export function useCvProjectsPage({ cvId, locale }: UseCvProjectsPageParams): Us
       return value;
     }
 
-    try {
-      return new Intl.DateTimeFormat(locale || undefined, {
-        year: "numeric",
-        month: "short",
-        day: "2-digit",
-      }).format(date);
-    } catch {
-      return date.toDateString();
-    }
+    const formatter = new Intl.DateTimeFormat(dateTimeLocale, {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+    });
+    return formatter.format(date);
   };
 
   const emptyState = (
@@ -280,12 +278,8 @@ export function useCvProjectsPage({ cvId, locale }: UseCvProjectsPageParams): Us
       return;
     }
 
-    try {
-      await removeCvProject({ projectId });
-      handleCloseDeleteModal();
-    } catch {
-      return;
-    }
+    await removeCvProject({ projectId });
+    handleCloseDeleteModal();
   };
 
   const handleProjectModalSubmit = async (payload: AddProjectModalSubmitPayload) => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { Select, type SelectOption } from "@/shared/ui/select";
@@ -30,43 +30,37 @@ export default function SettingsPage() {
     setLanguage(locale);
   }, [locale]);
 
-  const appearanceOptions: SelectOption[] = useMemo(
-    () => [
-      {
-        value: "system",
-        label: t("settings.appearance.options.system", {
-          defaultValue: "Device settings",
-        }),
-      },
-      {
-        value: "light",
-        label: t("settings.appearance.options.light", {
-          defaultValue: "Light",
-        }),
-      },
-      {
-        value: "dark",
-        label: t("settings.appearance.options.dark", {
-          defaultValue: "Dark",
-        }),
-      },
-    ],
-    [t]
-  );
+  const appearanceOptions: SelectOption[] = [
+    {
+      value: "system",
+      label: t("settings.appearance.options.system", {
+        defaultValue: "Device settings",
+      }),
+    },
+    {
+      value: "light",
+      label: t("settings.appearance.options.light", {
+        defaultValue: "Light",
+      }),
+    },
+    {
+      value: "dark",
+      label: t("settings.appearance.options.dark", {
+        defaultValue: "Dark",
+      }),
+    },
+  ];
 
-  const languageOptions: SelectOption[] = useMemo(
-    () => [
-      {
-        value: "en",
-        label: t("settings.language.options.en", { defaultValue: "English" }),
-      },
-      {
-        value: "ru",
-        label: t("settings.language.options.ru", { defaultValue: "Russian" }),
-      },
-    ],
-    [t]
-  );
+  const languageOptions: SelectOption[] = [
+    {
+      value: "en",
+      label: t("settings.language.options.en", { defaultValue: "English" }),
+    },
+    {
+      value: "ru",
+      label: t("settings.language.options.ru", { defaultValue: "Russian" }),
+    },
+  ];
 
   const handleLanguageChange = (value: string) => {
     setLanguage(value);

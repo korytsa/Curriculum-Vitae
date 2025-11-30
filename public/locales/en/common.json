@@ -37,6 +37,14 @@
     "table": {
       "searchPlaceholder": "Search CVs"
     },
+    "list": {
+      "columns": {
+        "name": "Name",
+        "education": "Education",
+        "employee": "Employee",
+        "emptyValue": "—"
+      }
+    },
     "createModal": {
       "title": "Create CV",
       "labels": {

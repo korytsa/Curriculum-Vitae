@@ -28,12 +28,9 @@ export interface CreateUserFormHook {
   errorMessage: string | null;
 }
 
-export function useCreateUserForm(
-  options: UseCreateUserFormOptions = {}
-): CreateUserFormHook {
+export function useCreateUserForm(options: UseCreateUserFormOptions = {}): CreateUserFormHook {
   const { createUser, loading, error } = useCreateUser();
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [formError, setFormError] = useState<string | null>(null);
   const { t } = useTranslation();
   const { onSuccess } = options;
 
@@ -64,9 +61,7 @@ export function useCreateUserForm(
     return errors;
   };
 
-  const mapValuesToCreatePayload = (
-    values: CreateUserFormValues
-  ): CreateUserPayload => ({
+  const mapValuesToCreatePayload = (values: CreateUserFormValues): CreateUserPayload => ({
     auth: {
       email: values.email.trim(),
       password: values.password,
@@ -87,26 +82,17 @@ export function useCreateUserForm(
     validate,
     onSubmit: async (values, helpers) => {
       setSuccessMessage(null);
-      setFormError(null);
 
-      try {
-        const payload = mapValuesToCreatePayload(values);
-        await createUser(payload);
-        const successText = t("features.createUserForm.notifications.success", {
-          email: payload.auth.email,
-          role: payload.role,
-        });
+      const payload = mapValuesToCreatePayload(values);
+      await createUser(payload);
+      const successText = t("features.createUserForm.notifications.success", {
+        email: payload.auth.email,
+        role: payload.role,
+      });
 
-        setSuccessMessage(successText);
-        onSuccess?.(successText);
-        helpers.resetForm();
-      } catch (submitError) {
-        const fallbackMessage =
-          submitError instanceof Error
-            ? submitError.message
-            : t("features.createUserForm.errors.submitFailed");
-        setFormError(fallbackMessage);
-      }
+      setSuccessMessage(successText);
+      onSuccess?.(successText);
+      helpers.resetForm();
     },
   });
 
@@ -125,6 +111,6 @@ export function useCreateUserForm(
     formik,
     successMessage,
     loading,
-    errorMessage: formError ?? error?.message ?? null,
+    errorMessage: error?.message ?? null,
   };
 }

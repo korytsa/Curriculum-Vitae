@@ -3,7 +3,7 @@
 import { useTranslation } from "react-i18next";
 
 import type { Project } from "@/shared/graphql/generated";
-import { EnvironmentField, FormStatus, Input, Modal, Select, TextArea } from "@/shared/ui";
+import { EnvironmentField, Input, Modal, Select, TextArea } from "@/shared/ui";
 import { type AddProjectFormInitialProject, type AddProjectModalSubmitPayload, useAddProjectForm } from "../lib/useAddProjectForm";
 import { buildAddProjectModalActions, buildAddProjectModalLabels, getAddProjectModalTitle, type ProjectModalMode } from "../config/constants";
 
@@ -19,7 +19,7 @@ type AddProjectModalProps = {
 
 export function AddProjectModal({ open, onClose, projects, isProjectListLoading, onSubmit, initialProject, mode = "add" }: AddProjectModalProps) {
   const { t } = useTranslation();
-  const { formState, projectOptions, handleFieldChange, handleSubmit, handleClose, isSubmitting, disableSubmit, submitError } = useAddProjectForm({
+  const { formState, projectOptions, handleFieldChange, handleSubmit, handleClose, isSubmitting, disableSubmit } = useAddProjectForm({
     projects,
     onClose,
     onSubmit,
@@ -48,7 +48,6 @@ export function AddProjectModal({ open, onClose, projects, isProjectListLoading,
         disabled: isSubmitting,
       }}
     >
-      <FormStatus errorMessage={submitError} className="mb-2" />
       <div className="space-y-8">
         <div className="grid gap-8 md:grid-cols-2">
           <Select

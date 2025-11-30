@@ -22,14 +22,7 @@ interface UpdateSkillFormProps {
   onCancel: () => void;
 }
 
-export function UpdateSkillForm({
-  open,
-  categoryOptions,
-  displayCategories,
-  allSkillsForSelect,
-  onSuccess,
-  onCancel,
-}: UpdateSkillFormProps) {
+export function UpdateSkillForm({ open, categoryOptions, displayCategories, allSkillsForSelect, onSuccess, onCancel }: UpdateSkillFormProps) {
   const { updateSkill, loading, error } = useUpdateSkill();
   const initialValues: UpdateSkillFormValues = {
     skillId: "",
@@ -52,18 +45,14 @@ export function UpdateSkillForm({
     if (values.categoryId) {
       const categoryIdNum = parseInt(values.categoryId, 10);
       if (isNaN(categoryIdNum)) {
-        errors.categoryId = t(
-          "features.skills.updateForm.errors.categoryInvalid"
-        );
+        errors.categoryId = t("features.skills.updateForm.errors.categoryInvalid");
       }
     }
 
     return errors;
   };
 
-  const mapValuesToPayload = (
-    values: UpdateSkillFormValues
-  ): UpdateSkillPayload | null => {
+  const mapValuesToPayload = (values: UpdateSkillFormValues): UpdateSkillPayload | null => {
     const trimmedName = values.skillName.trim();
     if (!values.skillId || !trimmedName) {
       return null;
@@ -94,13 +83,9 @@ export function UpdateSkillForm({
         return;
       }
 
-      try {
-        await updateSkill(payload);
-        helpers.resetForm();
-        onSuccess();
-      } catch (err) {
-        console.error("Error updating skill:", err);
-      }
+      await updateSkill(payload);
+      helpers.resetForm();
+      onSuccess();
     },
   });
 
@@ -112,9 +97,7 @@ export function UpdateSkillForm({
       const skillData = displayCategories
         .flatMap((cat) => [
           ...cat.skills.map((s) => ({ skill: s, categoryId: cat.id })),
-          ...(cat.children?.flatMap((child) =>
-            child.skills.map((s) => ({ skill: s, categoryId: child.id }))
-          ) || []),
+          ...(cat.children?.flatMap((child) => child.skills.map((s) => ({ skill: s, categoryId: child.id }))) || []),
         ])
         .find((item) => item.skill.id === skillId);
       if (skillData) {
@@ -131,11 +114,7 @@ export function UpdateSkillForm({
       primaryAction={{
         label: t("features.skills.common.confirm"),
         onClick: () => formik.handleSubmit(),
-        disabled:
-          loading ||
-          !formik.isValid ||
-          formik.isSubmitting ||
-          !formik.values.skillId,
+        disabled: loading || !formik.isValid || formik.isSubmitting || !formik.values.skillId,
       }}
       secondaryAction={{
         label: t("features.skills.common.cancel"),
@@ -148,58 +127,40 @@ export function UpdateSkillForm({
       <FormStatus errorMessage={error?.message ?? null} className="mb-4" />
 
       <div className="space-y-4">
-        <div>
-          <Select
-            id="skillId"
-            label={t("features.skills.updateForm.labels.selectSkill")}
-            value={formik.values.skillId}
-            onChange={(value) => handleSkillSelect(value)}
-            options={allSkillsForSelect.map((skill) => ({
-              value: skill.id,
-              label: skill.name,
-            }))}
-            error={
-              formik.touched.skillId && formik.errors.skillId
-                ? formik.errors.skillId
-                : undefined
-            }
-          />
-        </div>
+        <Select
+          id="skillId"
+          label={t("features.skills.updateForm.labels.selectSkill")}
+          value={formik.values.skillId}
+          onChange={(value) => handleSkillSelect(value)}
+          options={allSkillsForSelect.map((skill) => ({
+            value: skill.id,
+            label: skill.name,
+          }))}
+          error={formik.touched.skillId && formik.errors.skillId ? formik.errors.skillId : undefined}
+        />
 
-        <div>
-          <Input
-            id="skillName"
-            label={t("features.skills.updateForm.labels.skillName")}
-            placeholder={t("features.skills.updateForm.placeholders.skillName")}
-            {...formik.getFieldProps("skillName")}
-            required
-            disabled={!formik.values.skillId}
-          />
-          {formik.touched.skillName && formik.errors.skillName ? (
-            <p className="mt-1 text-sm text-red-400">
-              {formik.errors.skillName}
-            </p>
-          ) : null}
-        </div>
+        <Input
+          id="skillName"
+          label={t("features.skills.updateForm.labels.skillName")}
+          placeholder={t("features.skills.updateForm.placeholders.skillName")}
+          {...formik.getFieldProps("skillName")}
+          required
+          disabled={!formik.values.skillId}
+        />
+        {formik.touched.skillName && formik.errors.skillName ? <p className="mt-1 text-sm text-red-400">{formik.errors.skillName}</p> : null}
 
-        <div>
-          <Select
-            id="categoryId"
-            label={t("features.skills.updateForm.labels.category")}
-            value={formik.values.categoryId}
-            onChange={(value) => formik.setFieldValue("categoryId", value)}
-            options={categoryOptions.map((category) => ({
-              value: category.id,
-              label: category.name,
-            }))}
-            disabled={!formik.values.skillId}
-            error={
-              formik.touched.categoryId && formik.errors.categoryId
-                ? formik.errors.categoryId
-                : undefined
-            }
-          />
-        </div>
+        <Select
+          id="categoryId"
+          label={t("features.skills.updateForm.labels.category")}
+          value={formik.values.categoryId}
+          onChange={(value) => formik.setFieldValue("categoryId", value)}
+          options={categoryOptions.map((category) => ({
+            value: category.id,
+            label: category.name,
+          }))}
+          disabled={!formik.values.skillId}
+          error={formik.touched.categoryId && formik.errors.categoryId ? formik.errors.categoryId : undefined}
+        />
       </div>
     </Modal>
   );

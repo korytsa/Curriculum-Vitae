@@ -311,16 +311,20 @@ export function formatMemberSince(
   const date = parseDate(dateInput);
   if (!date) return null;
 
-  try {
-    return new Intl.DateTimeFormat(locale || undefined, {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }).format(date);
-  } catch {
-    return date.toDateString();
-  }
+  const formatterLocale = (() => {
+    if (!locale) return undefined;
+    const normalized = locale.trim();
+    if (!normalized) return undefined;
+    const [supportedLocale] = Intl.DateTimeFormat.supportedLocalesOf([normalized]);
+    return supportedLocale;
+  })();
+
+  return new Intl.DateTimeFormat(formatterLocale, {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  }).format(date);
 }
 
 export async function fileToBase64(file: File) {

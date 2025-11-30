@@ -102,12 +102,12 @@ function useCollapseState(initialIsCollapsed: boolean, hasInitialPreference: boo
   useLayoutEffect(() => {
     if (hasPreferenceRef.current) return;
 
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
+    if (typeof window !== "undefined" && window.localStorage) {
+      const stored = window.localStorage.getItem(STORAGE_KEY);
       if (stored !== null) {
         setIsCollapsed(stored === "true");
       }
-    } catch {}
+    }
 
     hasPreferenceRef.current = true;
   }, []);
@@ -119,9 +119,9 @@ function useCollapseState(initialIsCollapsed: boolean, hasInitialPreference: boo
     document.documentElement.style.setProperty("--sidebar-width", width);
     document.cookie = `${STORAGE_KEY}=${String(isCollapsed)}; path=/; max-age=${COOKIE_MAX_AGE_SECONDS}`;
 
-    try {
-      localStorage.setItem(STORAGE_KEY, String(isCollapsed));
-    } catch {}
+    if (typeof window !== "undefined" && window.localStorage) {
+      window.localStorage.setItem(STORAGE_KEY, String(isCollapsed));
+    }
   }, [isCollapsed]);
 
   const toggleCollapse = () => {

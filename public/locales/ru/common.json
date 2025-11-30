@@ -37,6 +37,14 @@
     "table": {
       "searchPlaceholder": "Поиск резюме"
     },
+    "list": {
+      "columns": {
+        "name": "Имя",
+        "education": "Образование",
+        "employee": "Сотрудник",
+        "emptyValue": "—"
+      }
+    },
     "createModal": {
       "title": "Создать резюме",
       "labels": {

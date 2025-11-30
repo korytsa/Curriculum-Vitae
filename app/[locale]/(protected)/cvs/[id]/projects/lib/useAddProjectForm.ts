@@ -99,7 +99,6 @@ type UseAddProjectFormResult = {
   handleClose: () => void;
   isSubmitting: boolean;
   disableSubmit: boolean;
-  submitError: string | null;
 };
 
 export function useAddProjectForm({ projects, onClose, onSubmit, initialProject }: UseAddProjectFormParams): UseAddProjectFormResult {
@@ -117,7 +116,6 @@ export function useAddProjectForm({ projects, onClose, onSubmit, initialProject 
       : INITIAL_FORM_STATE
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
   const lastProjectId = useRef<string | null>(null);
 
   const availableProjects = projects ?? EMPTY_PROJECTS;
@@ -162,7 +160,6 @@ export function useAddProjectForm({ projects, onClose, onSubmit, initialProject 
   const resetForm = () => {
     setFormState(INITIAL_FORM_STATE);
     lastProjectId.current = null;
-    setSubmitError(null);
   };
 
   const handleClose = () => {
@@ -194,17 +191,14 @@ export function useAddProjectForm({ projects, onClose, onSubmit, initialProject 
       return;
     }
 
-    setSubmitError(null);
     setIsSubmitting(true);
-    try {
+    const submitProject = (async () => {
       await onSubmit(payload);
       handleClose();
-    } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "Failed to save project");
-      return;
-    } finally {
+    })();
+    await submitProject.finally(() => {
       setIsSubmitting(false);
-    }
+    });
   };
 
   const disableSubmit = !formState.projectId || !formState.startDate || isSubmitting;
@@ -217,6 +211,5 @@ export function useAddProjectForm({ projects, onClose, onSubmit, initialProject 
     handleClose,
     isSubmitting,
     disableSubmit,
-    submitError,
   };
 }

@@ -17,13 +17,9 @@ export default function DeleteUserModal({ open, user, onClose, onDeleted }: Dele
   const { deleteUser, loading, error } = useDeleteUser();
 
   const handleDelete = async () => {
-    try {
-      await deleteUser(user.id);
-      await onDeleted?.();
-      onClose();
-    } catch (err) {
-      console.error("Failed to delete user:", err);
-    }
+    await deleteUser(user.id);
+    await onDeleted?.();
+    onClose();
   };
 
   const fullName = `${user.profile.first_name ?? ""} ${user.profile.last_name ?? ""}`.trim().replace(/\s+/g, " ");

@@ -12,11 +12,7 @@ interface CreateCvModalProps {
   onSuccess?: () => void;
 }
 
-export function CreateCvModal({
-  open,
-  onClose,
-  onSuccess,
-}: CreateCvModalProps) {
+export function CreateCvModal({ open, onClose, onSuccess }: CreateCvModalProps) {
   const { t } = useTranslation();
   const { createCv, loading, error } = useCreateCv();
 
@@ -34,18 +30,14 @@ export function CreateCvModal({
       return errors;
     },
     onSubmit: async (values, helpers) => {
-      try {
-        await createCv({
-          name: values.name.trim(),
-          education: values.education?.trim() || undefined,
-          description: values.description?.trim() || "",
-        });
-        helpers.resetForm();
-        onSuccess?.();
-        onClose();
-      } catch (err) {
-        console.error("Error creating CV:", err);
-      }
+      await createCv({
+        name: values.name.trim(),
+        education: values.education?.trim() || undefined,
+        description: values.description?.trim() || "",
+      });
+      helpers.resetForm();
+      onSuccess?.();
+      onClose();
     },
   });
 
@@ -73,25 +65,12 @@ export function CreateCvModal({
       <FormStatus errorMessage={error?.message ?? null} className="mb-4" />
 
       <div className="space-y-4">
-        <Input
-          id="name"
-          label={t("cvs.createModal.labels.name")}
-          {...formik.getFieldProps("name")}
-          error={formik.touched.name ? formik.errors.name : undefined}
-          required
-        />
+        <Input id="name" label={t("cvs.createModal.labels.name")} {...formik.getFieldProps("name")} error={formik.touched.name ? formik.errors.name : undefined} required />
 
-        <Input
-          id="education"
-          label={t("cvs.createModal.labels.education")}
-          {...formik.getFieldProps("education")}
-        />
+        <Input id="education" label={t("cvs.createModal.labels.education")} {...formik.getFieldProps("education")} />
 
         <div>
-          <label
-            htmlFor="description"
-            className="mb-2 block text-sm font-medium text-white/80"
-          >
+          <label htmlFor="description" className="mb-2 block text-sm font-medium text-white/80">
             {t("cvs.createModal.labels.description")}
           </label>
           <textarea

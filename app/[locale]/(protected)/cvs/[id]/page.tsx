@@ -33,25 +33,16 @@ export default function CvDetailsPage({ params }: CvDetailsPageProps) {
       return errors;
     },
     onSubmit: async (values) => {
-      try {
-        await updateCv({
-          name: values.name.trim(),
-          education: values.education?.trim() || undefined,
-          description: values.description?.trim() || "",
-        });
-        toast.success(
-          t("cvs.details.notifications.success", {
-            defaultValue: "CV updated successfully",
-          })
-        );
-      } catch (err) {
-        console.error("Error updating CV:", err);
-        toast.error(
-          t("cvs.details.notifications.error", {
-            defaultValue: "Failed to update CV",
-          })
-        );
-      }
+      await updateCv({
+        name: values.name.trim(),
+        education: values.education?.trim() || undefined,
+        description: values.description?.trim() || "",
+      });
+      toast.success(
+        t("cvs.details.notifications.success", {
+          defaultValue: "CV updated successfully",
+        })
+      );
     },
   });
 

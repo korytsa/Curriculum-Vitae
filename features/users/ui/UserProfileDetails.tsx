@@ -112,7 +112,7 @@ export function UserProfileDetails({ userId, locale }: UserProfileDetailsProps) 
 
     setIsSubmitting(true);
 
-    try {
+    const submitProfileUpdates = (async () => {
       await executeProfileMutations({
         profileChanges,
         directoryChanges,
@@ -125,12 +125,11 @@ export function UserProfileDetails({ userId, locale }: UserProfileDetailsProps) 
 
       resetAvatarState();
       toast.success(t("users.details.profile.notifications.success"));
-    } catch (error) {
-      console.error("Failed to update profile", error);
-      toast.error(error instanceof Error ? error.message : t("users.details.profile.notifications.error"));
-    } finally {
+    })();
+
+    await submitProfileUpdates.finally(() => {
       setIsSubmitting(false);
-    }
+    });
   };
 
   const fullName = user ? getUserFullName(user) || user.email : null;

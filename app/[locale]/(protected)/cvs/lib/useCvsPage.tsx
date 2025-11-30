@@ -1,8 +1,8 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, type SearchInputProps, type TableProps, TableRowActions, type DropdownMenuItem } from "@/shared/ui";
 import { useCvs, type CvListItem } from "@/features/cvs";
-import { CVS_SEARCH_FIELDS, CVS_TABLE_COLUMNS } from "../config/constants";
+import { CVS_SEARCH_FIELDS, createCvsTableColumns } from "../config/constants";
 
 type SortDirection = "asc" | "desc" | null;
 
@@ -35,20 +35,18 @@ export function useCvsPage(options?: { onDetails?: (cvId: string) => void; onDel
     });
   };
 
-  const sortedCvs = useMemo(() => {
-    if (!sortDirection) return filteredCvs;
+  const sortedCvs =
+    sortDirection == null
+      ? filteredCvs
+      : [...filteredCvs].sort((a, b) => {
+          const aName = a.name.toLowerCase();
+          const bName = b.name.toLowerCase();
 
-    return [...filteredCvs].sort((a, b) => {
-      const aName = a.name.toLowerCase();
-      const bName = b.name.toLowerCase();
-
-      if (sortDirection === "asc") {
-        return aName.localeCompare(bName);
-      } else {
-        return bName.localeCompare(aName);
-      }
-    });
-  }, [filteredCvs, sortDirection]);
+          if (sortDirection === "asc") {
+            return aName.localeCompare(bName);
+          }
+          return bName.localeCompare(aName);
+        });
 
   const handleSearchResults = (results: CvListItem[]) => {
     setFilteredCvs(results);
@@ -102,15 +100,27 @@ export function useCvsPage(options?: { onDetails?: (cvId: string) => void; onDel
     return <TableRowActions items={menuItems} ariaLabel={`Open actions for ${labelTarget}`} menuWidth="120px" />;
   };
 
+  const nameColumnLabel = t("cvs.list.columns.name");
+  const educationColumnLabel = t("cvs.list.columns.education");
+  const employeeColumnLabel = t("cvs.list.columns.employee");
+  const emptyValueLabel = t("cvs.list.columns.emptyValue");
+
+  const cvsTableColumns = createCvsTableColumns({
+    name: nameColumnLabel,
+    education: educationColumnLabel,
+    employee: employeeColumnLabel,
+    emptyValue: emptyValueLabel,
+  });
+
   const tableProps: TableProps<CvListItem> = {
     data: sortedCvs,
-    columns: CVS_TABLE_COLUMNS.map((col) => {
+    columns: cvsTableColumns.map((col) => {
       if (col.key === "name") {
         return {
           ...col,
           header: (
             <Button type="button" variant="ghost" onClick={handleSort} className="flex items-center gap-2 hover:opacity-80 transition-opacity h-auto p-0 border-none text-white">
-              <span>Name</span>
+              <span className="normal-case">{nameColumnLabel}</span>
               <span className="text-xs text-white/50">{sortDirection === "asc" ? " ↑" : sortDirection === "desc" ? " ↓" : " ↑"}</span>
             </Button>
           ),

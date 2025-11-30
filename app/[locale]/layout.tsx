@@ -33,17 +33,18 @@ export default async function RootLayout({
 
   const themeInitScript = `
     (function() {
-      try {
-        const storageKey = 'theme-preference';
-        const stored = window.localStorage.getItem(storageKey);
-        const preference = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system';
-        const media = window.matchMedia('(prefers-color-scheme: dark)');
-        const mode = preference === 'system' ? (media.matches ? 'dark' : 'light') : preference;
-        document.documentElement.dataset.theme = mode;
-        document.documentElement.style.colorScheme = mode;
-      } catch (error) {
-        document.documentElement.dataset.theme = 'dark';
-        document.documentElement.style.colorScheme = 'dark';
+      const storageKey = 'theme-preference';
+      const hasWindow = typeof window !== 'undefined';
+      const hasDocument = typeof document !== 'undefined';
+      const hasLocalStorage = hasWindow && typeof window.localStorage !== 'undefined';
+      const stored = hasLocalStorage ? window.localStorage.getItem(storageKey) : null;
+      const preference = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system';
+      const mediaQuery = hasWindow && typeof window.matchMedia === 'function' ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+      const mode = preference === 'system' ? (mediaQuery && mediaQuery.matches ? 'dark' : 'light') : preference;
+      if (hasDocument) {
+        const appliedMode = mode || 'dark';
+        document.documentElement.dataset.theme = appliedMode;
+        document.documentElement.style.colorScheme = appliedMode;
       }
     })();
   `;

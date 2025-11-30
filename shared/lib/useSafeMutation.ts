@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import {
   type DocumentNode,
   type OperationVariables,
@@ -17,22 +16,8 @@ export function useSafeMutation<TData, TVariables extends OperationVariables>(
 ) {
   const [mutateFn, result] = useMutation<TData, TVariables>(document, options);
 
-  const mutate = useCallback(
-    async (
-      ...args: Parameters<typeof mutateFn>
-    ) => {
-      try {
-        return await mutateFn(...args);
-      } catch (mutationError) {
-        console.error("[GraphQL mutation error]", mutationError);
-        throw mutationError;
-      }
-    },
-    [mutateFn],
-  );
-
   return {
-    mutate,
+    mutate: mutateFn,
     ...result,
   };
 }

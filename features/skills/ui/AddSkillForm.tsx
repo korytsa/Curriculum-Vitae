@@ -46,9 +46,7 @@ export function AddSkillForm({ open, onSuccess, onCancel }: AddSkillFormProps) {
     return errors;
   };
 
-  const mapValuesToPayload = (
-    values: AddSkillFormValues
-  ): CreateSkillPayload | null => {
+  const mapValuesToPayload = (values: AddSkillFormValues): CreateSkillPayload | null => {
     if (!values.skillId) {
       return null;
     }
@@ -58,9 +56,7 @@ export function AddSkillForm({ open, onSuccess, onCancel }: AddSkillFormProps) {
     }
 
     const [skillId, categoryId] = values.skillId.split("|");
-    const selectedSkill = skillOptions.find(
-      (opt) => opt.value === values.skillId
-    );
+    const selectedSkill = skillOptions.find((opt) => opt.value === values.skillId);
 
     if (!selectedSkill) {
       return null;
@@ -87,13 +83,9 @@ export function AddSkillForm({ open, onSuccess, onCancel }: AddSkillFormProps) {
         return;
       }
 
-      try {
-        await createSkill(payload);
-        helpers.resetForm();
-        onSuccess();
-      } catch (err) {
-        console.error("Error creating skill:", err);
-      }
+      await createSkill(payload);
+      helpers.resetForm();
+      onSuccess();
     },
   });
 
@@ -129,11 +121,7 @@ export function AddSkillForm({ open, onSuccess, onCancel }: AddSkillFormProps) {
             onChange={(value) => formik.setFieldValue("skillId", value)}
             options={selectOptions}
             align="bottom"
-            error={
-              formik.touched.skillId && formik.errors.skillId
-                ? formik.errors.skillId
-                : undefined
-            }
+            error={formik.touched.skillId && formik.errors.skillId ? formik.errors.skillId : undefined}
           />
         </div>
 
@@ -142,19 +130,13 @@ export function AddSkillForm({ open, onSuccess, onCancel }: AddSkillFormProps) {
             id="mastery"
             label={t("features.skills.addForm.labels.mastery")}
             value={formik.values.mastery}
-            onChange={(value) =>
-              formik.setFieldValue("mastery", value as Mastery)
-            }
+            onChange={(value) => formik.setFieldValue("mastery", value as Mastery)}
             options={MASTERY_OPTIONS.map((opt) => ({
               value: opt.value,
               label: opt.label,
             }))}
             align="bottom"
-            error={
-              formik.touched.mastery && formik.errors.mastery
-                ? formik.errors.mastery
-                : undefined
-            }
+            error={formik.touched.mastery && formik.errors.mastery ? formik.errors.mastery : undefined}
           />
         </div>
       </div>

@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Input, FormStatus } from "@/shared/ui";
 import type { FormikProps } from "formik";
@@ -22,13 +21,10 @@ export function CreateUserFormView({
 }: CreateUserFormViewProps) {
   const { t } = useTranslation();
 
-  const roleOptions = useMemo(
-    () => [
-      { label: t("features.createUserForm.roles.employee"), value: "Employee" },
-      { label: t("features.createUserForm.roles.admin"), value: "Admin" },
-    ],
-    [t]
-  );
+  const roleOptions = [
+    { label: t("features.createUserForm.roles.employee"), value: "Employee" },
+    { label: t("features.createUserForm.roles.admin"), value: "Admin" },
+  ];
 
   return (
     <form className="space-y-8" onSubmit={formik.handleSubmit}>

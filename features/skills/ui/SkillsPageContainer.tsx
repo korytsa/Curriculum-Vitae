@@ -1,25 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import {
-  useSkills,
-  useDisplayCategories,
-  useDeleteSkill,
-} from "@/features/skills";
+import { useSkills, useDisplayCategories, useDeleteSkill } from "@/features/skills";
 import { SkillsPageView } from "@/app/[locale]/(protected)/skills/ui/SkillsPageView";
 
 interface SkillsPageContainerProps {
   showHeading?: boolean;
 }
 
-export function SkillsPageContainer({
-  showHeading = true,
-}: SkillsPageContainerProps) {
+export function SkillsPageContainer({ showHeading = true }: SkillsPageContainerProps) {
   const [showAddSkillForm, setShowAddSkillForm] = useState(false);
   const [isDeleteMode, setIsDeleteMode] = useState(false);
-  const [selectedSkillIds, setSelectedSkillIds] = useState<Set<string>>(
-    new Set()
-  );
+  const [selectedSkillIds, setSelectedSkillIds] = useState<Set<string>>(new Set());
 
   const { skillsData, skillsLoading, refetchSkills } = useSkills();
   const displayCategories = useDisplayCategories(skillsData);
@@ -49,17 +41,13 @@ export function SkillsPageContainer({
   const handleDeleteSelectedSkills = async () => {
     if (selectedSkillIds.size === 0) return;
 
-    try {
-      const skillNames = Array.from(selectedSkillIds);
-      if (skillNames.length === 0) return;
+    const skillNames = Array.from(selectedSkillIds);
+    if (skillNames.length === 0) return;
 
-      await deleteSkill({ name: skillNames });
-      setIsDeleteMode(false);
-      setSelectedSkillIds(new Set());
-      await refetchSkills?.();
-    } catch (error) {
-      console.error("Error deleting skills:", error);
-    }
+    await deleteSkill({ name: skillNames });
+    setIsDeleteMode(false);
+    setSelectedSkillIds(new Set());
+    await refetchSkills?.();
   };
 
   return (

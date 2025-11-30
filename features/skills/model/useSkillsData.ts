@@ -26,23 +26,22 @@ const masteryToValue = (mastery: Mastery): number => {
 export function useCategoryOptions(
   categoriesData?: SkillCategoriesForFormQuery
 ): CategoryOption[] {
-  return useMemo(() => {
-    if (
-      categoriesData?.skillCategories &&
-      categoriesData.skillCategories.length > 0
-    ) {
-      return categoriesData.skillCategories
-        .filter(
-          (category): category is NonNullable<typeof category> =>
-            category !== null
-        )
-        .map((category) => ({
-          id: category.id,
-          name: category.name,
-        }));
-    }
+  if (
+    !categoriesData?.skillCategories ||
+    categoriesData.skillCategories.length === 0
+  ) {
     return [];
-  }, [categoriesData]);
+  }
+
+  return categoriesData.skillCategories
+    .filter(
+      (category): category is NonNullable<typeof category> =>
+        category !== null
+    )
+    .map((category) => ({
+      id: category.id,
+      name: category.name,
+    }));
 }
 
 export function useDisplayCategories(

@@ -61,13 +61,9 @@ export default function CvsPage() {
       return;
     }
 
-    try {
-      await deleteCv({ cvId: deleteModalState.cvId });
-      await handleDeleteSuccess();
-      handleCloseDeleteModal();
-    } catch (err) {
-      console.error("Error deleting CV:", err);
-    }
+    await deleteCv({ cvId: deleteModalState.cvId });
+    await handleDeleteSuccess();
+    handleCloseDeleteModal();
   };
 
   const { heading, searchInputProps, tableProps, refetch } = useCvsPage({
