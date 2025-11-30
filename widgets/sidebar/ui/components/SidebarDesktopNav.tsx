@@ -47,15 +47,17 @@ export function SidebarDesktopNav({
 				<ul className="list-none p-0 m-0 flex flex-col gap-[12px]">
 					{sections.map((section, sectionIndex) => (
 						<Fragment key={sectionIndex}>
-							{section.map((item) => {
-								const localizedHref = applyLocaleToPath(item.href);
-								const isActive = normalizedPath === item.href;
-								return (
-									<li key={item.href}>
-										<MenuItemLink item={item} isActive={isActive} isCollapsed={isCollapsed} localizedHref={localizedHref} t={t} />
-									</li>
-								);
-							})}
+							{section.map((item) => (
+								<li key={item.href}>
+									<MenuItemLink
+										item={item}
+										normalizedPath={normalizedPath}
+										isCollapsed={isCollapsed}
+										applyLocaleToPath={applyLocaleToPath}
+										t={t}
+									/>
+								</li>
+							))}
 							{!isCollapsed && sectionIndex < sections.length - 1 && (
 								<li>
 									<div className="h-px bg-white/10" />
@@ -95,14 +97,16 @@ export function SidebarDesktopNav({
 
 type MenuItemLinkProps = {
 	item: MenuItem;
-	isActive: boolean;
+	normalizedPath: string;
 	isCollapsed: boolean;
-	localizedHref: string;
+	applyLocaleToPath: (path: string) => string;
 	t: (key: string) => string;
 };
 
-function MenuItemLink({ item, isActive, isCollapsed, localizedHref, t }: MenuItemLinkProps) {
+function MenuItemLink({ item, normalizedPath, isCollapsed, applyLocaleToPath, t }: MenuItemLinkProps) {
 	const Icon = item.icon;
+	const localizedHref = applyLocaleToPath(item.href);
+	const isActive = normalizedPath === item.href;
 
 	return (
 		<Link

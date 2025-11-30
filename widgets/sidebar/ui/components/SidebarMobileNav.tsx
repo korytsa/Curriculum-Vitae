@@ -19,8 +19,8 @@ type SidebarMobileNavProps = {
 
 type MobileMenuItemLinkProps = {
 	item: MenuItem;
-	isActive: boolean;
-	localizedHref: string;
+	normalizedPath: string;
+	applyLocaleToPath: (path: string) => string;
 	t: (key: string) => string;
 };
 
@@ -39,11 +39,15 @@ export function SidebarMobileNav({
 	return (
 		<aside className="md:hidden flex items-center justify-between h-14 bg-sidebar-bg px-4 text-white fixed bottom-0 left-0 right-0 z-[1000] select-none border-t border-white/10">
 			<div className="flex items-center gap-4">
-				{items.map((item) => {
-					const localizedHref = applyLocaleToPath(item.href);
-					const isActive = normalizedPath === item.href;
-					return <MobileMenuItemLink key={item.href} item={item} isActive={isActive} localizedHref={localizedHref} t={t} />;
-				})}
+				{items.map((item) => (
+					<MobileMenuItemLink
+						key={item.href}
+						item={item}
+						normalizedPath={normalizedPath}
+						applyLocaleToPath={applyLocaleToPath}
+						t={t}
+					/>
+				))}
 			</div>
 			<SidebarUserMenu
 				variant="mobile"
@@ -59,8 +63,10 @@ export function SidebarMobileNav({
 	);
 }
 
-function MobileMenuItemLink({ item, isActive, localizedHref, t }: MobileMenuItemLinkProps) {
+function MobileMenuItemLink({ item, normalizedPath, applyLocaleToPath, t }: MobileMenuItemLinkProps) {
 	const Icon = item.icon;
+	const localizedHref = applyLocaleToPath(item.href);
+	const isActive = normalizedPath === item.href;
 
 	return (
 		<Link

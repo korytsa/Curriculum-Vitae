@@ -72,22 +72,22 @@ export function useUsersPage(): UsersPageHookResult {
     return [currentUser, ...otherUsers];
   })();
 
-  const translate = (key: string, defaultValue: string) => t(key, { defaultValue }) || defaultValue;
+  const translate = (key: string) => t(key);
 
   const searchText = {
-    placeholder: translate("users.search.placeholder", "Search users"),
-    reset: translate("users.search.reset", "Reset search"),
-    noResultsTitle: translate("users.search.noResults.title", "No results found"),
-    noResultsDescription: translate("users.search.noResults.description", "Try another search, check the spelling or use a broader term"),
-    logout: translate("users.search.logout", "Logout"),
+    placeholder: translate("users.search.placeholder"),
+    reset: translate("users.search.reset"),
+    noResultsTitle: translate("users.search.noResults.title"),
+    noResultsDescription: translate("users.search.noResults.description"),
+    logout: translate("users.search.logout"),
   };
 
   const tableColumnLabels = {
-    firstName: translate("users.table.columns.firstName", "First Name"),
-    lastName: translate("users.table.columns.lastName", "Last Name"),
-    email: translate("users.table.columns.email", "Email"),
-    department: translate("users.table.columns.department", "Department"),
-    position: translate("users.table.columns.position", "Position"),
+    firstName: translate("users.table.columns.firstName"),
+    lastName: translate("users.table.columns.lastName"),
+    email: translate("users.table.columns.email"),
+    department: translate("users.table.columns.department"),
+    position: translate("users.table.columns.position"),
   };
 
   const tableColumns = createUsersTableColumns(tableColumnLabels);
@@ -138,11 +138,11 @@ export function useUsersPage(): UsersPageHookResult {
   };
 
   return {
-    heading: translate("users.heading", "Employees"),
+    heading: translate("users.heading"),
     searchInputProps,
     tableProps,
     canCreateUser: isAdmin,
-    createUserLabel: t("users.createUser", { defaultValue: "Create user" }) || "Create user",
+    createUserLabel: t("users.createUser"),
     refreshUsers,
   };
 }

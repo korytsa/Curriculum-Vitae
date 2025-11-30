@@ -74,7 +74,10 @@
     },
     "projectsPage": {
       "actions": {
-        "add": "ADD PROJECT"
+        "add": "ADD PROJECT",
+        "update": "Update project",
+        "remove": "Remove project",
+        "openMenu": "Open actions menu"
       },
       "search": {
         "placeholder": "Search projects",
@@ -95,7 +98,8 @@
           "name": "Name",
           "domain": "Domain",
           "startDate": "Start Date",
-          "endDate": "End Date"
+          "endDate": "End Date",
+          "actions": "Actions"
         },
         "labels": {
           "present": "Present"
@@ -109,6 +113,7 @@
       },
       "modal": {
         "title": "Add project",
+        "updateTitle": "Update project",
         "fields": {
           "project": "Project",
           "domain": "Domain",
@@ -122,7 +127,8 @@
         },
         "actions": {
           "cancel": "CANCEL",
-          "submit": "ADD"
+          "submit": "ADD",
+          "update": "UPDATE"
         }
       },
       "deleteModal": {

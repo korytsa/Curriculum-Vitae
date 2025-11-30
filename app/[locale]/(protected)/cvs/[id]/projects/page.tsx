@@ -52,14 +52,13 @@ export default function CvProjectsPageRoute({ params }: CvProjectsPageProps) {
         onConfirm={deleteProjectModal.onConfirm}
         isLoading={deleteProjectModal.isLoading}
         errorMessage={deleteProjectModal.errorMessage}
-        title={t("cvs.projectsPage.deleteModal.title", { defaultValue: "Remove project" })}
+        title={t("cvs.projectsPage.deleteModal.title")}
       >
         <p className="font-normal">
           <Trans
             i18nKey="cvs.projectsPage.deleteModal.message"
             values={{ name: deleteProjectModal.projectName ?? "" }}
             components={{ strong: <span className="font-semibold" /> }}
-            defaultValue="Are you sure you want to remove project <strong>{{name}}</strong>?"
           />
         </p>
       </ConfirmDeleteModal>

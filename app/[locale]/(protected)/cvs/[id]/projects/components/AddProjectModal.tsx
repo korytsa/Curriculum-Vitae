@@ -26,7 +26,7 @@ export function AddProjectModal({ open, onClose, projects, isProjectListLoading,
     initialProject,
   });
 
-  const translate = (key: string, defaultValue: string) => t(key, { defaultValue }) || defaultValue;
+  const translate = (key: string) => t(key);
   const modalTitle = getAddProjectModalTitle(translate, mode);
   const labels = buildAddProjectModalLabels(translate);
   const actions = buildAddProjectModalActions(translate, mode);

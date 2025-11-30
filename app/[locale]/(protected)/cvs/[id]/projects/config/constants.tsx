@@ -4,7 +4,7 @@ import { MdArrowDownward } from "react-icons/md";
 import type { CvProject } from "@/shared/graphql/generated";
 import type { TableColumn } from "@/shared/ui";
 
-export type TranslateFn = (key: string, defaultValue: string) => string;
+export type TranslateFn = (key: string) => string;
 
 export const CV_PROJECTS_SEARCH_FIELDS = [
   "name",
@@ -112,15 +112,15 @@ type SortableColumnConfig = {
 };
 
 export const buildCvProjectsColumnLabels = (translate: TranslateFn) => ({
-  name: translate("cvs.projectsPage.table.columns.name", "Name"),
-  domain: translate("cvs.projectsPage.table.columns.domain", "Domain"),
-  startDate: translate("cvs.projectsPage.table.columns.startDate", "Start Date"),
-  endDate: translate("cvs.projectsPage.table.columns.endDate", "End Date"),
-  actions: translate("cvs.projectsPage.table.columns.actions", "Actions"),
-  nameSortAria: translate("cvs.projectsPage.table.sort.name", "Sort by name"),
-  domainSortAria: translate("cvs.projectsPage.table.sort.domain", "Sort by domain"),
-  startDateSortAria: translate("cvs.projectsPage.table.sort.startDate", "Sort by start date"),
-  endDateSortAria: translate("cvs.projectsPage.table.sort.endDate", "Sort by end date"),
+  name: translate("cvs.projectsPage.table.columns.name"),
+  domain: translate("cvs.projectsPage.table.columns.domain"),
+  startDate: translate("cvs.projectsPage.table.columns.startDate"),
+  endDate: translate("cvs.projectsPage.table.columns.endDate"),
+  actions: translate("cvs.projectsPage.table.columns.actions"),
+  nameSortAria: translate("cvs.projectsPage.table.sort.name"),
+  domainSortAria: translate("cvs.projectsPage.table.sort.domain"),
+  startDateSortAria: translate("cvs.projectsPage.table.sort.startDate"),
+  endDateSortAria: translate("cvs.projectsPage.table.sort.endDate"),
 });
 
 export const createCvProjectsColumns = ({
@@ -175,26 +175,26 @@ export const createCvProjectsColumns = ({
 };
 
 export const buildAddProjectModalLabels = (translate: TranslateFn) => ({
-  project: translate("cvs.projectsPage.modal.fields.project", "Project"),
-  domain: translate("cvs.projectsPage.modal.fields.domain", "Domain"),
-  startDate: translate("cvs.projectsPage.modal.fields.startDate", "Start Date"),
-  endDate: translate("cvs.projectsPage.modal.fields.endDate", "End Date"),
-  description: translate("cvs.projectsPage.modal.fields.description", "Description"),
-  environment: translate("cvs.projectsPage.modal.fields.environment", "Environment"),
-  responsibilities: translate("cvs.projectsPage.modal.fields.responsibilities", "Responsibilities"),
-  responsibilitiesPlaceholder: translate("cvs.projectsPage.modal.fields.responsibilitiesPlaceholder", "Describe responsibilities, separated by commas"),
+  project: translate("cvs.projectsPage.modal.fields.project"),
+  domain: translate("cvs.projectsPage.modal.fields.domain"),
+  startDate: translate("cvs.projectsPage.modal.fields.startDate"),
+  endDate: translate("cvs.projectsPage.modal.fields.endDate"),
+  description: translate("cvs.projectsPage.modal.fields.description"),
+  environment: translate("cvs.projectsPage.modal.fields.environment"),
+  responsibilities: translate("cvs.projectsPage.modal.fields.responsibilities"),
+  responsibilitiesPlaceholder: translate("cvs.projectsPage.modal.fields.responsibilitiesPlaceholder"),
 });
 
 export const buildAddProjectModalActions = (translate: TranslateFn, mode: ProjectModalMode) => ({
-  cancel: translate("cvs.projectsPage.modal.actions.cancel", "CANCEL"),
-  submit: mode === "update" ? translate("cvs.projectsPage.modal.actions.update", "UPDATE") : translate("cvs.projectsPage.modal.actions.submit", "ADD"),
+  cancel: translate("cvs.projectsPage.modal.actions.cancel"),
+  submit: mode === "update" ? translate("cvs.projectsPage.modal.actions.update") : translate("cvs.projectsPage.modal.actions.submit"),
 });
 
 export const getAddProjectModalTitle = (translate: TranslateFn, mode: ProjectModalMode) =>
-  mode === "update" ? translate("cvs.projectsPage.modal.updateTitle", "Update project") : translate("cvs.projectsPage.modal.title", "Add project");
+  mode === "update" ? translate("cvs.projectsPage.modal.updateTitle") : translate("cvs.projectsPage.modal.title");
 
 export const buildProjectRowActionsLabels = (translate: TranslateFn) => ({
-  update: translate("cvs.projectsPage.actions.update", "Update project"),
-  remove: translate("cvs.projectsPage.actions.remove", "Remove project"),
-  openMenu: translate("cvs.projectsPage.actions.openMenu", "Open actions"),
+  update: translate("cvs.projectsPage.actions.update"),
+  remove: translate("cvs.projectsPage.actions.remove"),
+  openMenu: translate("cvs.projectsPage.actions.openMenu"),
 });

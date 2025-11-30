@@ -21,7 +21,6 @@ export function UserRowActions({ row, onNavigate, currentUserId, isAdmin = false
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const { t } = useTranslation();
-  const labelTarget = row.profile.first_name || row.email;
   const isCurrentUser = Boolean(currentUserId && row.id === currentUserId);
 
   const navigateToUser = () => {
@@ -51,36 +50,30 @@ export function UserRowActions({ row, onNavigate, currentUserId, isAdmin = false
 
   const handleDeleted = async () => {
     await onDeleted?.();
-    toast.success(t("users.deleteModal.toast", { defaultValue: "User deleted" }));
+    toast.success(t("users.deleteModal.toast"));
   };
 
   if (isCurrentUser || isAdmin) {
     const menuItems: DropdownMenuItem[] = [
       {
-        label: t("users.actions.profile", { defaultValue: "Profile" }),
+        label: t("users.actions.profile"),
         onClick: navigateToUser,
       },
       {
-        label: t("users.actions.update", { defaultValue: "Update user" }),
+        label: t("users.actions.update"),
         onClick: handleOpenModal,
       },
     ];
 
     menuItems.push({
-      label: t("users.actions.delete", { defaultValue: "Delete user" }),
+      label: t("users.actions.delete"),
       onClick: isAdmin ? handleOpenDeleteModal : undefined,
       disabled: !isAdmin,
     });
 
     return (
       <>
-        <TableRowActions
-          items={menuItems}
-          ariaLabel={t("users.actions.openMenu", {
-            defaultValue: "Open actions",
-          })}
-          menuWidth="130px"
-        />
+        <TableRowActions items={menuItems} ariaLabel={t("users.actions.openMenu")} menuWidth="130px" />
         <UpdateUserModal user={row} open={isModalOpen} onClose={handleCloseModal} />
         {isAdmin ? <DeleteUserModal user={row} open={isDeleteModalOpen} onClose={handleCloseDeleteModal} onDeleted={handleDeleted} /> : null}
       </>
@@ -94,9 +87,7 @@ export function UserRowActions({ row, onNavigate, currentUserId, isAdmin = false
       onClick={handleNavigate}
       size="icon"
       className="text-white/80 hover:bg-white/10"
-      aria-label={t("users.actions.openMenu", {
-        defaultValue: "Open actions",
-      })}
+      aria-label={t("users.actions.openMenu")}
       icon={<MdChevronRight className="w-5 h-5 text-white/80" />}
     />
   );

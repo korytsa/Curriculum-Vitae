@@ -37,14 +37,13 @@ export default function DeleteUserModal({ open, user, onClose, onDeleted }: Dele
       onConfirm={handleDelete}
       isLoading={loading}
       errorMessage={error?.message ?? null}
-      title={t("users.deleteModal.title", { defaultValue: "Delete user" })}
+      title={t("users.deleteModal.title")}
     >
       <p className="font-normal">
         <Trans
           i18nKey="users.deleteModal.warning"
           values={{ name: displayName }}
           components={{ strong: <span className="font-semibold" /> }}
-          defaultValue="Are you sure you want to delete this user?"
         />
       </p>
     </ConfirmDeleteModal>

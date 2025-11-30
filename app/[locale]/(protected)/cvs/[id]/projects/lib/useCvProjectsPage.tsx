@@ -144,7 +144,7 @@ export function useCvProjectsPage({ cvId, locale }: UseCvProjectsPageParams): Us
   const { updateCvProject } = useUpdateCvProject(cvId);
   const { removeCvProject, loading: isRemoveProjectLoading, error: removeProjectError } = useRemoveCvProject(cvId);
 
-  const translate = (key: string, defaultValue: string) => t(key, { defaultValue }) || defaultValue;
+  const translate = (key: string) => t(key);
 
   const projects = (cv?.projects ?? []).filter(Boolean) as CvProject[];
   const [{ field: activeField, direction }, setSortState] = useState<{
@@ -167,11 +167,11 @@ export function useCvProjectsPage({ cvId, locale }: UseCvProjectsPageParams): Us
     });
   };
 
-  const addProjectLabel = translate("cvs.projectsPage.actions.add", "ADD PROJECT");
-  const searchPlaceholder = translate("cvs.projectsPage.search.placeholder", "Search projects");
-  const resetSearchLabel = translate("cvs.projectsPage.search.reset", "Reset search");
-  const noResultsTitle = translate("cvs.projectsPage.states.noResults.title", "No results found");
-  const presentLabel = translate("cvs.projectsPage.table.labels.present", "Present");
+  const addProjectLabel = translate("cvs.projectsPage.actions.add");
+  const searchPlaceholder = translate("cvs.projectsPage.search.placeholder");
+  const resetSearchLabel = translate("cvs.projectsPage.search.reset");
+  const noResultsTitle = translate("cvs.projectsPage.states.noResults.title");
+  const presentLabel = translate("cvs.projectsPage.table.labels.present");
 
   const { searchInputProps, filteredProjects, hasSearchQuery, handleResetSearch } = useProjectSearchState(projects, searchPlaceholder);
   const sortedProjects = sortProjects(filteredProjects, activeField, direction);
