@@ -9,15 +9,7 @@ export const PROJECT_FORM_INITIAL_STATE: ProjectFormState = {
   environment: [],
 };
 
-export const MODAL_CONFIG = {
-  className: "max-w-4xl",
-  createTitle: "Create project",
-  createButtonLabel: "CREATE",
-} as const;
-
 export const FORM_FIELDS = {
-  nameLabel: "Name",
-  environmentPlaceholder: "Add skill",
   descriptionRows: 5,
   environmentRows: 3,
 } as const;

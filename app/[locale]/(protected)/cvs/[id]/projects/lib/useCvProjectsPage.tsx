@@ -7,7 +7,7 @@ import { useAddCvProject, useCv, useRemoveCvProject, useUpdateCvProject } from "
 import { useProjects } from "@/features/projects";
 import type { CvProject } from "@/shared/graphql/generated";
 import { Loader, type TableProps, TableRowActions, type DropdownMenuItem } from "@/shared/ui";
-import { createCvProjectsColumns } from "../config/constants";
+import { createCvProjectsColumns, DEFAULT_SORT_DIRECTION } from "../config/constants";
 import { formatDate, sortProjects, useProjectSearchState } from "./utils";
 import type {
   AddProjectFormInitialProject,
@@ -27,13 +27,13 @@ export function useCvProjectsPage({ cvId, locale }: UseCvProjectsPageParams): Us
   const { updateCvProject } = useUpdateCvProject(cvId);
   const { removeCvProject, loading: isRemoveProjectLoading, error: removeProjectError } = useRemoveCvProject(cvId);
 
-  const projects = (cv?.projects ?? []).filter(Boolean) as CvProject[];
+  const projects = (cv?.projects ?? []).filter(Boolean) as unknown as CvProject[];
   const [{ field: activeField, direction }, setSortState] = useState<{
     field: CvProjectsActiveField | null;
     direction: CvProjectsDirection;
   }>({
     field: null,
-    direction: "desc",
+    direction: DEFAULT_SORT_DIRECTION,
   });
 
   const toggleField = (field: CvProjectsActiveField) => {

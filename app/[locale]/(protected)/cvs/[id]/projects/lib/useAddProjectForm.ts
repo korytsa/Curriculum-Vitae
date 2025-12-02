@@ -3,19 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 
 import type { Project } from "@/shared/graphql/generated";
-import type { AddProjectFormInitialProject, AddProjectFormState, AddProjectModalSubmitPayload, ProjectOption, UseAddProjectFormParams, UseAddProjectFormResult } from "../types";
-
-const EMPTY_PROJECTS: Project[] = [];
-
-const INITIAL_FORM_STATE: AddProjectFormState = {
-  projectId: "",
-  domain: "",
-  startDate: "",
-  endDate: "",
-  description: "",
-  environment: [],
-  responsibilities: "",
-};
+import { EMPTY_PROJECTS, INITIAL_FORM_STATE } from "../config/constants";
+import type { AddProjectFormState, AddProjectModalSubmitPayload, ProjectOption, UseAddProjectFormParams, UseAddProjectFormResult } from "../types";
 
 const sanitizeList = (list: string[]) => list.map((item) => item.trim()).filter((item, index, array) => item && array.indexOf(item) === index);
 

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { CvProject } from "@/shared/graphql/generated";
+import { SEARCH_FIELDS } from "../config/constants";
 import type { CvProjectsActiveField, CvProjectsDirection, ProjectSearchState } from "../types";
 import type { SearchInputProps } from "@/shared/ui";
 
@@ -20,7 +21,7 @@ export const useProjectSearchState = (projects: CvProject[], placeholder: string
 
   const searchInputProps: SearchInputProps<CvProject> = {
     data: projects,
-    fields: ["project.name"],
+    fields: [...SEARCH_FIELDS],
     onResults: setSearchResults,
     onQueryChange: setSearchQuery,
     resetKey: searchResetKey,
@@ -102,4 +103,3 @@ export const formatDate = (value: string | null | undefined, locale?: string, pr
   const year = date.getFullYear();
   return `${month}/${day}/${year}`;
 };
-

@@ -159,16 +159,24 @@ export function useProjectsPage({ locale }: UseProjectsPageParams): UseProjectsP
   };
 
   const emptyState = isProjectsLoading ? (
-    <Loader className="mx-auto my-8" />
-  ) : hasSearchQuery ? (
-    <div className="py-8 text-center">
-      <p className="text-white/60">{t("cvs.projectsPage.search.noResults")}</p>
-      <button type="button" onClick={handleResetSearch} className="mt-2 text-red-500 hover:text-red-400">
-        {t("cvs.projectsPage.search.reset")}
-      </button>
-    </div>
+    <Loader className="mx-auto mt-6" />
   ) : (
-    <div className="py-8 text-center text-white/60">{t("cvs.projectsPage.table.empty")}</div>
+    <div className="mt-6 flex flex-col items-center justify-center gap-3 text-center">
+      {hasSearchQuery ? (
+        <>
+          <h3 className="text-xl text-white">{t("cvs.projectsPage.states.noResults.title")}</h3>
+          <button
+            type="button"
+            onClick={handleResetSearch}
+            className="mt-2 rounded-full border border-white/30 px-10 py-3 text-sm font-semibold uppercase tracking-wide text-neutral-200 transition-colors hover:bg-white/10"
+          >
+            {t("cvs.projectsPage.search.reset")}
+          </button>
+        </>
+      ) : (
+        <h3 className="text-xl text-white">{t("cvs.projectsPage.states.empty.title")}</h3>
+      )}
+    </div>
   );
 
   const columns = createCvProjectsColumns({

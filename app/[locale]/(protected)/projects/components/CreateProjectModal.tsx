@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Input, Modal, TextArea, MultiSelectEnvironmentField } from "@/shared/ui";
 import { useProjectForm } from "../lib/useProjectForm";
 import type { CreateProjectModalProps } from "../types";
-import { MODAL_CONFIG, FORM_FIELDS, TECHNOLOGY_OPTIONS } from "../config/constants";
+import { FORM_FIELDS, TECHNOLOGY_OPTIONS } from "../config/constants";
 
 export function CreateProjectModal({ open, onClose, onSubmit, initialProject, mode = "add" }: CreateProjectModalProps) {
   const { t } = useTranslation();
@@ -29,10 +29,10 @@ export function CreateProjectModal({ open, onClose, onSubmit, initialProject, mo
     <Modal
       open={open}
       onClose={handleClose}
-      title={mode === "update" ? t("cvs.projectsPage.modal.updateTitle") : MODAL_CONFIG.createTitle}
-      className={MODAL_CONFIG.className}
+      title={mode === "update" ? t("cvs.projectsPage.modal.updateTitle") : t("cvs.projectsPage.modal.createTitle")}
+      className="max-w-4xl"
       primaryAction={{
-        label: mode === "update" ? t("cvs.projectsPage.modal.actions.update") : MODAL_CONFIG.createButtonLabel,
+        label: mode === "update" ? t("cvs.projectsPage.modal.actions.update") : t("cvs.projectsPage.modal.actions.create"),
         onClick: handleSubmit,
         disabled: disableSubmit,
       }}
@@ -44,7 +44,7 @@ export function CreateProjectModal({ open, onClose, onSubmit, initialProject, mo
     >
       <div className="space-y-8">
         <div className="grid gap-8 md:grid-cols-2">
-          <Input label={FORM_FIELDS.nameLabel} value={formState.name} onChange={(event) => handleFieldChange("name", event.currentTarget.value)} />
+          <Input label={t("cvs.projectsPage.modal.fields.name")} value={formState.name} onChange={(event) => handleFieldChange("name", event.currentTarget.value)} />
           <Input label={t("cvs.projectsPage.modal.fields.domain")} value={formState.domain} onChange={(event) => handleFieldChange("domain", event.currentTarget.value)} />
         </div>
         <div className="grid gap-8 md:grid-cols-2">
@@ -72,7 +72,7 @@ export function CreateProjectModal({ open, onClose, onSubmit, initialProject, mo
           label={t("cvs.projectsPage.modal.fields.environment")}
           values={formState.environment}
           onChange={(values) => handleFieldChange("environment", values)}
-          placeholder={FORM_FIELDS.environmentPlaceholder}
+          placeholder={t("cvs.projectsPage.modal.fields.environmentPlaceholder")}
           options={[...TECHNOLOGY_OPTIONS]}
         />
       </div>

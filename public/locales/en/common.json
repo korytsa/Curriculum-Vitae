@@ -135,7 +135,8 @@
       },
       "search": {
         "placeholder": "Search projects",
-        "reset": "Reset search"
+        "reset": "Reset search",
+        "noResults": "No results found"
       },
       "states": {
         "empty": {
@@ -167,21 +168,24 @@
       },
       "modal": {
         "title": "Add project",
+        "createTitle": "Create project",
         "updateTitle": "Update project",
         "fields": {
+          "name": "Name",
           "project": "Project",
           "domain": "Domain",
           "startDate": "Start Date",
           "endDate": "End Date",
           "description": "Description",
           "environment": "Environment",
-          "environmentPlaceholder": "Add environment entries separated by commas",
+          "environmentPlaceholder": "Add skill",
           "responsibilities": "Responsibilities",
           "responsibilitiesPlaceholder": "List Responsibilities"
         },
         "actions": {
           "cancel": "CANCEL",
           "submit": "ADD",
+          "create": "CREATE",
           "update": "UPDATE"
         }
       },

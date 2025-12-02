@@ -1,9 +1,26 @@
 import type { ReactNode } from "react";
 import { MdArrowDownward } from "react-icons/md";
 
+import type { Project } from "@/shared/graphql/generated";
 import type { CvProject } from "@/shared/graphql/generated";
 import type { TableColumn } from "@/shared/ui";
-import type { CvProjectsActiveField, CvProjectsDirection, SortableColumnConfig } from "../types";
+import type { AddProjectFormState, CvProjectsActiveField, CvProjectsDirection, SortableColumnConfig } from "../types";
+
+export const EMPTY_PROJECTS: Project[] = [];
+
+export const INITIAL_FORM_STATE: AddProjectFormState = {
+  projectId: "",
+  domain: "",
+  startDate: "",
+  endDate: "",
+  description: "",
+  environment: [],
+  responsibilities: "",
+};
+
+export const DEFAULT_SORT_DIRECTION: CvProjectsDirection = "desc";
+
+export const SEARCH_FIELDS = ["project.name"] as const;
 
 const SortIcon = ({ direction }: { direction: CvProjectsDirection }) => {
   return <MdArrowDownward className={`h-4 w-4 transition-transform duration-300 ${direction === "asc" ? "rotate-180" : "rotate-0"}`} />;
@@ -26,7 +43,7 @@ const SortableHeaderButton = ({
     <button type="button" onClick={onClick} aria-label={ariaLabel} className="group inline-flex items-center gap-2">
       <span>{label}</span>
       <div className={`transition-opacity duration-300 ${isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
-        <SortIcon direction={isActive ? direction : "desc"} />
+        <SortIcon direction={isActive ? direction : DEFAULT_SORT_DIRECTION} />
       </div>
     </button>
   );
