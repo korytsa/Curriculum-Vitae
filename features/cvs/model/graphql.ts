@@ -53,12 +53,38 @@ export const CV_QUERY = gql`
       name
       education
       description
+      languages {
+        name
+        proficiency
+      }
+      skills {
+        name
+        mastery
+        categoryId
+      }
       projects {
         ...CvProjectFields
       }
       user {
         id
         email
+        position_name
+        department_name
+        profile {
+          full_name
+          first_name
+          last_name
+          avatar
+        }
+      }
+    }
+    skillCategories {
+      id
+      name
+      order
+      parent {
+        id
+        name
       }
     }
   }

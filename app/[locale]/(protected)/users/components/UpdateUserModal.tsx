@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useId } from "react";
 import { useTranslation } from "react-i18next";
 import { Modal, Input, Select } from "@/shared/ui";
 import { useUserDirectories } from "@/features/users/model/useUserDirectories";
@@ -30,6 +30,8 @@ export default function UpdateUserModal({ user, open, onClose }: UpdateUserModal
   const { t } = useTranslation();
   const { departments, positions, loading: directoriesLoading } = useUserDirectories();
   const { updateProfile, updateUser, loading } = useUpdateUserProfile(user.id);
+  const fieldPrefix = useId();
+  const getFieldId = (name: string) => `${fieldPrefix}-${name}`;
 
   const [formValues, setFormValues] = useState<ProfileFormValues>(() => createInitialFormValues(user));
   const [role, setRole] = useState<UserRole | "">(((user as any).role as UserRole | "") || "Employee");
@@ -105,19 +107,27 @@ export default function UpdateUserModal({ user, open, onClose }: UpdateUserModal
       className="max-w-4xl"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <Input id="email" name="email" type="email" label={t("users.details.profile.fields.email")} value={user.email} readOnly />
-        <Input id="password" name="password" type="text" label={t("features.createUserForm.labels.password")} value="**********" readOnly hidePasswordToggle />
+        <Input id={getFieldId("email")} name="email" type="email" label={t("users.details.profile.fields.email")} value={user.email} readOnly />
+        <Input
+          id={getFieldId("password")}
+          name="password"
+          type="text"
+          label={t("features.createUserForm.labels.password")}
+          value="**********"
+          readOnly
+          hidePasswordToggle
+        />
         <div className="md:col-span-2">
           <ProfileNameDirectoryFields
             firstNameField={{
-              id: "firstName",
+              id: getFieldId("firstName"),
               name: "firstName",
               value: formValues.firstName,
               onChange: handleInputChange("firstName"),
               label: t("users.details.profile.fields.firstName"),
             }}
             lastNameField={{
-              id: "lastName",
+              id: getFieldId("lastName"),
               name: "lastName",
               value: formValues.lastName,
               onChange: handleInputChange("lastName"),
@@ -139,7 +149,14 @@ export default function UpdateUserModal({ user, open, onClose }: UpdateUserModal
             }}
           />
         </div>
-        <Select label={t("features.createUserForm.labels.role")} options={roleOptions} value={role} onChange={(value) => setRole(value as UserRole)} readOnly />
+        <Select
+          id={getFieldId("role")}
+          label={t("features.createUserForm.labels.role")}
+          options={roleOptions}
+          value={role}
+          onChange={(value) => setRole(value as UserRole)}
+          readOnly
+        />
       </div>
     </Modal>
   );

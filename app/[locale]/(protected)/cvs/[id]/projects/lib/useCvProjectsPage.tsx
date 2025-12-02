@@ -7,23 +7,17 @@ import { useAddCvProject, useCv, useRemoveCvProject, useUpdateCvProject } from "
 import { useProjects } from "@/features/projects";
 import type { CvProject, Project } from "@/shared/graphql/generated";
 import { Loader, type SearchInputProps, type TableProps, TableRowActions, type DropdownMenuItem } from "@/shared/ui";
-import {
-  CV_PROJECTS_SEARCH_FIELDS_LIST,
-  buildCvProjectsColumnLabels,
-  createCvProjectsColumns,
-  buildProjectRowActionsLabels,
-  type CvProjectsActiveField,
-  type CvProjectsDirection,
-  type ProjectModalMode,
-} from "../config/constants";
-import type { AddProjectFormInitialProject, AddProjectModalSubmitPayload } from "./useAddProjectForm";
-
-type ProjectSearchState = {
-  searchInputProps: SearchInputProps<CvProject>;
-  filteredProjects: CvProject[];
-  hasSearchQuery: boolean;
-  handleResetSearch: () => void;
-};
+import { createCvProjectsColumns } from "../config/constants";
+import type {
+  AddProjectFormInitialProject,
+  AddProjectModalSubmitPayload,
+  CvProjectsActiveField,
+  CvProjectsDirection,
+  ProjectModalMode,
+  ProjectSearchState,
+  UseCvProjectsPageParams,
+  UseCvProjectsPageResult,
+} from "../types";
 
 const useProjectSearchState = (projects: CvProject[], placeholder: string): ProjectSearchState => {
   const [searchResults, setSearchResults] = useState<CvProject[]>([]);
@@ -40,7 +34,7 @@ const useProjectSearchState = (projects: CvProject[], placeholder: string): Proj
 
   const searchInputProps: SearchInputProps<CvProject> = {
     data: projects,
-    fields: CV_PROJECTS_SEARCH_FIELDS_LIST,
+    fields: ["project.name"],
     onResults: setSearchResults,
     onQueryChange: setSearchQuery,
     resetKey: searchResetKey,
@@ -107,35 +101,6 @@ const sortProjects = (projects: CvProject[], field: CvProjectsActiveField | null
   });
 };
 
-type UseCvProjectsPageParams = {
-  cvId: string;
-  locale?: string;
-};
-
-type UseCvProjectsPageResult = {
-  searchInputProps: SearchInputProps<CvProject>;
-  tableProps: TableProps<CvProject>;
-  addProjectLabel: string;
-  handleAddProject: () => void;
-  addProjectModal: {
-    open: boolean;
-    onClose: () => void;
-    projects: Project[];
-    isLoading: boolean;
-    onSubmit: (payload: AddProjectModalSubmitPayload) => Promise<void>;
-    initialProject?: AddProjectFormInitialProject;
-    mode: ProjectModalMode;
-  };
-  deleteProjectModal: {
-    open: boolean;
-    projectName?: string;
-    onConfirm: () => Promise<void>;
-    onClose: () => void;
-    isLoading: boolean;
-    errorMessage?: string | null;
-  };
-};
-
 export function useCvProjectsPage({ cvId, locale }: UseCvProjectsPageParams): UseCvProjectsPageResult {
   const { t } = useTranslation();
   const { cv, loading: isCvLoading } = useCv(cvId);
@@ -143,8 +108,6 @@ export function useCvProjectsPage({ cvId, locale }: UseCvProjectsPageParams): Us
   const { addCvProject } = useAddCvProject(cvId);
   const { updateCvProject } = useUpdateCvProject(cvId);
   const { removeCvProject, loading: isRemoveProjectLoading, error: removeProjectError } = useRemoveCvProject(cvId);
-
-  const translate = (key: string) => t(key);
 
   const projects = (cv?.projects ?? []).filter(Boolean) as CvProject[];
   const [{ field: activeField, direction }, setSortState] = useState<{
@@ -167,11 +130,8 @@ export function useCvProjectsPage({ cvId, locale }: UseCvProjectsPageParams): Us
     });
   };
 
-  const addProjectLabel = translate("cvs.projectsPage.actions.add");
-  const searchPlaceholder = translate("cvs.projectsPage.search.placeholder");
-  const resetSearchLabel = translate("cvs.projectsPage.search.reset");
-  const noResultsTitle = translate("cvs.projectsPage.states.noResults.title");
-  const presentLabel = translate("cvs.projectsPage.table.labels.present");
+  const addProjectLabel = t("cvs.projectsPage.actions.add");
+  const searchPlaceholder = t("cvs.projectsPage.search.placeholder");
   const dateTimeLocale = locale && Intl.DateTimeFormat.supportedLocalesOf([locale]).length ? locale : undefined;
 
   const { searchInputProps, filteredProjects, hasSearchQuery, handleResetSearch } = useProjectSearchState(projects, searchPlaceholder);
@@ -179,7 +139,7 @@ export function useCvProjectsPage({ cvId, locale }: UseCvProjectsPageParams): Us
 
   const formatDate = (value?: string | null) => {
     if (!value) {
-      return presentLabel;
+      return t("cvs.projectsPage.table.labels.present");
     }
 
     const date = new Date(value);
@@ -201,14 +161,14 @@ export function useCvProjectsPage({ cvId, locale }: UseCvProjectsPageParams): Us
         <Loader size="lg" />
       ) : (
         <>
-          <h3 className="text-xl text-white">{noResultsTitle}</h3>
+          <h3 className="text-xl text-white">{t("cvs.projectsPage.states.noResults.title")}</h3>
           {hasSearchQuery ? (
             <button
               type="button"
               onClick={handleResetSearch}
               className="mt-2 rounded-full border border-white/30 px-10 py-3 text-sm font-semibold uppercase tracking-wide text-neutral-200 transition-colors hover:bg-white/10"
             >
-              {resetSearchLabel}
+              {t("cvs.projectsPage.search.reset")}
             </button>
           ) : null}
         </>
@@ -216,7 +176,6 @@ export function useCvProjectsPage({ cvId, locale }: UseCvProjectsPageParams): Us
     </div>
   );
 
-  const columnLabels = buildCvProjectsColumnLabels(translate);
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
   const [projectModalMode, setProjectModalMode] = useState<ProjectModalMode>("add");
   const [projectModalInitialValues, setProjectModalInitialValues] = useState<AddProjectFormInitialProject | undefined>(undefined);
@@ -306,10 +265,8 @@ export function useCvProjectsPage({ cvId, locale }: UseCvProjectsPageParams): Us
     });
   };
 
-  const projectRowActionsLabels = buildProjectRowActionsLabels(translate);
-
   const columns = createCvProjectsColumns({
-    labels: columnLabels,
+    t,
     formatDate,
     onToggleName: () => toggleField("name"),
     onToggleDomain: () => toggleField("domain"),
@@ -320,11 +277,11 @@ export function useCvProjectsPage({ cvId, locale }: UseCvProjectsPageParams): Us
     renderRowActions: (row) => {
       const menuItems: DropdownMenuItem[] = [
         {
-          label: projectRowActionsLabels.update,
+          label: t("cvs.projectsPage.actions.update"),
           onClick: () => handleEditProject(row),
         },
         {
-          label: projectRowActionsLabels.remove,
+          label: t("cvs.projectsPage.actions.remove"),
           onClick: () => handleDeleteRequest(row),
         },
       ];
@@ -332,7 +289,7 @@ export function useCvProjectsPage({ cvId, locale }: UseCvProjectsPageParams): Us
       return (
         <TableRowActions
           items={menuItems}
-          ariaLabel={projectRowActionsLabels.openMenu}
+          ariaLabel={t("cvs.projectsPage.actions.openMenu")}
           menuWidth="155px"
           buttonClassName="text-white hover:bg-white/10"
           iconClassName="w-5 h-5 text-white"

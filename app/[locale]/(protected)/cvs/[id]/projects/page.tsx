@@ -5,10 +5,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { Button, ConfirmDeleteModal, SearchInput, Table } from "@/shared/ui";
 import { AddProjectModal } from "./components/AddProjectModal";
 import { useCvProjectsPage } from "./lib/useCvProjectsPage";
-
-type CvProjectsPageProps = {
-  params: { locale: string; id: string };
-};
+import type { CvProjectsPageProps } from "./types";
 
 export default function CvProjectsPageRoute({ params }: CvProjectsPageProps) {
   const { id: cvId, locale } = params;

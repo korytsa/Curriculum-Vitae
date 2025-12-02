@@ -2,20 +2,9 @@
 
 import { useTranslation } from "react-i18next";
 
-import type { Project } from "@/shared/graphql/generated";
 import { EnvironmentField, Input, Modal, Select, TextArea } from "@/shared/ui";
-import { type AddProjectFormInitialProject, type AddProjectModalSubmitPayload, useAddProjectForm } from "../lib/useAddProjectForm";
-import { buildAddProjectModalActions, buildAddProjectModalLabels, getAddProjectModalTitle, type ProjectModalMode } from "../config/constants";
-
-type AddProjectModalProps = {
-  open: boolean;
-  onClose: () => void;
-  projects?: Project[];
-  isProjectListLoading?: boolean;
-  onSubmit?: (payload: AddProjectModalSubmitPayload) => Promise<void> | void;
-  initialProject?: AddProjectFormInitialProject;
-  mode?: ProjectModalMode;
-};
+import { useAddProjectForm } from "../lib/useAddProjectForm";
+import type { AddProjectModalProps } from "../types";
 
 export function AddProjectModal({ open, onClose, projects, isProjectListLoading, onSubmit, initialProject, mode = "add" }: AddProjectModalProps) {
   const { t } = useTranslation();
@@ -26,10 +15,7 @@ export function AddProjectModal({ open, onClose, projects, isProjectListLoading,
     initialProject,
   });
 
-  const translate = (key: string) => t(key);
-  const modalTitle = getAddProjectModalTitle(translate, mode);
-  const labels = buildAddProjectModalLabels(translate);
-  const actions = buildAddProjectModalActions(translate, mode);
+  const modalTitle = mode === "update" ? t("cvs.projectsPage.modal.updateTitle") : t("cvs.projectsPage.modal.title");
 
   return (
     <Modal
@@ -38,12 +24,12 @@ export function AddProjectModal({ open, onClose, projects, isProjectListLoading,
       title={modalTitle}
       className="max-w-4xl"
       primaryAction={{
-        label: actions.submit,
+        label: mode === "update" ? t("cvs.projectsPage.modal.actions.update") : t("cvs.projectsPage.modal.actions.submit"),
         onClick: handleSubmit,
         disabled: disableSubmit,
       }}
       secondaryAction={{
-        label: actions.cancel,
+        label: t("cvs.projectsPage.modal.actions.cancel"),
         onClick: handleClose,
         disabled: isSubmitting,
       }}
@@ -52,24 +38,34 @@ export function AddProjectModal({ open, onClose, projects, isProjectListLoading,
         <div className="grid gap-8 md:grid-cols-2">
           <Select
             align="bottom"
-            label={labels.project}
+            label={t("cvs.projectsPage.modal.fields.project")}
             options={projectOptions}
             value={formState.projectId}
             onChange={(value) => handleFieldChange("projectId", value)}
             disabled={mode === "update" || isProjectListLoading || !projectOptions.length}
           />
-          <Input label={labels.domain} value={formState.domain} readOnly disabled />
+          <Input label={t("cvs.projectsPage.modal.fields.domain")} value={formState.domain} readOnly disabled />
         </div>
         <div className="grid gap-8 md:grid-cols-2">
-          <Input type="date" label={labels.startDate} value={formState.startDate} onChange={(event) => handleFieldChange("startDate", event.currentTarget.value)} />
-          <Input type="date" label={labels.endDate} value={formState.endDate} onChange={(event) => handleFieldChange("endDate", event.currentTarget.value)} />
+          <Input
+            type="date"
+            label={t("cvs.projectsPage.modal.fields.startDate")}
+            value={formState.startDate}
+            onChange={(event) => handleFieldChange("startDate", event.currentTarget.value)}
+          />
+          <Input
+            type="date"
+            label={t("cvs.projectsPage.modal.fields.endDate")}
+            value={formState.endDate}
+            onChange={(event) => handleFieldChange("endDate", event.currentTarget.value)}
+          />
         </div>
-        <TextArea id="project-description" label={labels.description} value={formState.description} rows={5} readOnly />
-        <EnvironmentField label={labels.environment} values={formState.environment} />
+        <TextArea id="project-description" label={t("cvs.projectsPage.modal.fields.description")} value={formState.description} rows={5} readOnly />
+        <EnvironmentField label={t("cvs.projectsPage.modal.fields.environment")} values={formState.environment} />
         <TextArea
           id="project-responsibilities"
-          label={labels.responsibilities}
-          placeholder={labels.responsibilitiesPlaceholder}
+          label={t("cvs.projectsPage.modal.fields.responsibilities")}
+          placeholder={t("cvs.projectsPage.modal.fields.responsibilitiesPlaceholder")}
           value={formState.responsibilities}
           onChange={(event) => handleFieldChange("responsibilities", event.currentTarget.value)}
         />

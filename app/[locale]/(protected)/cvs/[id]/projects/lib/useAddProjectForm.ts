@@ -3,38 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import type { Project } from "@/shared/graphql/generated";
-
-export type AddProjectModalSubmitPayload = {
-  projectId: string;
-  startDate: string;
-  endDate?: string;
-  responsibilities: string[];
-};
-
-export type AddProjectFormInitialProject = {
-  projectId: string;
-  domain: string;
-  startDate: string;
-  endDate?: string;
-  description: string;
-  environment: string[];
-  responsibilities: string;
-};
-
-export type AddProjectFormState = {
-  projectId: string;
-  domain: string;
-  startDate: string;
-  endDate: string;
-  description: string;
-  environment: string[];
-  responsibilities: string;
-};
-
-type ProjectOption = {
-  value: string;
-  label: string;
-};
+import type { AddProjectFormInitialProject, AddProjectFormState, AddProjectModalSubmitPayload, ProjectOption, UseAddProjectFormParams, UseAddProjectFormResult } from "../types";
 
 const EMPTY_PROJECTS: Project[] = [];
 
@@ -82,23 +51,6 @@ const buildProjectOptions = (projects: Project[]): ProjectOption[] => {
       };
     })
     .sort((a, b) => a.label.localeCompare(b.label));
-};
-
-type UseAddProjectFormParams = {
-  projects?: Project[];
-  onClose: () => void;
-  onSubmit?: (payload: AddProjectModalSubmitPayload) => Promise<void> | void;
-  initialProject?: AddProjectFormInitialProject;
-};
-
-type UseAddProjectFormResult = {
-  formState: AddProjectFormState;
-  projectOptions: ProjectOption[];
-  handleFieldChange: <K extends keyof AddProjectFormState>(field: K, value: AddProjectFormState[K]) => void;
-  handleSubmit: () => Promise<void> | void;
-  handleClose: () => void;
-  isSubmitting: boolean;
-  disableSubmit: boolean;
 };
 
 export function useAddProjectForm({ projects, onClose, onSubmit, initialProject }: UseAddProjectFormParams): UseAddProjectFormResult {

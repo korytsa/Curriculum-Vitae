@@ -3,52 +3,7 @@ import { MdArrowDownward } from "react-icons/md";
 
 import type { CvProject } from "@/shared/graphql/generated";
 import type { TableColumn } from "@/shared/ui";
-
-export type TranslateFn = (key: string) => string;
-
-export const CV_PROJECTS_SEARCH_FIELDS = [
-  "name",
-  "internal_name",
-  "project.name",
-  "project.internal_name",
-  "domain",
-  "description",
-  "roles",
-  "responsibilities",
-  "environment",
-] as const;
-
-export const CV_PROJECTS_SEARCH_FIELDS_LIST: string[] = [...CV_PROJECTS_SEARCH_FIELDS];
-
-export type CvProjectsSearchField = (typeof CV_PROJECTS_SEARCH_FIELDS)[number];
-
-export type CvProjectsActiveField = "name" | "domain" | "start_date" | "end_date";
-
-export type CvProjectsDirection = "asc" | "desc";
-
-export type ProjectModalMode = "add" | "update";
-
-type CreateCvProjectsColumnsParams = {
-  labels: {
-    name: string;
-    domain: string;
-    startDate: string;
-    endDate: string;
-    actions: string;
-    nameSortAria: string;
-    domainSortAria: string;
-    startDateSortAria: string;
-    endDateSortAria: string;
-  };
-  formatDate: (value?: string | null) => string;
-  onToggleName: () => void;
-  onToggleDomain: () => void;
-  onToggleStartDate: () => void;
-  onToggleEndDate: () => void;
-  activeField: CvProjectsActiveField | null;
-  direction: CvProjectsDirection;
-  renderRowActions?: (row: CvProject) => ReactNode;
-};
+import type { CvProjectsActiveField, CvProjectsDirection, SortableColumnConfig } from "../types";
 
 const SortIcon = ({ direction }: { direction: CvProjectsDirection }) => {
   return <MdArrowDownward className={`h-4 w-4 transition-transform duration-300 ${direction === "asc" ? "rotate-180" : "rotate-0"}`} />;
@@ -83,14 +38,14 @@ const renderNameCell = (row: CvProject): ReactNode => {
 
 const renderTextCell = (value: unknown) => <span className="text-white/80">{String(value ?? "")}</span>;
 
-const formatDateValue = (value: unknown, formatDate: CreateCvProjectsColumnsParams["formatDate"]) => formatDate(typeof value === "string" ? value : undefined);
+const formatDateValue = (value: unknown, formatDate: (value?: string | null) => string) => formatDate(typeof value === "string" ? value : undefined);
 
 const buildDateColumnConfig = (
   key: Extract<CvProjectsActiveField, "start_date" | "end_date">,
   label: string,
   ariaLabel: string,
   onToggle: () => void,
-  formatDate: CreateCvProjectsColumnsParams["formatDate"]
+  formatDate: (value?: string | null) => string
 ): SortableColumnConfig => {
   return {
     key,
@@ -102,29 +57,8 @@ const buildDateColumnConfig = (
   };
 };
 
-type SortableColumnConfig = {
-  key: CvProjectsActiveField;
-  label: string;
-  ariaLabel: string;
-  onToggle: () => void;
-  className?: string;
-  render: TableColumn<CvProject>["render"];
-};
-
-export const buildCvProjectsColumnLabels = (translate: TranslateFn) => ({
-  name: translate("cvs.projectsPage.table.columns.name"),
-  domain: translate("cvs.projectsPage.table.columns.domain"),
-  startDate: translate("cvs.projectsPage.table.columns.startDate"),
-  endDate: translate("cvs.projectsPage.table.columns.endDate"),
-  actions: translate("cvs.projectsPage.table.columns.actions"),
-  nameSortAria: translate("cvs.projectsPage.table.sort.name"),
-  domainSortAria: translate("cvs.projectsPage.table.sort.domain"),
-  startDateSortAria: translate("cvs.projectsPage.table.sort.startDate"),
-  endDateSortAria: translate("cvs.projectsPage.table.sort.endDate"),
-});
-
 export const createCvProjectsColumns = ({
-  labels,
+  t,
   formatDate,
   onToggleName,
   onToggleDomain,
@@ -133,24 +67,34 @@ export const createCvProjectsColumns = ({
   activeField,
   direction,
   renderRowActions,
-}: CreateCvProjectsColumnsParams): TableColumn<CvProject>[] => {
+}: {
+  t: (key: string) => string;
+  formatDate: (value?: string | null) => string;
+  onToggleName: () => void;
+  onToggleDomain: () => void;
+  onToggleStartDate: () => void;
+  onToggleEndDate: () => void;
+  activeField: CvProjectsActiveField | null;
+  direction: CvProjectsDirection;
+  renderRowActions?: (row: CvProject) => ReactNode;
+}): TableColumn<CvProject>[] => {
   const columnsConfig: SortableColumnConfig[] = [
     {
       key: "name",
-      label: labels.name,
-      ariaLabel: labels.nameSortAria,
+      label: t("cvs.projectsPage.table.columns.name"),
+      ariaLabel: t("cvs.projectsPage.table.sort.name"),
       onToggle: onToggleName,
       render: (_value: unknown, row: CvProject) => renderNameCell(row),
     },
     {
       key: "domain",
-      label: labels.domain,
-      ariaLabel: labels.domainSortAria,
+      label: t("cvs.projectsPage.table.columns.domain"),
+      ariaLabel: t("cvs.projectsPage.table.sort.domain"),
       onToggle: onToggleDomain,
       render: (value: unknown) => renderTextCell(value),
     },
-    buildDateColumnConfig("start_date", labels.startDate, labels.startDateSortAria, onToggleStartDate, formatDate),
-    buildDateColumnConfig("end_date", labels.endDate, labels.endDateSortAria, onToggleEndDate, formatDate),
+    buildDateColumnConfig("start_date", t("cvs.projectsPage.table.columns.startDate"), t("cvs.projectsPage.table.sort.startDate"), onToggleStartDate, formatDate),
+    buildDateColumnConfig("end_date", t("cvs.projectsPage.table.columns.endDate"), t("cvs.projectsPage.table.sort.endDate"), onToggleEndDate, formatDate),
   ];
 
   const sortableColumns: TableColumn<CvProject>[] = columnsConfig.map(({ key, label, ariaLabel, onToggle, render, className }) => ({
@@ -164,8 +108,8 @@ export const createCvProjectsColumns = ({
   if (renderRowActions) {
     sortableColumns.push({
       key: "actions",
-      header: <span className="sr-only">{labels.actions}</span>,
-      mobileHeaderLabel: labels.actions,
+      header: <span className="sr-only">{t("cvs.projectsPage.table.columns.actions")}</span>,
+      mobileHeaderLabel: t("cvs.projectsPage.table.columns.actions"),
       className: "w-0 text-right",
       render: (_value: unknown, row: CvProject) => <div className="flex w-full justify-end">{renderRowActions(row)}</div>,
     });
@@ -173,28 +117,3 @@ export const createCvProjectsColumns = ({
 
   return sortableColumns;
 };
-
-export const buildAddProjectModalLabels = (translate: TranslateFn) => ({
-  project: translate("cvs.projectsPage.modal.fields.project"),
-  domain: translate("cvs.projectsPage.modal.fields.domain"),
-  startDate: translate("cvs.projectsPage.modal.fields.startDate"),
-  endDate: translate("cvs.projectsPage.modal.fields.endDate"),
-  description: translate("cvs.projectsPage.modal.fields.description"),
-  environment: translate("cvs.projectsPage.modal.fields.environment"),
-  responsibilities: translate("cvs.projectsPage.modal.fields.responsibilities"),
-  responsibilitiesPlaceholder: translate("cvs.projectsPage.modal.fields.responsibilitiesPlaceholder"),
-});
-
-export const buildAddProjectModalActions = (translate: TranslateFn, mode: ProjectModalMode) => ({
-  cancel: translate("cvs.projectsPage.modal.actions.cancel"),
-  submit: mode === "update" ? translate("cvs.projectsPage.modal.actions.update") : translate("cvs.projectsPage.modal.actions.submit"),
-});
-
-export const getAddProjectModalTitle = (translate: TranslateFn, mode: ProjectModalMode) =>
-  mode === "update" ? translate("cvs.projectsPage.modal.updateTitle") : translate("cvs.projectsPage.modal.title");
-
-export const buildProjectRowActionsLabels = (translate: TranslateFn) => ({
-  update: translate("cvs.projectsPage.actions.update"),
-  remove: translate("cvs.projectsPage.actions.remove"),
-  openMenu: translate("cvs.projectsPage.actions.openMenu"),
-});

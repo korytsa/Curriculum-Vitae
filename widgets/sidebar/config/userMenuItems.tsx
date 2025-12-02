@@ -3,7 +3,7 @@ import { BiSolidUserCircle } from "react-icons/bi";
 import { MdLogout } from "react-icons/md";
 import type { DropdownMenuItem } from "@/shared/ui";
 
-type TranslateFn = (key: string, options?: { defaultValue?: string }) => string;
+type TranslateFn = (key: string) => string;
 
 interface BuildUserMenuItemsParams {
   id?: string;
@@ -13,11 +13,11 @@ interface BuildUserMenuItemsParams {
 }
 
 export const buildUserMenuItems = ({ id, applyLocaleToPath, handleLogout, translate }: BuildUserMenuItemsParams): DropdownMenuItem[] => {
-  const getLabel = (key: string, fallback: string) => translate(key, { defaultValue: fallback }) || fallback;
+  const getLabel = (key: string) => translate(key);
 
   const items: DropdownMenuItem[] = [
     {
-      label: getLabel("features.sidebar.userMenu.settings", "Settings"),
+      label: getLabel("features.sidebar.userMenu.settings"),
       icon: <IoMdSettings className="w-5 h-5" />,
       href: applyLocaleToPath("/settings"),
     },
@@ -25,7 +25,7 @@ export const buildUserMenuItems = ({ id, applyLocaleToPath, handleLogout, transl
       type: "separator",
     },
     {
-      label: getLabel("features.sidebar.userMenu.logout", "Logout"),
+      label: getLabel("features.sidebar.userMenu.logout"),
       icon: <MdLogout className="w-5 h-5" />,
       onClick: handleLogout,
     },
@@ -33,7 +33,7 @@ export const buildUserMenuItems = ({ id, applyLocaleToPath, handleLogout, transl
 
   if (id) {
     items.unshift({
-      label: getLabel("features.sidebar.userMenu.profile", "Profile"),
+      label: getLabel("features.sidebar.userMenu.profile"),
       icon: <BiSolidUserCircle className="w-5 h-5" />,
       href: applyLocaleToPath(`/users/${id}`),
     });

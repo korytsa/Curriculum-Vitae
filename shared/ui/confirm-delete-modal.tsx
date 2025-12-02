@@ -18,8 +18,8 @@ export type ConfirmDeleteModalProps = {
 
 export function ConfirmDeleteModal({ open, title, onConfirm, onClose, isLoading, errorMessage, children }: ConfirmDeleteModalProps) {
   const { t } = useTranslation();
-  const confirmLabel = t("confirmDeleteModal.actions.delete", { defaultValue: "DELETE" });
-  const cancelLabel = t("confirmDeleteModal.actions.cancel", { defaultValue: "CANCEL" });
+  const confirmLabel = t("confirmDeleteModal.actions.delete");
+  const cancelLabel = t("confirmDeleteModal.actions.cancel");
 
   return (
     <Modal

@@ -20,13 +20,9 @@ type RootLayoutProps = {
   params: { locale: string };
 };
 
-export default async function RootLayout({
-  children,
-  params,
-}: RootLayoutProps) {
+export default async function RootLayout({ children, params }: RootLayoutProps) {
   await initLocale(params.locale);
-  const sidebarCollapsedCookie =
-    cookies().get("sidebar-collapsed")?.value === "true";
+  const sidebarCollapsedCookie = cookies().get("sidebar-collapsed")?.value === "true";
   const htmlStyle = {
     "--sidebar-width": sidebarCollapsedCookie ? "60px" : "200px",
   } as CSSProperties;
@@ -44,13 +40,12 @@ export default async function RootLayout({
       if (hasDocument) {
         const appliedMode = mode || 'dark';
         document.documentElement.dataset.theme = appliedMode;
-        document.documentElement.style.colorScheme = appliedMode;
       }
     })();
   `;
 
   return (
-    <html lang={params.locale} style={htmlStyle}>
+    <html lang={params.locale} style={htmlStyle} suppressHydrationWarning>
       <body className={`${inter.variable} antialiased`}>
         <script
           dangerouslySetInnerHTML={{

@@ -4,13 +4,12 @@ import type { CvsQuery, CvsQueryVariables } from "@/shared/graphql/generated";
 
 export type CvListItem = CvsQuery["cvs"][number];
 
-export function useCvs() {
-  const { data, loading, error, refetch } = useQuery<
-    CvsQuery,
-    CvsQueryVariables
-  >(CVS_QUERY);
+const EMPTY_CV_LIST: CvListItem[] = [];
 
-  const cvs = (data?.cvs ?? []) as CvListItem[];
+export function useCvs() {
+  const { data, loading, error, refetch } = useQuery<CvsQuery, CvsQueryVariables>(CVS_QUERY);
+
+  const cvs = (data?.cvs ?? EMPTY_CV_LIST) as CvListItem[];
 
   return {
     cvs,

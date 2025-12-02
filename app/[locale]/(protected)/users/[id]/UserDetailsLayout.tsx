@@ -32,28 +32,24 @@ export function UserDetailsLayout({
   const tabs: TabItem[] = [
     {
       id: "profile",
-      label: t("users.details.tabs.profile", { defaultValue: "Profile" }),
+      label: t("users.details.tabs.profile"),
       href: `/users/${userId}`,
     },
     {
       id: "skills",
-      label: t("users.details.tabs.skills", { defaultValue: "Skills" }),
+      label: t("users.details.tabs.skills"),
       href: `/users/${userId}/skills`,
     },
     {
       id: "languages",
-      label: t("users.details.tabs.languages", {
-        defaultValue: "Languages",
-      }),
+      label: t("users.details.tabs.languages"),
       href: `/users/${userId}/languages`,
     },
   ];
 
   const userFullName = getUserFullName(user) || user?.email || null;
 
-  const activeTabLabel =
-    tabs.find((tab) => tab.id === activeTabId)?.label ||
-    t("users.details.tabs.profile", { defaultValue: "Profile" });
+  const activeTabLabel = tabs.find((tab) => tab.id === activeTabId)?.label || t("users.details.tabs.profile");
 
   return (
     <section className="space-y-2">

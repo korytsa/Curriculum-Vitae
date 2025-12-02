@@ -26,9 +26,7 @@ export default function CvDetailsPage({ params }: CvDetailsPageProps) {
     validate: (values) => {
       const errors: Partial<Record<keyof typeof values, string>> = {};
       if (!values.name.trim()) {
-        errors.name = t("cvs.createModal.errors.nameRequired", {
-          defaultValue: "Name is required",
-        });
+        errors.name = t("cvs.createModal.errors.nameRequired");
       }
       return errors;
     },
@@ -38,11 +36,7 @@ export default function CvDetailsPage({ params }: CvDetailsPageProps) {
         education: values.education?.trim() || undefined,
         description: values.description?.trim() || "",
       });
-      toast.success(
-        t("cvs.details.notifications.success", {
-          defaultValue: "CV updated successfully",
-        })
-      );
+      toast.success(t("cvs.details.notifications.success"));
     },
   });
 
@@ -63,7 +57,7 @@ export default function CvDetailsPage({ params }: CvDetailsPageProps) {
           <div>
             <Input
               id="name"
-              label={t("cvs.createModal.labels.name", { defaultValue: "Name" })}
+              label={t("cvs.createModal.labels.name")}
               {...formik.getFieldProps("name")}
               required
               error={formik.touched.name && formik.errors.name ? formik.errors.name : undefined}
@@ -73,9 +67,7 @@ export default function CvDetailsPage({ params }: CvDetailsPageProps) {
           <div>
             <Input
               id="education"
-              label={t("cvs.createModal.labels.education", {
-                defaultValue: "Education",
-              })}
+              label={t("cvs.createModal.labels.education")}
               {...formik.getFieldProps("education")}
               error={formik.touched.education && formik.errors.education ? formik.errors.education : undefined}
             />
@@ -83,9 +75,7 @@ export default function CvDetailsPage({ params }: CvDetailsPageProps) {
 
           <TextArea
             id="description"
-            label={t("cvs.createModal.labels.description", {
-              defaultValue: "Description",
-            })}
+            label={t("cvs.createModal.labels.description")}
             rows={5}
             {...formik.getFieldProps("description")}
             error={formik.touched.description && formik.errors.description ? formik.errors.description : undefined}
@@ -93,7 +83,7 @@ export default function CvDetailsPage({ params }: CvDetailsPageProps) {
 
           <div className="flex justify-end">
             <Button type="submit" variant="outline" disabled={updateLoading || !formik.isValid || formik.isSubmitting}>
-              {t("cvs.details.actions.update", { defaultValue: "UPDATE" })}
+              {t("cvs.details.actions.update")}
             </Button>
           </div>
         </form>

@@ -32,31 +32,29 @@ export function CvDetailsLayout({
   const tabs: TabItem[] = [
     {
       id: "details",
-      label: t("cvs.details.tabs.details", { defaultValue: "Details" }),
+      label: t("cvs.details.tabs.details"),
       href: `/cvs/${cvId}`,
     },
     {
       id: "skills",
-      label: t("cvs.details.tabs.skills", { defaultValue: "Skills" }),
+      label: t("cvs.details.tabs.skills"),
       href: `/cvs/${cvId}/skills`,
     },
     {
       id: "projects",
-      label: t("cvs.details.tabs.projects", { defaultValue: "Projects" }),
+      label: t("cvs.details.tabs.projects"),
       href: `/cvs/${cvId}/projects`,
     },
     {
       id: "preview",
-      label: t("cvs.details.tabs.preview", { defaultValue: "Preview" }),
+      label: t("cvs.details.tabs.preview"),
       href: `/cvs/${cvId}/preview`,
     },
   ];
 
   const cvName = cv?.name || null;
 
-  const activeTabLabel =
-    tabs.find((tab) => tab.id === activeTabId)?.label ||
-    t("cvs.details.tabs.details", { defaultValue: "Details" });
+  const activeTabLabel = tabs.find((tab) => tab.id === activeTabId)?.label || t("cvs.details.tabs.details");
 
   return (
     <section className="space-y-2">

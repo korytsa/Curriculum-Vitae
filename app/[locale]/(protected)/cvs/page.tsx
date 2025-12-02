@@ -49,11 +49,7 @@ export default function CvsPage() {
 
   const handleDeleteSuccess = async () => {
     await refetch?.();
-    toast.success(
-      t("cvs.deleteModal.notifications.success", {
-        defaultValue: "CV deleted successfully",
-      })
-    );
+    toast.success(t("cvs.deleteModal.notifications.success"));
   };
 
   const handleConfirmDeleteCv = async () => {
@@ -84,13 +80,12 @@ export default function CvsPage() {
 
           <Button
             type="button"
-            variant="ghost"
-            className="rounded-full px-6 py-2 text-red-400 hover:text-red-200 uppercase tracking-[0.3em] text-xs"
+            className="bg-transparent font-medium text-red-500 hover:bg-[#413535]"
             icon={<Plus className="h-4 w-4" />}
             iconPosition="left"
             onClick={() => setShowCreateModal(true)}
           >
-            {t("cvs.actions.create", { defaultValue: "Create CV" })}
+            {t("cvs.actions.create")}
           </Button>
         </div>
 
@@ -101,19 +96,14 @@ export default function CvsPage() {
 
       <ConfirmDeleteModal
         open={deleteModalState.open}
-        title={t("cvs.deleteModal.title", { defaultValue: "Delete CV" })}
+        title={t("cvs.deleteModal.title")}
         onConfirm={handleConfirmDeleteCv}
         onClose={handleCloseDeleteModal}
         isLoading={isDeleteLoading}
         errorMessage={deleteError?.message ?? null}
       >
         <p className="font-normal">
-          <Trans
-            i18nKey="cvs.deleteModal.warning"
-            values={{ name: deleteModalState.cvName || "" }}
-            components={{ strong: <span className="font-semibold" /> }}
-            defaultValue="Are you sure you want to delete CV <strong>{{name}}</strong>?"
-          />
+          <Trans i18nKey="cvs.deleteModal.warning" values={{ name: deleteModalState.cvName || "" }} components={{ strong: <span className="font-semibold" /> }} />
         </p>
       </ConfirmDeleteModal>
     </>

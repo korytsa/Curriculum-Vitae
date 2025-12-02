@@ -1,7 +1,22 @@
 {
   "title": "Резюме",
   "skills": {
-    "heading": "Навыки"
+    "heading": "Навыки",
+    "mastery": {
+      "novice": "Новичок",
+      "competent": "Компетентный",
+      "proficient": "Уверенный",
+      "advanced": "Продвинутый",
+      "expert": "Эксперт"
+    },
+    "categories": {
+      "Databases": "Базы данных",
+      "Frontend": "Фронтенд",
+      "Backend": "Бэкенд",
+      "Frontend technologies": "Фронтенд технологии",
+      "Programming languages": "Языки программирования",
+      "Other": "Другое"
+    }
   },
   "settings": {
     "heading": "Настройки",
@@ -21,6 +36,11 @@
         "ru": "Русский"
       }
     }
+  },
+  "errors": {
+    "unauthorized": "Сессия истекла. Пожалуйста, войдите снова.",
+    "network": "Ошибка сети. Проверьте подключение.",
+    "unexpected": "Что-то пошло не так. Попробуйте ещё раз."
   },
   "cvs": {
     "heading": "Резюме",
@@ -79,6 +99,22 @@
         "success": "Резюме успешно обновлено",
         "error": "Не удалось обновить резюме"
       }
+    },
+    "preview": {
+      "exportPdf": "ЭКСПОРТИРОВАТЬ PDF",
+      "languagesHeading": "Владение языками",
+      "domainsHeading": "Домены",
+      "professionalSkills": "Профессиональные навыки",
+      "projectsHeading": "Проекты",
+      "projectRole": "Роль в проекте",
+      "period": "Период",
+      "responsibilities": "Обязанности",
+      "environment": "Технологии",
+      "emptySkills": "Добавьте навыки в резюме, чтобы показать их здесь.",
+      "experienceColumn": "Опыт (лет)",
+      "lastUsedColumn": "Последнее использование",
+      "summaryPlaceholder": "Используйте этот блок, чтобы описать достижения, сильные стороны и ценность для команды.",
+      "dateUnknown": "Н/Д"
     },
     "projectsPage": {
       "actions": {
@@ -368,7 +404,6 @@
       "page": {
         "actions": {
           "add": "Добавить",
-          "update": "Обновить",
           "delete": "Удалить"
         }
       },
@@ -416,19 +451,7 @@
       },
       "deleteModal": {
         "title": "Удалить навык",
-        "confirmTitle": "Подтверждение удаления",
-        "warning": "Вы уверены, что хотите удалить этот навык? Это действие необратимо.",
-        "labels": {
-          "skill": "Навык",
-          "skillToDelete": "Навык к удалению:"
-        },
-        "placeholders": {
-          "skill": "Выберите навык..."
-        },
-        "delete": "УДАЛИТЬ",
-        "errors": {
-          "skillRequired": "Выберите навык для удаления"
-        }
+        "warning": "Вы уверены, что хотите удалить этот навык? Это действие необратимо."
       }
     },
     "languages": {

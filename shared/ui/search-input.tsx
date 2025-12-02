@@ -1,4 +1,4 @@
-import { forwardRef, useCallback, useEffect, useState, type ChangeEvent, type ForwardedRef, type InputHTMLAttributes, type ReactElement, type Ref } from "react";
+import { forwardRef, useCallback, useEffect, useRef, useState, type ChangeEvent, type ForwardedRef, type InputHTMLAttributes, type ReactElement, type Ref } from "react";
 import { IoSearchSharp, IoClose } from "react-icons/io5";
 
 import { cn } from "@/shared/lib";
@@ -20,6 +20,7 @@ const SearchInputBase = <TData extends SearchableRecord = SearchableRecord>(
   ref: ForwardedRef<HTMLInputElement>
 ) => {
   const [query, setQuery] = useState("");
+  const lastResetKeyRef = useRef<number | undefined>(resetKey);
 
   const getFieldValue = (item: SearchableRecord, path: string) =>
     path.split(".").reduce<unknown>((acc, segment) => {
@@ -53,29 +54,39 @@ const SearchInputBase = <TData extends SearchableRecord = SearchableRecord>(
     [data, fields]
   );
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInpimage.pngutElement>) => {
     const value = event.target.value;
     setQuery(value);
     onQueryChange?.(value);
+    if (onResults) {
+      onResults(filterData(value));
+    }
   };
 
   const handleClear = () => {
     setQuery("");
     onQueryChange?.("");
+    if (onResults) {
+      onResults(filterData(""));
+    }
   };
 
   useEffect(() => {
-    if (!onResults) {
+    if (resetKey === undefined) {
       return;
     }
-    onResults(filterData(query));
-  }, [filterData, onResults, query]);
 
-  useEffect(() => {
-    if (resetKey !== undefined) {
-      setQuery("");
+    if (lastResetKeyRef.current === resetKey) {
+      return;
     }
-  }, [resetKey]);
+
+    lastResetKeyRef.current = resetKey;
+
+    setQuery("");
+    if (onResults) {
+      onResults(filterData(""));
+    }
+  }, [resetKey, onResults, filterData]);
 
   return (
     <div

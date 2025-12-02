@@ -33,32 +33,26 @@ export default function SettingsPage() {
   const appearanceOptions: SelectOption[] = [
     {
       value: "system",
-      label: t("settings.appearance.options.system", {
-        defaultValue: "Device settings",
-      }),
+      label: t("settings.appearance.options.system"),
     },
     {
       value: "light",
-      label: t("settings.appearance.options.light", {
-        defaultValue: "Light",
-      }),
+      label: t("settings.appearance.options.light"),
     },
     {
       value: "dark",
-      label: t("settings.appearance.options.dark", {
-        defaultValue: "Dark",
-      }),
+      label: t("settings.appearance.options.dark"),
     },
   ];
 
   const languageOptions: SelectOption[] = [
     {
       value: "en",
-      label: t("settings.language.options.en", { defaultValue: "English" }),
+      label: t("settings.language.options.en"),
     },
     {
       value: "ru",
-      label: t("settings.language.options.ru", { defaultValue: "Russian" }),
+      label: t("settings.language.options.ru"),
     },
   ];
 
@@ -95,16 +89,14 @@ export default function SettingsPage() {
     <section className="text-white">
       <div className="flex flex-wrap items-start justify-between gap-16">
         <div className="mt-1">
-          <h1 className="font-semibold text-neutral-500">
-            {t("settings.heading", { defaultValue: "Settings" })}
-          </h1>
+          <h1 className="font-semibold text-neutral-500">{t("settings.heading")}</h1>
         </div>
 
         <div className="flex-1 flex  mt-16">
           <div className="space-y-8 w-full max-w-[720px]">
             <div className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/50">
-                {t("settings.appearance.title", { defaultValue: "Appearance" })}
+                {t("settings.appearance.title")}
               </p>
               <Select
                 value={appearance}
@@ -116,7 +108,7 @@ export default function SettingsPage() {
 
             <div className="space-y-3">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/50">
-                {t("settings.language.title", { defaultValue: "Language" })}
+                {t("settings.language.title")}
               </p>
               <Select
                 value={language}

@@ -17,13 +17,13 @@ const UNAUTHORIZED_CODES = new Set(["UNAUTHENTICATED", "FORBIDDEN"]);
 const ERROR_TOAST_DEDUP_MS = 1500;
 const recentlyShownErrors = new Map<string, number>();
 
-const translate = (key: string, defaultValue: string) => i18n.t(key, { defaultValue });
+const translate = (key: string) => i18n.t(key);
 
-const getUnauthorizedMessage = () => translate("errors.unauthorized", "Your session expired. Please log in again.");
+const getUnauthorizedMessage = () => translate("errors.unauthorized");
 
-const getNetworkErrorMessage = () => translate("errors.network", "Network error. Please check your connection.");
+const getNetworkErrorMessage = () => translate("errors.network");
 
-const getFallbackErrorMessage = () => translate("errors.unexpected", "Something went wrong. Please try again.");
+const getFallbackErrorMessage = () => translate("errors.unexpected");
 
 const enqueueErrorToast = (message: string) => {
   const now = Date.now();

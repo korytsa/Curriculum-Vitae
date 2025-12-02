@@ -62,13 +62,13 @@ export function useCvsPage(options?: { onDetails?: (cvId: string) => void; onDel
 
   const emptyState = isSearchActive ? (
     <div className="py-10 text-center space-y-3 text-white/80">
-      <p>{t("cvs.states.searchEmpty", { defaultValue: "No CVs found." })}</p>
+      <p>{t("cvs.states.searchEmpty")}</p>
       <Button type="button" variant="outline" size="sm" onClick={handleResetSearch} className="border-white/30 text-white/80 hover:bg-white/10">
-        {t("cvs.states.reset", { defaultValue: "Reset search" })}
+        {t("cvs.states.reset")}
       </Button>
     </div>
   ) : (
-    <div className="py-10 text-center text-white/70">{t("cvs.states.empty", { defaultValue: "No CVs added yet." })}</div>
+    <div className="py-10 text-center text-white/70">{t("cvs.states.empty")}</div>
   );
 
   const searchInputProps: SearchInputProps<CvListItem> = {
@@ -78,9 +78,7 @@ export function useCvsPage(options?: { onDetails?: (cvId: string) => void; onDel
     onQueryChange: setSearchQuery,
     resetKey: searchResetKey,
     hasError: isSearchActive && filteredCvs.length === 0,
-    placeholder: t("cvs.table.searchPlaceholder", {
-      defaultValue: "Search CVs",
-    }),
+    placeholder: t("cvs.table.searchPlaceholder"),
   };
 
   const renderRowActions = (row: CvListItem) => {
@@ -88,11 +86,11 @@ export function useCvsPage(options?: { onDetails?: (cvId: string) => void; onDel
 
     const menuItems: DropdownMenuItem[] = [
       {
-        label: t("cvs.actions.details", { defaultValue: "Details" }),
+        label: t("cvs.actions.details"),
         onClick: () => options?.onDetails?.(row.id),
       },
       {
-        label: t("cvs.actions.delete", { defaultValue: "Delete CV" }),
+        label: t("cvs.actions.delete"),
         onClick: () => options?.onDelete?.(row.id),
       },
     ];
