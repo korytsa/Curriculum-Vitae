@@ -54,7 +54,7 @@ const SearchInputBase = <TData extends SearchableRecord = SearchableRecord>(
     [data, fields]
   );
 
-  const handleChange = (event: ChangeEvent<HTMLInpimage.pngutElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setQuery(value);
     onQueryChange?.(value);
