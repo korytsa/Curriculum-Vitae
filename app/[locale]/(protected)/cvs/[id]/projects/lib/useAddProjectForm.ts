@@ -144,13 +144,9 @@ export function useAddProjectForm({ projects, onClose, onSubmit, initialProject 
     }
 
     setIsSubmitting(true);
-    const submitProject = (async () => {
-      await onSubmit(payload);
-      handleClose();
-    })();
-    await submitProject.finally(() => {
-      setIsSubmitting(false);
-    });
+    await onSubmit(payload);
+    setIsSubmitting(false);
+    handleClose();
   };
 
   const disableSubmit = !formState.projectId || !formState.startDate || isSubmitting;

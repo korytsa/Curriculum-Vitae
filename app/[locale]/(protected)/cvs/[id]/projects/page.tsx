@@ -18,9 +18,11 @@ export default function CvProjectsPageRoute({ params }: CvProjectsPageProps) {
   return (
     <>
       <section className="pr-4">
-        <div className="mt-6 mb-1 flex flex-wrap items-start justify-between gap-4">
-          <div className="w-full sm:w-[325px]">
-            <SearchInput {...searchInputProps} />
+        <div className="mb-1 flex flex-wrap items-start justify-between gap-4">
+          <div className="space-y-3">
+            <div className="w-full sm:w-[325px]">
+              <SearchInput {...searchInputProps} />
+            </div>
           </div>
           <Button
             type="button"

@@ -5,101 +5,19 @@ import { useTranslation } from "react-i18next";
 
 import { useAddCvProject, useCv, useRemoveCvProject, useUpdateCvProject } from "@/features/cvs";
 import { useProjects } from "@/features/projects";
-import type { CvProject, Project } from "@/shared/graphql/generated";
-import { Loader, type SearchInputProps, type TableProps, TableRowActions, type DropdownMenuItem } from "@/shared/ui";
+import type { CvProject } from "@/shared/graphql/generated";
+import { Loader, type TableProps, TableRowActions, type DropdownMenuItem } from "@/shared/ui";
 import { createCvProjectsColumns } from "../config/constants";
+import { formatDate, sortProjects, useProjectSearchState } from "./utils";
 import type {
   AddProjectFormInitialProject,
   AddProjectModalSubmitPayload,
   CvProjectsActiveField,
   CvProjectsDirection,
   ProjectModalMode,
-  ProjectSearchState,
   UseCvProjectsPageParams,
   UseCvProjectsPageResult,
 } from "../types";
-
-const useProjectSearchState = (projects: CvProject[], placeholder: string): ProjectSearchState => {
-  const [searchResults, setSearchResults] = useState<CvProject[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResetKey, setSearchResetKey] = useState(0);
-  const hasSearchQuery = searchQuery.trim().length > 0;
-  const filteredProjects = hasSearchQuery ? searchResults : projects;
-
-  const handleResetSearch = () => {
-    setSearchResetKey((prev) => prev + 1);
-    setSearchResults([]);
-    setSearchQuery("");
-  };
-
-  const searchInputProps: SearchInputProps<CvProject> = {
-    data: projects,
-    fields: ["project.name"],
-    onResults: setSearchResults,
-    onQueryChange: setSearchQuery,
-    resetKey: searchResetKey,
-    hasError: hasSearchQuery && filteredProjects.length === 0,
-    placeholder,
-  };
-
-  return {
-    searchInputProps,
-    filteredProjects,
-    hasSearchQuery,
-    handleResetSearch,
-  };
-};
-
-const parseDateToTimestamp = (value?: string | null): number | null => {
-  if (!value) {
-    return null;
-  }
-  const timestamp = new Date(value).getTime();
-  return Number.isNaN(timestamp) ? null : timestamp;
-};
-
-const getComparableValue = (project: CvProject, field: CvProjectsActiveField): string | number | null => {
-  switch (field) {
-    case "name":
-      return (project.name ?? project.project?.name ?? "").toLowerCase();
-    case "domain":
-      return (project.domain ?? "").toLowerCase();
-    case "start_date":
-      return parseDateToTimestamp(project.start_date);
-    case "end_date":
-      return parseDateToTimestamp(project.end_date);
-    default:
-      return null;
-  }
-};
-
-const sortProjects = (projects: CvProject[], field: CvProjectsActiveField | null, direction: CvProjectsDirection) => {
-  if (!field) {
-    return projects;
-  }
-
-  const multiplier = direction === "asc" ? 1 : -1;
-
-  return [...projects].sort((projectA, projectB) => {
-    const valueA = getComparableValue(projectA, field);
-    const valueB = getComparableValue(projectB, field);
-    let comparison = 0;
-
-    if (valueA == null && valueB == null) {
-      comparison = 0;
-    } else if (valueA == null) {
-      comparison = 1;
-    } else if (valueB == null) {
-      comparison = -1;
-    } else if (typeof valueA === "number" && typeof valueB === "number") {
-      comparison = valueA === valueB ? 0 : valueA > valueB ? 1 : -1;
-    } else {
-      comparison = String(valueA).localeCompare(String(valueB));
-    }
-
-    return comparison * multiplier;
-  });
-};
 
 export function useCvProjectsPage({ cvId, locale }: UseCvProjectsPageParams): UseCvProjectsPageResult {
   const { t } = useTranslation();
@@ -137,23 +55,7 @@ export function useCvProjectsPage({ cvId, locale }: UseCvProjectsPageParams): Us
   const { searchInputProps, filteredProjects, hasSearchQuery, handleResetSearch } = useProjectSearchState(projects, searchPlaceholder);
   const sortedProjects = sortProjects(filteredProjects, activeField, direction);
 
-  const formatDate = (value?: string | null) => {
-    if (!value) {
-      return t("cvs.projectsPage.table.labels.present");
-    }
-
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) {
-      return value;
-    }
-
-    const formatter = new Intl.DateTimeFormat(dateTimeLocale, {
-      year: "numeric",
-      month: "short",
-      day: "2-digit",
-    });
-    return formatter.format(date);
-  };
+  const formatDateValue = (value?: string | null) => formatDate(value, dateTimeLocale, t("cvs.projectsPage.table.labels.present"));
 
   const emptyState = (
     <div className="mt-6 flex flex-col items-center justify-center gap-3 py-20 text-center">
@@ -267,7 +169,7 @@ export function useCvProjectsPage({ cvId, locale }: UseCvProjectsPageParams): Us
 
   const columns = createCvProjectsColumns({
     t,
-    formatDate,
+    formatDate: formatDateValue,
     onToggleName: () => toggleField("name"),
     onToggleDomain: () => toggleField("domain"),
     onToggleStartDate: () => toggleField("start_date"),

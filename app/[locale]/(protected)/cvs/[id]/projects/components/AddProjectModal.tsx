@@ -42,7 +42,7 @@ export function AddProjectModal({ open, onClose, projects, isProjectListLoading,
             options={projectOptions}
             value={formState.projectId}
             onChange={(value) => handleFieldChange("projectId", value)}
-            disabled={mode === "update" || isProjectListLoading || !projectOptions.length}
+            disabled={mode === "update" || isProjectListLoading}
           />
           <Input label={t("cvs.projectsPage.modal.fields.domain")} value={formState.domain} readOnly disabled />
         </div>

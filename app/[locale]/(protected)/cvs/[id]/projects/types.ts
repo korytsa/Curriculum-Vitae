@@ -21,7 +21,7 @@ export type ProjectSearchState = {
 
 export type UseCvProjectsPageParams = {
   cvId: string;
-  locale?: string;
+  locale: string;
 };
 
 export type UseCvProjectsPageResult = {

@@ -5,6 +5,14 @@ import { createSkeletonArray, getTableCellContent, resolveTableRowKey, getMobile
 
 const DEFAULT_MOBILE_SUMMARY_KEYS = ["avatar", "first_name", "department_name"] as const;
 
+const BORDER_CLASS = "border-b border-white/15";
+
+type ExtendedRowData = {
+  description?: string | null;
+  responsibilities?: string[] | null;
+  environment?: string[] | null;
+};
+
 export interface TableColumn<T> {
   key: keyof T | string;
   header: string | React.ReactNode;
@@ -27,6 +35,92 @@ export interface TableProps<T> {
   showRowBorders?: boolean;
 }
 
+const Tag = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
+  <span className={cn("rounded-full px-2 py-1 text-xs text-white/90", className)}>{children}</span>
+);
+
+const EnvironmentTag = ({ item, keyPrefix }: { item: string; keyPrefix: string }) => (
+  <Tag key={`${keyPrefix}-env-${item}`} className="border border-white/20">
+    {item}
+  </Tag>
+);
+
+const ResponsibilityTag = ({ item, keyPrefix }: { item: string; keyPrefix: string }) => (
+  <Tag key={`${keyPrefix}-${item}`} className="bg-white/10">
+    {item}
+  </Tag>
+);
+
+type RowMetaData = {
+  hasDescription: boolean;
+  hasEnvironment: boolean;
+  hasResponsibilities: boolean;
+  actionsRowSpan: number;
+};
+
+const processRowData = (row: ExtendedRowData): RowMetaData => {
+  const description = row.description;
+  const rawResponsibilities = row.responsibilities;
+  const rawEnvironment = row.environment;
+
+  const responsibilities = Array.isArray(rawResponsibilities) ? rawResponsibilities.map((value) => value?.trim()).filter(Boolean) : [];
+  const environment = Array.isArray(rawEnvironment) ? rawEnvironment.filter(Boolean) : [];
+
+  const hasDescription = Boolean(description?.trim());
+  const hasEnvironment = environment.length > 0;
+  const hasResponsibilities = responsibilities.length > 0;
+
+  const actionsRowSpan = (hasDescription ? 1 : 0) + (hasEnvironment ? 1 : 0) + (hasResponsibilities ? 1 : 0) + 1;
+
+  return { hasDescription, hasEnvironment, hasResponsibilities, actionsRowSpan };
+};
+
+const EmptyBorderRow = ({ colSpan, renderActions }: { colSpan: number; renderActions?: boolean }) => (
+  <tr className={BORDER_CLASS}>
+    <td colSpan={colSpan} className="h-0" />
+    {renderActions && <td className="w-10" />}
+  </tr>
+);
+
+const DescriptionRow = ({ description, colSpan, renderActions }: { description: string; colSpan: number; renderActions?: boolean }) => (
+  <tr>
+    <td
+      colSpan={colSpan}
+      className="px-4 pt-1 pb-2 text-sm text-white/70"
+      style={{
+        wordBreak: "break-word",
+        overflowWrap: "break-word",
+      }}
+    >
+      {description}
+    </td>
+    {renderActions && <td className="w-10" />}
+  </tr>
+);
+
+const TagsRow = ({
+  items,
+  colSpan,
+  renderActions,
+  renderTag,
+  keyPrefix,
+  shouldShowBorder,
+}: {
+  items: string[];
+  colSpan: number;
+  renderActions?: boolean;
+  renderTag: (item: string) => React.ReactNode;
+  keyPrefix: string;
+  shouldShowBorder: boolean;
+}) => (
+  <tr className={shouldShowBorder ? BORDER_CLASS : ""}>
+    <td colSpan={colSpan} className="px-4 pb-4 pt-1 text-xs text-white/80">
+      <div className="flex flex-wrap gap-2">{items.map(renderTag)}</div>
+    </td>
+    {renderActions && <td className="w-10" />}
+  </tr>
+);
+
 export function Table<T extends Record<string, unknown>>({
   data,
   columns,
@@ -41,17 +135,21 @@ export function Table<T extends Record<string, unknown>>({
   showRowBorders = false,
 }: TableProps<T>) {
   const skeletonRowIndices = createSkeletonArray(skeletonRows);
-
-  const { avatarColumn, primaryColumn, secondaryColumn, hasSummary: hasMobileSummary } = buildMobileSummaryConfig(columns, mobileSummaryKeys, DEFAULT_MOBILE_SUMMARY_KEYS);
+  const { avatarColumn, primaryColumn, secondaryColumn, hasSummary: hasMobileSummary } = buildMobileSummaryConfig(
+    columns,
+    mobileSummaryKeys,
+    DEFAULT_MOBILE_SUMMARY_KEYS
+  );
 
   const defaultEmptyState = <span className="text-sm text-neutral-500">No data available</span>;
   const emptyStateContent = emptyState || defaultEmptyState;
+  const colSpan = columns.length;
 
   const renderMobileRow = (row: T, index: number) => {
     const key = resolveTableRowKey(row, index, keyExtractor);
 
     return (
-      <div key={key} className="px-4 py-3 border-b border-white/15">
+      <div key={key} className={cn("px-4 py-3", BORDER_CLASS)}>
         <div className="flex items-center gap-4">
           {avatarColumn && <div className="flex-shrink-0">{getTableCellContent(avatarColumn, row)}</div>}
           <div className="flex-1 flex items-center justify-between min-w-0 gap-4">
@@ -64,12 +162,76 @@ export function Table<T extends Record<string, unknown>>({
     );
   };
 
+  const renderTableRow = (row: T, index: number, rowData: ExtendedRowData, meta: RowMetaData) => {
+    const key = resolveTableRowKey(row, index, keyExtractor);
+    const { hasDescription, hasEnvironment, hasResponsibilities, actionsRowSpan } = meta;
+    const shouldShowBorderAfterEnvironment = !hasResponsibilities;
+
+    return (
+      <React.Fragment key={key}>
+        <tr className={cn(showRowBorders && BORDER_CLASS)}>
+          {columns.map((column) => {
+            const cellContent = getTableCellContent(column, row);
+            return (
+              <td
+                key={String(column.key)}
+                className={cn("px-4 py-4 text-sm text-white", column.className)}
+                style={{
+                  wordBreak: "break-word",
+                  overflowWrap: "break-word",
+                }}
+              >
+                {cellContent}
+              </td>
+            );
+          })}
+          {renderActions && (
+            <td className="px-4 py-4 text-right align-top" rowSpan={actionsRowSpan}>
+              <div className="flex items-center justify-end">{renderActions(row)}</div>
+            </td>
+          )}
+        </tr>
+
+        {hasDescription && <DescriptionRow description={rowData.description!} colSpan={colSpan} renderActions={!!renderActions} />}
+
+        {hasEnvironment && (
+          <TagsRow
+            items={Array.isArray(rowData.environment) ? rowData.environment.filter(Boolean) : []}
+            colSpan={colSpan}
+            renderActions={!!renderActions}
+            renderTag={(item) => <EnvironmentTag item={item} keyPrefix={key} />}
+            keyPrefix={key}
+            shouldShowBorder={shouldShowBorderAfterEnvironment}
+          />
+        )}
+
+        {hasResponsibilities && (
+          <TagsRow
+            items={
+              Array.isArray(rowData.responsibilities)
+                ? rowData.responsibilities.map((value) => value?.trim()).filter(Boolean)
+                : []
+            }
+            colSpan={colSpan}
+            renderActions={!!renderActions}
+            renderTag={(item) => <ResponsibilityTag item={item} keyPrefix={key} />}
+            keyPrefix={key}
+            shouldShowBorder={true}
+          />
+        )}
+
+        {!hasResponsibilities && !hasEnvironment && hasDescription && <EmptyBorderRow colSpan={colSpan} renderActions={!!renderActions} />}
+        {!hasResponsibilities && !hasEnvironment && !hasDescription && <EmptyBorderRow colSpan={colSpan} renderActions={!!renderActions} />}
+      </React.Fragment>
+    );
+  };
+
   return (
     <>
       <div className={cn("w-full overflow-x-auto", hasMobileSummary ? "hidden md:block" : "", className)}>
         <table className="w-full border-collapse">
           <thead>
-            <tr className="border-b border-white/15">
+            <tr className={BORDER_CLASS}>
               {columns.map((column) => (
                 <th key={String(column.key)} className={cn("px-4 py-4 text-left text-sm font-bold text-white", column.className)}>
                   {column.header}
@@ -81,7 +243,7 @@ export function Table<T extends Record<string, unknown>>({
           <tbody>
             {loading ? (
               skeletonRowIndices.map((index) => (
-                <tr key={`skeleton-${index}`} className="border-b border-white/15">
+                <tr key={`skeleton-${index}`} className={BORDER_CLASS}>
                   {columns.map((column) => (
                     <td key={String(column.key)} className={cn("px-4 py-4", column.className)}>
                       {column.key === "avatar" ? <Skeleton className="h-10 w-10 rounded-full" /> : <Skeleton className="h-5 w-full" />}
@@ -96,82 +258,15 @@ export function Table<T extends Record<string, unknown>>({
               ))
             ) : data.length === 0 ? (
               <tr>
-                <td colSpan={columns.length + (renderActions ? 1 : 0)} className="px-4 py-8 text-center">
+                <td colSpan={colSpan + (renderActions ? 1 : 0)} className="px-4 py-8 text-center">
                   {emptyStateContent}
                 </td>
               </tr>
             ) : (
               data.map((row, index) => {
-                const key = resolveTableRowKey(row, index, keyExtractor);
-                const rowData = row as { description?: string | null; responsibilities?: string[] | null };
-                const description = rowData.description;
-                const rawResponsibilities = rowData.responsibilities;
-
-                const responsibilities = Array.isArray(rawResponsibilities) ? rawResponsibilities.map((value) => value?.trim()).filter(Boolean) : [];
-
-                const hasDescription = Boolean(description?.trim());
-                const hasResponsibilities = responsibilities.length > 0;
-
-                const actionsRowSpan = hasDescription && hasResponsibilities ? 3 : hasDescription || hasResponsibilities ? 2 : 1;
-                const colSpan = columns.length;
-
-                return (
-                  <React.Fragment key={key}>
-                    <tr className={cn(showRowBorders && "border-b border-white/15")}>
-                      {columns.map((column) => {
-                        const cellContent = getTableCellContent(column, row);
-                        return (
-                          <td
-                            key={String(column.key)}
-                            className={cn("px-4 py-4 text-sm text-white", column.className)}
-                            style={{
-                              wordBreak: "break-word",
-                              overflowWrap: "break-word",
-                            }}
-                          >
-                            {cellContent}
-                          </td>
-                        );
-                      })}
-                      {renderActions && (
-                        <td className="px-4 py-4 text-right align-top" rowSpan={actionsRowSpan}>
-                          <div className="flex items-center justify-end">{renderActions(row)}</div>
-                        </td>
-                      )}
-                    </tr>
-
-                    {hasDescription && (
-                      <tr className={cn(showRowBorders && "border-b border-white/15")}>
-                        <td
-                          colSpan={colSpan}
-                          className="px-4 py-2 text-sm text-white/70"
-                          style={{
-                            wordBreak: "break-word",
-                            overflowWrap: "break-word",
-                          }}
-                        >
-                          {description}
-                        </td>
-                        {renderActions && <td className="w-10" />}
-                      </tr>
-                    )}
-
-                    {hasResponsibilities && (
-                      <tr className={cn(showRowBorders && "border-b border-white/15")}>
-                        <td colSpan={colSpan} className="px-4 pb-4 pt-1 text-xs text-white/80">
-                          <div className="flex flex-wrap gap-2">
-                            {responsibilities.map((item) => (
-                              <span key={`${key}-${item}`} className="rounded-full bg-white/10 px-2 py-1 text-xs text-white/90">
-                                {item}
-                              </span>
-                            ))}
-                          </div>
-                        </td>
-                        {renderActions && <td className="w-10" />}
-                      </tr>
-                    )}
-                  </React.Fragment>
-                );
+                const rowData = row as ExtendedRowData;
+                const meta = processRowData(rowData);
+                return renderTableRow(row, index, rowData, meta);
               })
             )}
           </tbody>
@@ -181,7 +276,7 @@ export function Table<T extends Record<string, unknown>>({
       {hasMobileSummary && (
         <div className={cn("w-full md:hidden", className)}>
           {(primaryColumn || secondaryColumn) && (
-            <div className="flex items-center gap-4 px-4 py-3 border-b border-white/15 mb-2">
+            <div className={cn("flex items-center gap-4 px-4 py-3 mb-2", BORDER_CLASS)}>
               {avatarColumn && <div className="w-10" />}
               <div className="flex-1 flex items-center">
                 {primaryColumn && <span className="text-sm font-bold text-white">{getMobileHeaderLabel(primaryColumn)}</span>}
@@ -195,7 +290,7 @@ export function Table<T extends Record<string, unknown>>({
           <div>
             {loading ? (
               skeletonRowIndices.map((index) => (
-                <div key={`skeleton-mobile-${index}`} className="px-4 py-3 border-b border-white/15">
+                <div key={`skeleton-mobile-${index}`} className={cn("px-4 py-3", BORDER_CLASS)}>
                   <div className="flex items-center gap-4">
                     {avatarColumn ? <Skeleton className="h-10 w-10 rounded-full flex-shrink-0" /> : null}
                     <div className="flex-1 flex items-center justify-between">
