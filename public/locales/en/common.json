@@ -1,5 +1,10 @@
 {
   "title": "Curriculum Vitae",
+  "errors": {
+    "unexpected": "Something went wrong. Please try again.",
+    "network": "Network error. Please check your connection.",
+    "unauthorized": "Your session expired. Please log in again."
+  },
   "skills": {
     "heading": "Skills"
   },
@@ -35,7 +40,12 @@
       "reset": "Reset search"
     },
     "table": {
-      "searchPlaceholder": "Search CVs"
+      "searchPlaceholder": "Search CVs",
+      "columns": {
+        "name": "Name",
+        "education": "Education",
+        "employee": "Employee"
+      }
     },
     "createModal": {
       "title": "Create CV",
@@ -90,6 +100,36 @@
   },
   "users": {
     "heading": "Employees",
+    "createUser": "Create user",
+    "table": {
+      "columns": {
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "department": "Department",
+        "position": "Position"
+      }
+    },
+    "actions": {
+      "profile": "Profile",
+      "update": "Update user",
+      "delete": "Delete user",
+      "openMenu": "Open actions"
+    },
+    "deleteModal": {
+      "title": "Delete user",
+      "warning": "Are you sure you want to delete this user? This action cannot be undone.",
+      "userLabel": "User: {{name}}",
+      "actions": {
+        "delete": "DELETE",
+        "cancel": "CANCEL"
+      },
+      "notifications": {
+        "error": "Failed to delete user. Please try again.",
+        "refreshError": "Deletion completed, but something went wrong."
+      },
+      "toast": "User deleted"
+    },
     "details": {
       "tabs": {
         "profile": "Profile",
@@ -137,6 +177,8 @@
   },
   "features": {
     "createUserForm": {
+      "heading": "Create user",
+      "description": "Fill out the fields below to create a new Employee or Admin account.",
       "roles": {
         "employee": "Employee",
         "admin": "Admin"

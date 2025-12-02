@@ -31,13 +31,10 @@ export function CreateUserFormView({
   );
 
   return (
-    <form
-      className="space-y-6 bg-[#1C1C1C] border border-white/10 rounded-2xl px-8 py-8 shadow-lg"
-      onSubmit={formik.handleSubmit}
-    >
+    <form className="space-y-8" onSubmit={formik.handleSubmit}>
       <FormStatus successMessage={successMessage} errorMessage={errorMessage} />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div>
           <Input
             id="email"
@@ -74,7 +71,7 @@ export function CreateUserFormView({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <Input
           id="firstName"
           name="firstName"
@@ -95,7 +92,7 @@ export function CreateUserFormView({
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <Input
           id="departmentId"
           name="departmentId"
@@ -116,7 +113,7 @@ export function CreateUserFormView({
         />
       </div>
 
-      <div className="space-y-1">
+      <div className="space-y-2">
         <label className="text-xs uppercase tracking-widest text-white/60">
           {t("features.createUserForm.labels.role")}
         </label>
