@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, type SearchInputProps, type TableProps, TableRowActions, type DropdownMenuItem } from "@/shared/ui";
 import { useCvs, type CvListItem } from "@/features/cvs";
-import { CVS_SEARCH_FIELDS, createCvsTableColumns } from "../config/constants";
+import { CVS_SEARCH_FIELDS, getCvsTableColumns } from "../config/constants";
 
 type SortDirection = "asc" | "desc" | null;
 
@@ -35,18 +35,18 @@ export function useCvsPage(options?: { onDetails?: (cvId: string) => void; onDel
     });
   };
 
-  const sortedCvs =
-    sortDirection == null
-      ? filteredCvs
-      : [...filteredCvs].sort((a, b) => {
-          const aName = a.name.toLowerCase();
-          const bName = b.name.toLowerCase();
+  const sortedCvs = !sortDirection
+    ? filteredCvs
+    : [...filteredCvs].sort((a, b) => {
+        const aName = a.name.toLowerCase();
+        const bName = b.name.toLowerCase();
 
-          if (sortDirection === "asc") {
-            return aName.localeCompare(bName);
-          }
+        if (sortDirection === "asc") {
+          return aName.localeCompare(bName);
+        } else {
           return bName.localeCompare(aName);
-        });
+        }
+      });
 
   const handleSearchResults = (results: CvListItem[]) => {
     setFilteredCvs(results);
@@ -62,13 +62,13 @@ export function useCvsPage(options?: { onDetails?: (cvId: string) => void; onDel
 
   const emptyState = isSearchActive ? (
     <div className="py-10 text-center space-y-3 text-white/80">
-      <p>{t("cvs.states.searchEmpty", { defaultValue: "No CVs found." })}</p>
+      <p>{t("cvs.states.searchEmpty")}</p>
       <Button type="button" variant="outline" size="sm" onClick={handleResetSearch} className="border-white/30 text-white/80 hover:bg-white/10">
-        {t("cvs.states.reset", { defaultValue: "Reset search" })}
+        {t("cvs.states.reset")}
       </Button>
     </div>
   ) : (
-    <div className="py-10 text-center text-white/70">{t("cvs.states.empty", { defaultValue: "No CVs added yet." })}</div>
+    <div className="py-10 text-center text-white/70">{t("cvs.states.empty")}</div>
   );
 
   const searchInputProps: SearchInputProps<CvListItem> = {
@@ -78,9 +78,7 @@ export function useCvsPage(options?: { onDetails?: (cvId: string) => void; onDel
     onQueryChange: setSearchQuery,
     resetKey: searchResetKey,
     hasError: isSearchActive && filteredCvs.length === 0,
-    placeholder: t("cvs.table.searchPlaceholder", {
-      defaultValue: "Search CVs",
-    }),
+    placeholder: t("cvs.table.searchPlaceholder"),
   };
 
   const renderRowActions = (row: CvListItem) => {
@@ -88,11 +86,11 @@ export function useCvsPage(options?: { onDetails?: (cvId: string) => void; onDel
 
     const menuItems: DropdownMenuItem[] = [
       {
-        label: t("cvs.actions.details", { defaultValue: "Details" }),
+        label: t("cvs.actions.details"),
         onClick: () => options?.onDetails?.(row.id),
       },
       {
-        label: t("cvs.actions.delete", { defaultValue: "Delete CV" }),
+        label: t("cvs.actions.delete"),
         onClick: () => options?.onDelete?.(row.id),
       },
     ];
@@ -100,34 +98,27 @@ export function useCvsPage(options?: { onDetails?: (cvId: string) => void; onDel
     return <TableRowActions items={menuItems} ariaLabel={`Open actions for ${labelTarget}`} menuWidth="120px" />;
   };
 
-  const nameColumnLabel = t("cvs.list.columns.name");
-  const educationColumnLabel = t("cvs.list.columns.education");
-  const employeeColumnLabel = t("cvs.list.columns.employee");
-  const emptyValueLabel = t("cvs.list.columns.emptyValue");
+  const baseColumns = getCvsTableColumns(t);
+  const nameColumnLabel = t("cvs.table.columns.name");
 
-  const cvsTableColumns = createCvsTableColumns({
-    name: nameColumnLabel,
-    education: educationColumnLabel,
-    employee: employeeColumnLabel,
-    emptyValue: emptyValueLabel,
+  const columns = baseColumns.map((col) => {
+    if (col.key === "name") {
+      return {
+        ...col,
+        header: (
+          <Button type="button" variant="ghost" onClick={handleSort} className="flex items-center gap-2 hover:opacity-80 transition-opacity h-auto p-0 border-none text-white">
+            <span>{nameColumnLabel}</span>
+            <span className="text-xs text-white/50">{sortDirection === "asc" ? " ↑" : sortDirection === "desc" ? " ↓" : " ↑"}</span>
+          </Button>
+        ),
+      };
+    }
+    return col;
   });
 
   const tableProps: TableProps<CvListItem> = {
     data: sortedCvs,
-    columns: cvsTableColumns.map((col) => {
-      if (col.key === "name") {
-        return {
-          ...col,
-          header: (
-            <Button type="button" variant="ghost" onClick={handleSort} className="flex items-center gap-2 hover:opacity-80 transition-opacity h-auto p-0 border-none text-white">
-              <span className="normal-case">{nameColumnLabel}</span>
-              <span className="text-xs text-white/50">{sortDirection === "asc" ? " ↑" : sortDirection === "desc" ? " ↓" : " ↑"}</span>
-            </Button>
-          ),
-        };
-      }
-      return col;
-    }),
+    columns,
     loading,
     keyExtractor: (row) => row.id,
     emptyState,

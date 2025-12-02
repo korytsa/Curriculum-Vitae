@@ -5,7 +5,7 @@ import { useUsers } from "@/features/users";
 import { accessTokenVar, setAccessToken } from "@/shared/config/apollo";
 import { decodeToken } from "@/shared/lib/jwt";
 import { type TableProps, type SearchInputProps, Button } from "@/shared/ui";
-import { USERS_SEARCH_FIELDS, createUsersTableColumns } from "../config/constants";
+import { USERS_SEARCH_FIELDS, getUsersTableColumns } from "../config/constants";
 import type { User } from "../types";
 import { UserRowActions } from "../components/UserRowActions";
 
@@ -24,6 +24,7 @@ export function useUsersPage(): UsersPageHookResult {
   const params = useParams();
   const locale = typeof params?.locale === "string" ? params.locale : undefined;
   const { users, loading, refetch } = useUsers();
+  const columns = getUsersTableColumns(t);
 
   const [filteredUsers, setFilteredUsers] = useState<User[]>(users);
   const [searchQuery, setSearchQuery] = useState("");
@@ -82,16 +83,6 @@ export function useUsersPage(): UsersPageHookResult {
     logout: translate("users.search.logout"),
   };
 
-  const tableColumnLabels = {
-    firstName: translate("users.table.columns.firstName"),
-    lastName: translate("users.table.columns.lastName"),
-    email: translate("users.table.columns.email"),
-    department: translate("users.table.columns.department"),
-    position: translate("users.table.columns.position"),
-  };
-
-  const tableColumns = createUsersTableColumns(tableColumnLabels);
-
   const emptyState = !isSearchActive ? (
     <div className="py-5 text-center flex justify-center items-center">
       <Button variant="outline" className="px-10" onClick={handleLogout}>
@@ -130,7 +121,7 @@ export function useUsersPage(): UsersPageHookResult {
 
   const tableProps: TableProps<User> = {
     data: sortedUsers as User[],
-    columns: tableColumns,
+    columns,
     loading,
     keyExtractor: (row: User) => row.id,
     renderActions: renderRowActions,
