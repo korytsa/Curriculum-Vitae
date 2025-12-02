@@ -27,20 +27,9 @@ export default function DeleteUserModal({ open, user, onClose, onDeleted }: Dele
   const displayName = fullName || user.email;
 
   return (
-    <ConfirmDeleteModal
-      open={open}
-      onClose={onClose}
-      onConfirm={handleDelete}
-      isLoading={loading}
-      errorMessage={error?.message ?? null}
-      title={t("users.deleteModal.title")}
-    >
+    <ConfirmDeleteModal open={open} onClose={onClose} onConfirm={handleDelete} isLoading={loading} errorMessage={error?.message ?? null} title={t("users.deleteModal.title")}>
       <p className="font-normal">
-        <Trans
-          i18nKey="users.deleteModal.warning"
-          values={{ name: displayName }}
-          components={{ strong: <span className="font-semibold" /> }}
-        />
+        <Trans i18nKey="users.deleteModal.warning" values={{ name: displayName }} components={{ strong: <span className="font-semibold" /> }} />
       </p>
     </ConfirmDeleteModal>
   );

@@ -23,13 +23,9 @@ export function UserRowActions({ row, onNavigate, currentUserId, isAdmin = false
   const { t } = useTranslation();
   const isCurrentUser = Boolean(currentUserId && row.id === currentUserId);
 
-  const navigateToUser = () => {
-    onNavigate(row.id);
-  };
-
   const handleNavigate = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    navigateToUser();
+    onNavigate(row.id);
   };
 
   const handleOpenModal = () => {
@@ -57,7 +53,7 @@ export function UserRowActions({ row, onNavigate, currentUserId, isAdmin = false
     const menuItems: DropdownMenuItem[] = [
       {
         label: t("users.actions.profile"),
-        onClick: navigateToUser,
+        onClick: () => onNavigate(row.id),
       },
       {
         label: t("users.actions.update"),

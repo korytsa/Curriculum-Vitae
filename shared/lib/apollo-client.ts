@@ -14,35 +14,25 @@ const httpLink = createHttpLink({
 });
 
 const UNAUTHORIZED_CODES = new Set(["UNAUTHENTICATED", "FORBIDDEN"]);
-const ERROR_TOAST_DEDUP_MS = 1500;
-const recentlyShownErrors = new Map<string, number>();
 
-const translate = (key: string) => i18n.t(key);
+const getUnauthorizedMessage = () => i18n.t("errors.unauthorized");
 
-const getUnauthorizedMessage = () => translate("errors.unauthorized");
+const getNetworkErrorMessage = () => i18n.t("errors.network");
 
-const getNetworkErrorMessage = () => translate("errors.network");
+const getFallbackErrorMessage = () => i18n.t("errors.unexpected");
 
-const getFallbackErrorMessage = () => translate("errors.unexpected");
+export type ErrorHandler = (message: string, error: unknown) => void;
 
-const enqueueErrorToast = (message: string) => {
-  const now = Date.now();
-  const lastShownAt = recentlyShownErrors.get(message);
-  if (typeof lastShownAt === "number" && now - lastShownAt < ERROR_TOAST_DEDUP_MS) {
-    return;
-  }
+export interface ApolloErrorContext {
+  skipErrorToast?: boolean;
+  errorHandler?: ErrorHandler;
+}
 
-  recentlyShownErrors.set(message, now);
-  toast.error(message);
+const errorLink = onError(({ error, operation }) => {
+  const context = operation.getContext() as ApolloErrorContext;
+  const skipErrorToast = context.skipErrorToast === true;
+  const customErrorHandler = context.errorHandler;
 
-  recentlyShownErrors.forEach((timestamp, text) => {
-    if (now - timestamp >= ERROR_TOAST_DEDUP_MS) {
-      recentlyShownErrors.delete(text);
-    }
-  });
-};
-
-const errorLink = onError(({ error }) => {
   const graphQLErrors = CombinedGraphQLErrors.is(error) ? (error.errors as readonly GraphQLError[]) : undefined;
 
   const hasAuthGraphqlError =
@@ -53,36 +43,63 @@ const errorLink = onError(({ error }) => {
     }) ?? false;
 
   const networkError = !CombinedGraphQLErrors.is(error) ? (error as Partial<ServerError>) : undefined;
-
   const hasAuthNetworkError = typeof networkError?.statusCode === "number" && networkError.statusCode === 401;
 
   if (hasAuthGraphqlError || hasAuthNetworkError) {
-    enqueueErrorToast(getUnauthorizedMessage());
+    toast.error(getUnauthorizedMessage());
     setAccessToken(null);
     redirectToLogin();
     return;
   }
 
-  const userFacingMessages = new Set<string>();
+  if (customErrorHandler) {
+    const userFacingMessages: string[] = [];
+
+    graphQLErrors?.forEach((graphQLError: GraphQLError) => {
+      const userMessage = (graphQLError.extensions?.userMessage as string | undefined) || graphQLError.message;
+      if (userMessage) {
+        userFacingMessages.push(userMessage);
+      }
+    });
+
+    if (networkError && !hasAuthNetworkError) {
+      userFacingMessages.push((networkError as Error)?.message || getNetworkErrorMessage());
+    } else if (!CombinedGraphQLErrors.is(error) && error) {
+      userFacingMessages.push(error.message ?? getNetworkErrorMessage());
+    }
+
+    if (!userFacingMessages.length) {
+      userFacingMessages.push(getFallbackErrorMessage());
+    }
+
+    customErrorHandler(userFacingMessages.length > 0 ? userFacingMessages[0] : getFallbackErrorMessage(), error);
+    return;
+  }
+
+  if (skipErrorToast) {
+    return;
+  }
+
+  const userFacingMessages: string[] = [];
 
   graphQLErrors?.forEach((graphQLError: GraphQLError) => {
     const userMessage = (graphQLError.extensions?.userMessage as string | undefined) || graphQLError.message;
     if (userMessage) {
-      userFacingMessages.add(userMessage);
+      userFacingMessages.push(userMessage);
     }
   });
 
   if (networkError && !hasAuthNetworkError) {
-    userFacingMessages.add(getNetworkErrorMessage());
+    userFacingMessages.push((networkError as Error)?.message || getNetworkErrorMessage());
   } else if (!CombinedGraphQLErrors.is(error) && error) {
-    userFacingMessages.add(getFallbackErrorMessage());
+    userFacingMessages.push(error.message ?? getNetworkErrorMessage());
   }
 
-  if (!userFacingMessages.size) {
-    userFacingMessages.add(getFallbackErrorMessage());
+  if (!userFacingMessages.length) {
+    userFacingMessages.push(getFallbackErrorMessage());
   }
 
-  userFacingMessages.forEach((message) => enqueueErrorToast(message));
+  userFacingMessages.forEach((message) => toast.error(message));
 });
 
 const authLink = setContext((_, { headers }) => {
