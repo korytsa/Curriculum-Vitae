@@ -6,6 +6,7 @@ import { Button, Loader } from "@/shared/ui";
 import { useCv } from "@/features/cvs";
 import { CvPdfDocument } from "./CvPdfDocument";
 import { useCvPreview } from "../lib/utils";
+import previewI18n from "@/shared/lib/preview-i18n";
 
 const getPdfFileName = (value: string) => {
   const normalized = value
@@ -20,7 +21,7 @@ const getPdfFileName = (value: string) => {
 };
 
 export function ExportPdfButton() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(undefined, { i18n: previewI18n });
   const params = useParams();
   const id = params?.id as string | undefined;
   const { cv } = useCv(id || "");

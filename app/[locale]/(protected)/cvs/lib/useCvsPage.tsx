@@ -107,7 +107,7 @@ export function useCvsPage(options?: { onDetails?: (cvId: string) => void; onDel
         ...col,
         header: (
           <Button type="button" variant="ghost" onClick={handleSort} className="flex items-center gap-2 hover:opacity-80 transition-opacity h-auto p-0 border-none text-white">
-            <span>{nameColumnLabel}</span>
+            <span className="normal-case">{nameColumnLabel}</span>
             <span className="text-xs text-white/50">{sortDirection === "asc" ? " ↑" : sortDirection === "desc" ? " ↓" : " ↑"}</span>
           </Button>
         ),

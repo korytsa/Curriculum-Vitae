@@ -1,8 +1,9 @@
 import { useTranslation } from "react-i18next";
+import previewI18n from "@/shared/lib/preview-i18n";
 import { buildSkillRows, useCvPreview } from "../../lib/utils";
 
 export default function PreviewSkillsSection() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(undefined, { i18n: previewI18n });
   const { sortedSkills, skillsByCategory, latestSkillUsage, emptyValueLabel } = useCvPreview();
   const skillRows = buildSkillRows(skillsByCategory, sortedSkills, t);
 

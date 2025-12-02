@@ -1,6 +1,7 @@
 import { useParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useCv } from "@/features/cvs";
+import previewI18n from "@/shared/lib/preview-i18n";
 import type { CvProject, SkillMastery } from "@/shared/graphql/generated";
 import type { BuildPreviewDerivedDataOptions, CvPreviewDerivedData, MasteryPriorityMap, SkillsByCategory, SkillRow, SupportedLanguage } from "../types";
 import type { TFunction } from "i18next";
@@ -174,7 +175,7 @@ export function useCvPreview(): CvPreviewDerivedData {
   const params = useParams();
   const id = params?.id as string | undefined;
   const locale = params?.locale as string | undefined;
-  const { t } = useTranslation();
+  const { t } = useTranslation(undefined, { i18n: previewI18n });
   const { cv, skillCategories } = useCv(id || "");
 
   return buildPreviewDerivedData({ cv, skillCategories, locale, t });

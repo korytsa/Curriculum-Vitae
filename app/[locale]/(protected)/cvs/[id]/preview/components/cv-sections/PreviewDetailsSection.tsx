@@ -1,9 +1,10 @@
 import { useTranslation } from "react-i18next";
+import previewI18n from "@/shared/lib/preview-i18n";
 import { DetailItem } from "../DetailItem";
 import { useCvPreview } from "../../lib/utils";
 
 export default function PreviewDetailsSection() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(undefined, { i18n: previewI18n });
   const { name, summaryText, educationValue, languagesList, domainList, skillsByCategory } = useCvPreview();
 
   return (
