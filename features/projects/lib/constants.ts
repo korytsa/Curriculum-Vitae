@@ -1,4 +1,11 @@
-import type { ProjectFormState } from "../types";
+import type { Project } from "@/shared/graphql/generated";
+import type { ProjectFormState } from "./types";
+
+export const DEFAULT_SORT_DIRECTION: "asc" | "desc" = "desc";
+
+export const PROJECTS_SEARCH_FIELDS = ["project.name"] as const;
+
+export const EMPTY_PROJECTS: Project[] = [];
 
 export const PROJECT_FORM_INITIAL_STATE: ProjectFormState = {
   name: "",
@@ -77,3 +84,4 @@ export const TECHNOLOGY_OPTIONS = [
   "Swift",
   "Kotlin",
 ] as const;
+

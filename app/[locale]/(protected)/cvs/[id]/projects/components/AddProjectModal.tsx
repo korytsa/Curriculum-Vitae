@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { EnvironmentField, Input, Modal, Select, TextArea } from "@/shared/ui";
 import { useAddProjectForm } from "../lib/useAddProjectForm";
-import type { AddProjectModalProps } from "../types";
+import type { AddProjectModalProps } from "@/features/projects";
 
 export function AddProjectModal({ open, onClose, projects, isProjectListLoading, onSubmit, initialProject, mode = "add" }: AddProjectModalProps) {
   const { t } = useTranslation();

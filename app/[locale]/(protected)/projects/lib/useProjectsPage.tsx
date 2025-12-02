@@ -1,15 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useProjects, useCreateProject, useDeleteProject, useUpdateProject } from "@/features/projects";
+import { useProjects, useCreateProject, useDeleteProject, useUpdateProject, useDeleteProjectModal, useProjectsTable, TABLE_CONFIG, type ProjectModalMode, type UseProjectsPageParams, type UseProjectsPageResult, type ProjectFormPayload } from "@/features/projects";
 import type { CvProject } from "@/shared/graphql/generated";
-import { Loader, type SearchInputProps, type TableProps, TableRowActions, type DropdownMenuItem } from "@/shared/ui";
-import { createCvProjectsColumns } from "@/app/[locale]/(protected)/cvs/[id]/projects/config/constants";
-import { formatDate, sortProjects, useProjectSearchState } from "@/app/[locale]/(protected)/cvs/[id]/projects/lib/utils";
-import type { CvProjectsActiveField, CvProjectsDirection } from "@/app/[locale]/(protected)/cvs/[id]/projects/types";
-import type { UseProjectsPageParams, UseProjectsPageResult, ProjectFormPayload, ProjectModalMode } from "../types";
-import { TABLE_CONFIG, SORT_CONFIG } from "../config/constants";
 
 export function useProjectsPage({ locale }: UseProjectsPageParams): UseProjectsPageResult {
   const { t } = useTranslation();
@@ -46,41 +40,19 @@ export function useProjectsPage({ locale }: UseProjectsPageParams): UseProjectsP
     } as CvProject;
   });
 
-  const [{ field: activeField, direction }, setSortState] = useState<{
-    field: CvProjectsActiveField | null;
-    direction: CvProjectsDirection;
-  }>({
-    field: null,
-    direction: SORT_CONFIG.defaultDirection,
-  });
-
-  const toggleField = (field: CvProjectsActiveField) => {
-    setSortState((prev) => {
-      if (prev.field === field) {
-        return {
-          field,
-          direction: prev.direction === "asc" ? "desc" : "asc",
-        };
-      }
-      return { field, direction: "asc" };
-    });
-  };
-
   const addProjectLabel = t("cvs.projectsPage.actions.add");
-  const searchPlaceholder = t("cvs.projectsPage.search.placeholder");
-  const dateTimeLocale = locale && Intl.DateTimeFormat.supportedLocalesOf([locale]).length ? locale : undefined;
-
-  const { searchInputProps, filteredProjects, hasSearchQuery, handleResetSearch } = useProjectSearchState(adminProjects, searchPlaceholder);
-  const sortedProjects = sortProjects(filteredProjects, activeField, direction);
-
-  const formatDateValue = (value?: string | null) => formatDate(value, dateTimeLocale, t("cvs.projectsPage.table.labels.present"));
 
   const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] = useState(false);
   const [projectModalMode, setProjectModalMode] = useState<ProjectModalMode>("add");
   const [projectModalInitialValues, setProjectModalInitialValues] = useState<ProjectFormPayload | undefined>(undefined);
   const [projectToUpdate, setProjectToUpdate] = useState<CvProject | null>(null);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [projectPendingDelete, setProjectPendingDelete] = useState<CvProject | null>(null);
+  const { deleteProjectModal, handleDeleteRequest } = useDeleteProjectModal({
+    onDelete: async (projectId) => {
+      await deleteProject({ projectId });
+    },
+    loading: isDeleteProjectLoading,
+    error: deleteProjectError,
+  });
 
   const handleAddProject = () => {
     setProjectModalMode("add");
@@ -133,92 +105,19 @@ export function useProjectsPage({ locale }: UseProjectsPageParams): UseProjectsP
     setProjectToUpdate(null);
   };
 
-  const handleDeleteRequest = (project: CvProject) => {
-    setProjectPendingDelete(project);
-    setIsDeleteModalOpen(true);
-  };
-
-  const handleCloseDeleteModal = () => {
-    setIsDeleteModalOpen(false);
-    setProjectPendingDelete(null);
-  };
-
-  const handleConfirmDeleteProject = async () => {
-    if (!projectPendingDelete) {
-      return;
-    }
-
-    const projectId = projectPendingDelete.project?.id ?? projectPendingDelete.id;
-
-    if (!projectId) {
-      return;
-    }
-
-    await deleteProject({ projectId });
-    handleCloseDeleteModal();
-  };
-
-  const emptyState = isProjectsLoading ? (
-    <Loader className="mx-auto mt-6" />
-  ) : (
-    <div className="mt-6 flex flex-col items-center justify-center gap-3 text-center">
-      {hasSearchQuery ? (
-        <>
-          <h3 className="text-xl text-white">{t("cvs.projectsPage.states.noResults.title")}</h3>
-          <button
-            type="button"
-            onClick={handleResetSearch}
-            className="mt-2 rounded-full border border-white/30 px-10 py-3 text-sm font-semibold uppercase tracking-wide text-neutral-200 transition-colors hover:bg-white/10"
-          >
-            {t("cvs.projectsPage.search.reset")}
-          </button>
-        </>
-      ) : (
-        <h3 className="text-xl text-white">{t("cvs.projectsPage.states.empty.title")}</h3>
-      )}
-    </div>
-  );
-
-  const columns = createCvProjectsColumns({
-    t,
-    formatDate: formatDateValue,
-    onToggleName: () => toggleField("name"),
-    onToggleDomain: () => toggleField("domain"),
-    onToggleStartDate: () => toggleField("start_date"),
-    onToggleEndDate: () => toggleField("end_date"),
-    activeField,
-    direction,
-    renderRowActions: (row) => {
-      const menuItems: DropdownMenuItem[] = [
-        {
-          label: t("cvs.projectsPage.actions.update"),
-          onClick: () => handleEditProject(row),
-        },
-        {
-          label: t("cvs.projectsPage.actions.remove"),
-          onClick: () => handleDeleteRequest(row),
-        },
-      ];
-
-      return (
-        <TableRowActions
-          items={menuItems}
-          ariaLabel={t("cvs.projectsPage.actions.openMenu")}
-          menuWidth={TABLE_CONFIG.menuWidth}
-          buttonClassName={TABLE_CONFIG.buttonClassName}
-          iconClassName={TABLE_CONFIG.iconClassName}
-        />
-      );
+  const { searchInputProps, tableProps } = useProjectsTable({
+    projects: adminProjects,
+    locale,
+    isLoading: isProjectsLoading,
+    onEdit: handleEditProject,
+    onDelete: handleDeleteRequest,
+    tableConfig: {
+      menuWidth: TABLE_CONFIG.menuWidth,
+      buttonClassName: TABLE_CONFIG.buttonClassName,
+      iconClassName: TABLE_CONFIG.iconClassName,
+      mobileSummaryKeys: [...TABLE_CONFIG.mobileSummaryKeys],
     },
   });
-
-  const tableProps: TableProps<CvProject> = {
-    data: sortedProjects,
-    columns,
-    keyExtractor: (row) => row.id,
-    emptyState,
-    mobileSummaryKeys: [...TABLE_CONFIG.mobileSummaryKeys],
-  };
 
   return {
     searchInputProps,
@@ -232,13 +131,6 @@ export function useProjectsPage({ locale }: UseProjectsPageParams): UseProjectsP
       initialProject: projectModalInitialValues,
       mode: projectModalMode,
     },
-    deleteProjectModal: {
-      open: isDeleteModalOpen,
-      onClose: handleCloseDeleteModal,
-      onConfirm: handleConfirmDeleteProject,
-      projectName: projectPendingDelete?.name,
-      isLoading: isDeleteProjectLoading,
-      errorMessage: deleteProjectError?.message ?? null,
-    },
+    deleteProjectModal,
   };
 }

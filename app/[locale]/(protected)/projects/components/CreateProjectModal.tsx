@@ -3,8 +3,7 @@
 import { useTranslation } from "react-i18next";
 import { Input, Modal, TextArea, MultiSelectEnvironmentField } from "@/shared/ui";
 import { useProjectForm } from "../lib/useProjectForm";
-import type { CreateProjectModalProps } from "../types";
-import { FORM_FIELDS, TECHNOLOGY_OPTIONS } from "../config/constants";
+import { FORM_FIELDS, TECHNOLOGY_OPTIONS, type CreateProjectModalProps } from "@/features/projects";
 
 export function CreateProjectModal({ open, onClose, onSubmit, initialProject, mode = "add" }: CreateProjectModalProps) {
   const { t } = useTranslation();

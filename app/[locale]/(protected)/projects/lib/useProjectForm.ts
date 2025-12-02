@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { ProjectFormState, UseProjectFormParams, UseProjectFormResult, ProjectFormPayload } from "../types";
-import { PROJECT_FORM_INITIAL_STATE } from "../config/constants";
+import { PROJECT_FORM_INITIAL_STATE, type ProjectFormState, type UseProjectFormParams, type UseProjectFormResult, type ProjectFormPayload } from "@/features/projects";
 
 export function useProjectForm({ onClose, onSubmit, initialProject }: UseProjectFormParams): UseProjectFormResult {
   const [formState, setFormState] = useState<ProjectFormState>(PROJECT_FORM_INITIAL_STATE);

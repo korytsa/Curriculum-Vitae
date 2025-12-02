@@ -1,28 +1,21 @@
 import type { ReactNode } from "react";
 import { MdArrowDownward } from "react-icons/md";
 
-import type { Project } from "@/shared/graphql/generated";
 import type { CvProject } from "@/shared/graphql/generated";
 import type { TableColumn } from "@/shared/ui";
-import type { AddProjectFormState, CvProjectsActiveField, CvProjectsDirection, SortableColumnConfig } from "../types";
+import type { ProjectsActiveField, ProjectsDirection } from "./types";
+import { DEFAULT_SORT_DIRECTION } from "./constants";
 
-export const EMPTY_PROJECTS: Project[] = [];
-
-export const INITIAL_FORM_STATE: AddProjectFormState = {
-  projectId: "",
-  domain: "",
-  startDate: "",
-  endDate: "",
-  description: "",
-  environment: [],
-  responsibilities: "",
+export type SortableColumnConfig = {
+  key: ProjectsActiveField;
+  label: string;
+  ariaLabel: string;
+  onToggle: () => void;
+  className?: string;
+  render: TableColumn<CvProject>["render"];
 };
 
-export const DEFAULT_SORT_DIRECTION: CvProjectsDirection = "desc";
-
-export const SEARCH_FIELDS = ["project.name"] as const;
-
-const SortIcon = ({ direction }: { direction: CvProjectsDirection }) => {
+const SortIcon = ({ direction }: { direction: ProjectsDirection }) => {
   return <MdArrowDownward className={`h-4 w-4 transition-transform duration-300 ${direction === "asc" ? "rotate-180" : "rotate-0"}`} />;
 };
 
@@ -37,7 +30,7 @@ const SortableHeaderButton = ({
   ariaLabel: string;
   onClick: () => void;
   isActive: boolean;
-  direction: CvProjectsDirection;
+  direction: ProjectsDirection;
 }) => {
   return (
     <button type="button" onClick={onClick} aria-label={ariaLabel} className="group inline-flex items-center gap-2">
@@ -58,7 +51,7 @@ const renderTextCell = (value: unknown) => <span className="text-white/80">{Stri
 const formatDateValue = (value: unknown, formatDate: (value?: string | null) => string) => formatDate(typeof value === "string" ? value : undefined);
 
 const buildDateColumnConfig = (
-  key: Extract<CvProjectsActiveField, "start_date" | "end_date">,
+  key: Extract<ProjectsActiveField, "start_date" | "end_date">,
   label: string,
   ariaLabel: string,
   onToggle: () => void,
@@ -74,7 +67,7 @@ const buildDateColumnConfig = (
   };
 };
 
-export const createCvProjectsColumns = ({
+export const createProjectsTableColumns = ({
   t,
   formatDate,
   onToggleName,
@@ -91,8 +84,8 @@ export const createCvProjectsColumns = ({
   onToggleDomain: () => void;
   onToggleStartDate: () => void;
   onToggleEndDate: () => void;
-  activeField: CvProjectsActiveField | null;
-  direction: CvProjectsDirection;
+  activeField: ProjectsActiveField | null;
+  direction: ProjectsDirection;
   renderRowActions?: (row: CvProject) => ReactNode;
 }): TableColumn<CvProject>[] => {
   const columnsConfig: SortableColumnConfig[] = [
@@ -134,3 +127,4 @@ export const createCvProjectsColumns = ({
 
   return sortableColumns;
 };
+
