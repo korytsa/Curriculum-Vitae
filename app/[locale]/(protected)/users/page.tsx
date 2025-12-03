@@ -40,7 +40,7 @@ export default function UsersPage() {
         ) : null}
       </div>
       <div className="mt-4">
-        <Table {...tableProps} showRowBorders={isUsersRootPath} />
+        <Table {...tableProps} />
       </div>
       {canCreateUser ? (
         <Modal open={isCreateModalOpen} onClose={handleCloseCreateModal} title={createUserLabel} className="max-w-3xl">

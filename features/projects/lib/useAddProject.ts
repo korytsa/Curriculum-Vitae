@@ -3,33 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useCreateProject, EMPTY_PROJECTS, ADD_PROJECT_FORM_INITIAL_STATE } from "@/features/projects";
 import { useAddCvProject } from "@/features/cvs";
-import type {
-  ProjectFormPayload,
-  AddProjectModalSubmitPayload,
-  AddProjectFormState,
-  ProjectOption,
-  UseAddProjectParams,
-  UseAddProjectResult,
-} from "@/features/projects";
+import type { ProjectFormPayload, AddProjectModalSubmitPayload, AddProjectFormState, ProjectOption, UseAddProjectParams, UseAddProjectResult } from "@/features/projects";
 import type { Project } from "@/shared/graphql/generated";
 
 const sanitizeList = (list: string[]) => list.map((item) => item.trim()).filter((item, index, array) => item && array.indexOf(item) === index);
-
-const splitResponsibilities = (value: string) =>
-  value
-    .split(/[\n,]+/)
-    .map((item) => item.trim())
-    .filter((item, index, array) => item && array.indexOf(item) === index);
-
-const cleanProjectName = (name: string): string => {
-  if (!name) return name;
-  let cleaned = name.trim();
-  cleaned = cleaned.replace(/-\w{2}\/\w+$/i, "");
-  cleaned = cleaned.replace(/([a-z])([A-Z])/g, "$1 $2");
-  cleaned = cleaned.replace(/\bproject\b/gi, "Project");
-  cleaned = cleaned.replace(/\s+/g, " ");
-  return cleaned.trim();
-};
 
 const buildProjectOptions = (projects: Project[]): ProjectOption[] => {
   if (!projects.length) {
@@ -37,11 +14,9 @@ const buildProjectOptions = (projects: Project[]): ProjectOption[] => {
   }
   return projects
     .map((project) => {
-      const rawName = project.name || "";
-      const cleanedName = cleanProjectName(rawName);
       return {
         value: project.id,
-        label: cleanedName,
+        label: project.name || "",
       };
     })
     .sort((a, b) => a.label.localeCompare(b.label));
@@ -154,7 +129,7 @@ export function useAddProject({ cvId, projects, onClose, onSubmit, initialProjec
       projectId: formState.projectId,
       startDate: formState.startDate,
       endDate: formState.endDate || undefined,
-      responsibilities: splitResponsibilities(formState.responsibilities),
+      responsibilities: [formState.responsibilities],
     };
 
     if (!onSubmit) {
