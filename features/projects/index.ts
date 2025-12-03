@@ -55,4 +55,4 @@ export type {
   UseUpdateProjectParams,
   UseUpdateProjectResult,
 } from "./lib/types";
-export type { ProjectsPageLayoutProps } from "./ui/ProjectsPageLayout";
+export type { ProjectsPageLayoutProps } from "./ui/types";
