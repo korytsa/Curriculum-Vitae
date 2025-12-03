@@ -3,8 +3,11 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useAddCvProject, useCv, useRemoveCvProject, useUpdateCvProject } from "@/features/cvs";
-import { useProjects, useDeleteProjectModal, useProjectsTable, type ProjectModalMode } from "@/features/projects";
+import { useCv } from "@/features/cvs";
+import { useProjects, useProjectsTable, type ProjectModalMode } from "@/features/projects";
+import { useAddProject } from "./useAddProject";
+import { useUpdateProject } from "./useUpdateProject";
+import { useDeleteProject } from "./useDeleteProject";
 import type { CvProject } from "@/shared/graphql/generated";
 import type { AddProjectFormInitialProject, AddProjectModalSubmitPayload, UseCvProjectsPageParams, UseCvProjectsPageResult } from "@/features/projects";
 
@@ -12,9 +15,9 @@ export function useCvProjectsPage({ cvId, locale }: UseCvProjectsPageParams): Us
   const { t } = useTranslation();
   const { cv, loading: isCvLoading } = useCv(cvId);
   const { projects: availableProjects, loading: isProjectsLoading } = useProjects();
-  const { addCvProject } = useAddCvProject(cvId);
-  const { updateCvProject } = useUpdateCvProject(cvId);
-  const { removeCvProject, loading: isRemoveProjectLoading, error: removeProjectError } = useRemoveCvProject(cvId);
+  const { addProject } = useAddProject({ cvId });
+  const { updateProject } = useUpdateProject({ cvId });
+  const { deleteProjectModal, handleDeleteRequest } = useDeleteProject({ cvId });
 
   const projects = (cv?.projects ?? []).filter(Boolean) as unknown as CvProject[];
   const addProjectLabel = t("cvs.projectsPage.actions.add");
@@ -22,13 +25,6 @@ export function useCvProjectsPage({ cvId, locale }: UseCvProjectsPageParams): Us
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
   const [projectModalMode, setProjectModalMode] = useState<ProjectModalMode>("add");
   const [projectModalInitialValues, setProjectModalInitialValues] = useState<AddProjectFormInitialProject | undefined>(undefined);
-  const { deleteProjectModal, handleDeleteRequest } = useDeleteProjectModal({
-    onDelete: async (projectId) => {
-      await removeCvProject({ projectId });
-    },
-    loading: isRemoveProjectLoading,
-    error: removeProjectError,
-  });
 
   const buildInitialProjectValues = (project: CvProject): AddProjectFormInitialProject => ({
     projectId: project.project?.id ?? "",
@@ -69,23 +65,11 @@ export function useCvProjectsPage({ cvId, locale }: UseCvProjectsPageParams): Us
       if (!projectModalInitialValues?.projectId) {
         return;
       }
-      await updateCvProject({
-        projectId: projectModalInitialValues.projectId,
-        start_date: payload.startDate,
-        end_date: payload.endDate,
-        responsibilities: payload.responsibilities,
-        roles: payload.responsibilities,
-      });
+      await updateProject(payload, true, projectModalInitialValues.projectId);
       return;
     }
 
-    await addCvProject({
-      projectId: payload.projectId,
-      start_date: payload.startDate,
-      end_date: payload.endDate,
-      responsibilities: payload.responsibilities,
-      roles: payload.responsibilities,
-    });
+    await addProject(payload, true);
   };
 
   const { searchInputProps, tableProps } = useProjectsTable({

@@ -1,10 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
+import { useCreateProject, EMPTY_PROJECTS } from "@/features/projects";
+import { useAddCvProject } from "@/features/cvs";
+import type {
+  ProjectFormPayload,
+  AddProjectModalSubmitPayload,
+  AddProjectFormState,
+  ProjectOption,
+  AddProjectFormInitialProject,
+  UseAddProjectParams,
+  UseAddProjectResult,
+} from "@/features/projects";
 import type { Project } from "@/shared/graphql/generated";
-import { EMPTY_PROJECTS } from "@/features/projects";
-import type { AddProjectFormState, AddProjectModalSubmitPayload, ProjectOption, UseAddProjectFormParams, UseAddProjectFormResult } from "@/features/projects";
 
 const INITIAL_FORM_STATE: AddProjectFormState = {
   projectId: "",
@@ -26,13 +34,11 @@ const splitResponsibilities = (value: string) =>
 
 const cleanProjectName = (name: string): string => {
   if (!name) return name;
-
   let cleaned = name.trim();
   cleaned = cleaned.replace(/-\w{2}\/\w+$/i, "");
   cleaned = cleaned.replace(/([a-z])([A-Z])/g, "$1 $2");
   cleaned = cleaned.replace(/\bproject\b/gi, "Project");
   cleaned = cleaned.replace(/\s+/g, " ");
-
   return cleaned.trim();
 };
 
@@ -52,7 +58,10 @@ const buildProjectOptions = (projects: Project[]): ProjectOption[] => {
     .sort((a, b) => a.label.localeCompare(b.label));
 };
 
-export function useAddProjectForm({ projects, onClose, onSubmit, initialProject }: UseAddProjectFormParams): UseAddProjectFormResult {
+export function useAddProject({ cvId, projects, onClose, onSubmit, initialProject }: UseAddProjectParams = {}): UseAddProjectResult {
+  const { createProject, loading: isCreateLoading, error: createError } = useCreateProject();
+  const { addCvProject, loading: isAddCvLoading, error: addCvError } = useAddCvProject(cvId);
+
   const [formState, setFormState] = useState<AddProjectFormState>(
     initialProject
       ? {
@@ -85,7 +94,6 @@ export function useAddProjectForm({ projects, onClose, onSubmit, initialProject 
         responsibilities: initialProject.responsibilities,
       });
       lastProjectId.current = initialProject.projectId;
-      return;
     }
   }, [initialProject]);
 
@@ -108,6 +116,29 @@ export function useAddProjectForm({ projects, onClose, onSubmit, initialProject 
     }));
   }, [selectedProject]);
 
+  const addProject = async (payload: ProjectFormPayload | AddProjectModalSubmitPayload, isCvProject = false) => {
+    if (isCvProject && cvId) {
+      const cvProjectPayload = payload as AddProjectModalSubmitPayload;
+      await addCvProject({
+        projectId: cvProjectPayload.projectId,
+        start_date: cvProjectPayload.startDate,
+        end_date: cvProjectPayload.endDate,
+        responsibilities: cvProjectPayload.responsibilities,
+        roles: cvProjectPayload.responsibilities,
+      });
+    } else {
+      const projectPayload = payload as ProjectFormPayload;
+      await createProject({
+        name: projectPayload.name,
+        domain: projectPayload.domain,
+        description: projectPayload.description,
+        environment: projectPayload.environment,
+        start_date: projectPayload.startDate,
+        end_date: projectPayload.endDate,
+      });
+    }
+  };
+
   const resetForm = () => {
     setFormState(INITIAL_FORM_STATE);
     lastProjectId.current = null;
@@ -115,7 +146,7 @@ export function useAddProjectForm({ projects, onClose, onSubmit, initialProject 
 
   const handleClose = () => {
     resetForm();
-    onClose();
+    onClose?.();
   };
 
   const handleFieldChange = <K extends keyof AddProjectFormState>(field: K, value: AddProjectFormState[K]) => {
@@ -148,15 +179,28 @@ export function useAddProjectForm({ projects, onClose, onSubmit, initialProject 
     handleClose();
   };
 
+  const loading = cvId ? isAddCvLoading : isCreateLoading;
+  const error = (cvId ? addCvError : createError) as Error | null;
   const disableSubmit = !formState.projectId || !formState.startDate || isSubmitting;
 
-  return {
-    formState,
-    projectOptions,
-    handleFieldChange,
-    handleSubmit,
-    handleClose,
-    isSubmitting,
-    disableSubmit,
+  const baseResult: UseAddProjectResult = {
+    addProject,
+    loading,
+    error,
   };
+
+  if (projects !== undefined) {
+    return {
+      ...baseResult,
+      formState,
+      projectOptions,
+      handleFieldChange,
+      handleSubmit,
+      handleClose,
+      isSubmitting,
+      disableSubmit,
+    };
+  }
+
+  return baseResult;
 }

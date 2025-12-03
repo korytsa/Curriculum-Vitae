@@ -3,8 +3,8 @@
 import { useTranslation } from "react-i18next";
 
 import { EnvironmentField, Input, Modal, Select, TextArea, MultiSelectEnvironmentField } from "@/shared/ui";
-import { useAddProjectForm } from "../lib/useAddProjectForm";
-import { useProjectForm } from "../lib/useProjectForm";
+import { useAddProject } from "../lib/useAddProject";
+import { useUpdateProject } from "../lib/useUpdateProject";
 import { FORM_FIELDS, TECHNOLOGY_OPTIONS, type CreateProjectModalProps, type AddProjectModalProps } from "@/features/projects";
 
 type ProjectModalVariant = "add-to-cv" | "create";
@@ -20,15 +20,15 @@ export function ProjectModal(props: UnifiedProjectModalProps) {
   const addToCvProps = variant === "add-to-cv" ? props : null;
   const createProps = variant === "create" ? props : null;
 
-  const addToCvForm = useAddProjectForm({
+  const addToCvForm = useAddProject({
     projects: addToCvProps?.projects,
-    onClose,
+    onClose: onClose || (() => {}),
     onSubmit: addToCvProps?.onSubmit,
     initialProject: addToCvProps?.initialProject,
   });
 
-  const createForm = useProjectForm({
-    onClose,
+  const createForm = useUpdateProject({
+    onClose: onClose || (() => {}),
     initialProject: createProps?.initialProject,
     onSubmit: createProps?.onSubmit
       ? async (payload) => {
@@ -43,11 +43,14 @@ export function ProjectModal(props: UnifiedProjectModalProps) {
             });
           }
         }
-      : undefined,
+      : async () => {},
   });
 
   if (variant === "add-to-cv") {
     const { projects, isProjectListLoading } = props;
+    if (!addToCvForm.formState || !addToCvForm.projectOptions || !addToCvForm.handleFieldChange || !addToCvForm.handleSubmit || !addToCvForm.handleClose) {
+      return null;
+    }
     const { formState, projectOptions, handleFieldChange, handleSubmit, handleClose, isSubmitting, disableSubmit } = addToCvForm;
     const modalTitle = mode === "update" ? t("cvs.projectsPage.modal.updateTitle") : t("cvs.projectsPage.modal.title");
 
@@ -108,6 +111,9 @@ export function ProjectModal(props: UnifiedProjectModalProps) {
     );
   }
 
+  if (!createForm.formState || !createForm.handleFieldChange || !createForm.handleSubmit || !createForm.handleClose) {
+    return null;
+  }
   const { formState, handleFieldChange, handleSubmit, handleClose, isSubmitting, disableSubmit } = createForm;
 
   return (

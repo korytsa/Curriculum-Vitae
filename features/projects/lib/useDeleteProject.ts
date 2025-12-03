@@ -1,26 +1,25 @@
 "use client";
 
 import { useState } from "react";
+import { useDeleteProject as useDeleteProjectMutation } from "@/features/projects";
+import { useRemoveCvProject } from "@/features/cvs";
 import type { CvProject } from "@/shared/graphql/generated";
+import type { UseDeleteProjectParams, UseDeleteProjectResult } from "@/features/projects";
 
-export type DeleteProjectModalState = {
-  open: boolean;
-  projectName?: string;
-  onConfirm: () => Promise<void>;
-  onClose: () => void;
-  isLoading: boolean;
-  errorMessage?: string | null;
-};
+export function useDeleteProject({ cvId }: UseDeleteProjectParams = {}): UseDeleteProjectResult {
+  const { deleteProject: deleteRegularProject, loading: isDeleteLoading, error: deleteError } = useDeleteProjectMutation();
+  const { removeCvProject, loading: isRemoveCvLoading, error: removeCvError } = useRemoveCvProject(cvId);
 
-export type UseDeleteProjectModalParams = {
-  onDelete: (projectId: string) => Promise<void>;
-  loading: boolean;
-  error?: Error | null;
-};
-
-export function useDeleteProjectModal({ onDelete, loading, error }: UseDeleteProjectModalParams) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [projectPendingDelete, setProjectPendingDelete] = useState<CvProject | null>(null);
+
+  const deleteProject = async (projectId: string, isCvProject = false) => {
+    if (isCvProject && cvId) {
+      await removeCvProject({ projectId });
+    } else {
+      await deleteRegularProject({ projectId });
+    }
+  };
 
   const handleDeleteRequest = (project: CvProject) => {
     setProjectPendingDelete(project);
@@ -43,11 +42,18 @@ export function useDeleteProjectModal({ onDelete, loading, error }: UseDeletePro
       return;
     }
 
-    await onDelete(projectId);
+    const isCvProject = !!cvId;
+    await deleteProject(projectId, isCvProject);
     handleCloseDeleteModal();
   };
 
+  const loading = cvId ? isRemoveCvLoading : isDeleteLoading;
+  const error = (cvId ? removeCvError : deleteError) as Error | null;
+
   return {
+    deleteProject,
+    loading,
+    error,
     deleteProjectModal: {
       open: isDeleteModalOpen,
       onClose: handleCloseDeleteModal,

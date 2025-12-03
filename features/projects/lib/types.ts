@@ -1,3 +1,6 @@
+import type { CvProject, Project } from "@/shared/graphql/generated";
+import type { SearchInputProps, TableProps } from "@/shared/ui";
+
 export type ProjectsActiveField = "name" | "domain" | "start_date" | "end_date";
 
 export type ProjectsDirection = "asc" | "desc";
@@ -65,7 +68,15 @@ export type CreateProjectModalConfig = {
   mode?: ProjectModalMode;
 };
 
-export type UseProjectsPageResult = import("./page-types").ProjectsPageResult & {
+export type ProjectsPageResult = {
+  searchInputProps: SearchInputProps<CvProject>;
+  tableProps: TableProps<CvProject>;
+  addProjectLabel: string;
+  handleAddProject: () => void;
+  deleteProjectModal: DeleteProjectModalState;
+};
+
+export type UseProjectsPageResult = ProjectsPageResult & {
   createProjectModal: CreateProjectModalConfig;
 };
 
@@ -133,7 +144,7 @@ export type AddProjectModalProps = {
   mode?: ProjectModalMode;
 };
 
-export type UseCvProjectsPageResult = import("./page-types").ProjectsPageResult & {
+export type UseCvProjectsPageResult = ProjectsPageResult & {
   addProjectModal: {
     open: boolean;
     onClose: () => void;
@@ -143,4 +154,65 @@ export type UseCvProjectsPageResult = import("./page-types").ProjectsPageResult 
     initialProject?: AddProjectFormInitialProject;
     mode: ProjectModalMode;
   };
+};
+
+export type DeleteProjectModalState = {
+  open: boolean;
+  projectName?: string;
+  onConfirm: () => Promise<void>;
+  onClose: () => void;
+  isLoading: boolean;
+  errorMessage?: string | null;
+};
+
+export type UseDeleteProjectParams = {
+  cvId?: string;
+};
+
+export type UseDeleteProjectResult = {
+  deleteProject: (projectId: string, isCvProject?: boolean) => Promise<void>;
+  loading: boolean;
+  error: Error | null;
+  deleteProjectModal: DeleteProjectModalState;
+  handleDeleteRequest: (project: CvProject) => void;
+};
+
+export type UseAddProjectParams = {
+  cvId?: string;
+  projects?: Project[];
+  onClose?: () => void;
+  onSubmit?: (payload: AddProjectModalSubmitPayload) => Promise<void> | void;
+  initialProject?: AddProjectFormInitialProject;
+};
+
+export type UseAddProjectResult = {
+  addProject: (payload: ProjectFormPayload | AddProjectModalSubmitPayload, isCvProject?: boolean) => Promise<void>;
+  loading: boolean;
+  error: Error | null;
+  formState?: AddProjectFormState;
+  projectOptions?: ProjectOption[];
+  handleFieldChange?: <K extends keyof AddProjectFormState>(field: K, value: AddProjectFormState[K]) => void;
+  handleSubmit?: () => Promise<void> | void;
+  handleClose?: () => void;
+  isSubmitting?: boolean;
+  disableSubmit?: boolean;
+};
+
+export type UseUpdateProjectParams = {
+  cvId?: string;
+  onClose?: () => void;
+  onSubmit?: (payload: ProjectFormState) => Promise<void> | void;
+  initialProject?: ProjectFormPayload;
+};
+
+export type UseUpdateProjectResult = {
+  updateProject: (payload: ProjectFormPayload | AddProjectModalSubmitPayload, isCvProject?: boolean, projectId?: string) => Promise<void>;
+  loading: boolean;
+  error: Error | null;
+  formState?: ProjectFormState;
+  handleFieldChange?: <K extends keyof ProjectFormState>(field: K, value: ProjectFormState[K]) => void;
+  handleSubmit?: () => Promise<void>;
+  handleClose?: () => void;
+  isSubmitting?: boolean;
+  disableSubmit?: boolean;
 };

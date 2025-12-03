@@ -16,12 +16,9 @@ export {
   SORT_CONFIG,
   TECHNOLOGY_OPTIONS,
 } from "./lib/constants";
-export { useDeleteProjectModal } from "./lib/useDeleteProjectModal";
 export { useProjectsTable } from "./lib/useProjectsTable";
 export { ProjectsPageLayout } from "./ui/ProjectsPageLayout";
 export { ProjectModal } from "./ui/ProjectModal";
-export { useProjectForm } from "./lib/useProjectForm";
-export { useAddProjectForm } from "./lib/useAddProjectForm";
 export { useProjectsPage } from "./lib/useProjectsPage";
 export { useCvProjectsPage } from "./lib/useCvProjectsPage";
 export type {
@@ -50,7 +47,15 @@ export type {
 } from "./lib/types";
 export type { ProjectSearchState } from "./lib/utils";
 export type { SortableColumnConfig } from "./lib/table-config";
-export type { DeleteProjectModalState, UseDeleteProjectModalParams } from "./lib/useDeleteProjectModal";
 export type { UseProjectsTableParams } from "./lib/useProjectsTable";
 export type { ProjectsPageLayoutProps } from "./ui/ProjectsPageLayout";
-export type { ProjectsPageResult } from "./lib/page-types";
+export type {
+  ProjectsPageResult,
+  DeleteProjectModalState,
+  UseDeleteProjectParams,
+  UseDeleteProjectResult,
+  UseAddProjectParams,
+  UseAddProjectResult,
+  UseUpdateProjectParams,
+  UseUpdateProjectResult,
+} from "./lib/types";

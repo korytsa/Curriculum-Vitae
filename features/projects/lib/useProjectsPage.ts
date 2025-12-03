@@ -4,10 +4,6 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   useProjects,
-  useCreateProject,
-  useDeleteProject,
-  useUpdateProject,
-  useDeleteProjectModal,
   useProjectsTable,
   TABLE_CONFIG,
   type ProjectModalMode,
@@ -15,14 +11,17 @@ import {
   type UseProjectsPageResult,
   type ProjectFormPayload,
 } from "@/features/projects";
+import { useAddProject } from "./useAddProject";
+import { useUpdateProject } from "./useUpdateProject";
+import { useDeleteProject } from "./useDeleteProject";
 import type { CvProject } from "@/shared/graphql/generated";
 
 export function useProjectsPage({ locale }: UseProjectsPageParams): UseProjectsPageResult {
   const { t } = useTranslation();
   const { projects: availableProjects, loading: isProjectsLoading } = useProjects();
-  const { createProject } = useCreateProject();
-  const { deleteProject, loading: isDeleteProjectLoading, error: deleteProjectError } = useDeleteProject();
+  const { addProject } = useAddProject();
   const { updateProject } = useUpdateProject();
+  const { deleteProjectModal, handleDeleteRequest } = useDeleteProject();
 
   const adminProjects: CvProject[] = availableProjects.map((project) => {
     const baseProject = {
@@ -58,13 +57,6 @@ export function useProjectsPage({ locale }: UseProjectsPageParams): UseProjectsP
   const [projectModalMode, setProjectModalMode] = useState<ProjectModalMode>("add");
   const [projectModalInitialValues, setProjectModalInitialValues] = useState<ProjectFormPayload | undefined>(undefined);
   const [projectToUpdate, setProjectToUpdate] = useState<CvProject | null>(null);
-  const { deleteProjectModal, handleDeleteRequest } = useDeleteProjectModal({
-    onDelete: async (projectId) => {
-      await deleteProject({ projectId });
-    },
-    loading: isDeleteProjectLoading,
-    error: deleteProjectError,
-  });
 
   const handleAddProject = () => {
     setProjectModalMode("add");
@@ -89,24 +81,9 @@ export function useProjectsPage({ locale }: UseProjectsPageParams): UseProjectsP
 
   const handleCreateProjectSubmit = async (payload: ProjectFormPayload) => {
     if (projectModalMode === "update" && projectToUpdate) {
-      await updateProject({
-        projectId: projectToUpdate.id,
-        name: payload.name,
-        domain: payload.domain,
-        description: payload.description,
-        environment: payload.environment,
-        start_date: payload.startDate,
-        end_date: payload.endDate,
-      });
+      await updateProject(payload, false, projectToUpdate.id);
     } else {
-      await createProject({
-        name: payload.name,
-        domain: payload.domain,
-        description: payload.description,
-        environment: payload.environment,
-        start_date: payload.startDate,
-        end_date: payload.endDate,
-      });
+      await addProject(payload, false);
     }
   };
 
