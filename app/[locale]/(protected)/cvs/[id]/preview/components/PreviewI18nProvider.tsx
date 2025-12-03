@@ -37,7 +37,7 @@ export function PreviewI18nProvider({ children, initialLanguage = "en" }: { chil
   );
 }
 
-export function usePreviewI18n() {
+export function usePreviewI18n(): PreviewI18nContextValue {
   const context = useContext(PreviewI18nContext);
   if (!context) {
     throw new Error("usePreviewI18n must be used within PreviewI18nProvider");

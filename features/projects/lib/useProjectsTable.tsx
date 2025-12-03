@@ -6,7 +6,8 @@ import { useTranslation } from "react-i18next";
 import { MdArrowDownward } from "react-icons/md";
 import type { CvProject } from "@/shared/graphql/generated";
 import { Loader, type TableProps, type TableColumn, TableRowActions, type DropdownMenuItem } from "@/shared/ui";
-import { formatDate, sortProjects, useProjectSearchState, DEFAULT_SORT_DIRECTION, useProjectsPermissions } from "../index";
+import { formatDate, sortProjects, useProjectSearchState, useProjectsPermissions } from "./utils";
+import { DEFAULT_SORT_DIRECTION } from "./constants";
 import type { ProjectsActiveField, ProjectsDirection, UseProjectsTableParams } from "./types";
 
 const SortIcon = ({ direction }: { direction: ProjectsDirection }) => (

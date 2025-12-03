@@ -13,7 +13,7 @@ export function ProjectsPageLayout({ searchInputProps, tableProps, addProjectLab
   return (
     <>
       <section className="pr-4">
-        <div className="mb-1 flex flex-wrap items-start justify-between gap-4">
+        <div className="mt-6 mb-1 flex flex-wrap items-start justify-between gap-4">
           <div className="space-y-3">
             {heading && <h1 className="font-semibold text-neutral-500 mt-1">{heading}</h1>}
             <div className="w-full sm:w-[325px]">
@@ -21,13 +21,7 @@ export function ProjectsPageLayout({ searchInputProps, tableProps, addProjectLab
             </div>
           </div>
           {canManageProjects && (
-            <Button
-              type="button"
-              className="bg-transparent font-medium text-red-500 hover:bg-[#413535]"
-              icon={<Plus className="h-5 w-5" />}
-              iconPosition="left"
-              onClick={onAddProject}
-            >
+            <Button type="button" variant="dangerText" icon={<Plus className="h-5 w-5" />} iconPosition="left" onClick={onAddProject}>
               {addProjectLabel}
             </Button>
           )}

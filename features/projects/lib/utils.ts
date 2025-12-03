@@ -62,6 +62,26 @@ const getComparableValue = (project: CvProject, field: ProjectsActiveField): str
   }
 };
 
+const compareValues = (valueA: string | number | null, valueB: string | number | null): number => {
+  if (valueA === valueB) {
+    return 0;
+  }
+
+  if (valueA == null) {
+    return 1;
+  }
+
+  if (valueB == null) {
+    return -1;
+  }
+
+  if (typeof valueA === "number" && typeof valueB === "number") {
+    return valueA - valueB;
+  }
+
+  return String(valueA).localeCompare(String(valueB));
+};
+
 export const sortProjects = (projects: CvProject[], field: ProjectsActiveField | null, direction: ProjectsDirection): CvProject[] => {
   if (!field) {
     return projects;
@@ -72,19 +92,8 @@ export const sortProjects = (projects: CvProject[], field: ProjectsActiveField |
   return [...projects].sort((projectA, projectB) => {
     const valueA = getComparableValue(projectA, field);
     const valueB = getComparableValue(projectB, field);
-    let comparison = 0;
 
-    if (valueA == null && valueB == null) {
-      comparison = 0;
-    } else if (valueA == null) {
-      comparison = 1;
-    } else if (valueB == null) {
-      comparison = -1;
-    } else if (typeof valueA === "number" && typeof valueB === "number") {
-      comparison = valueA === valueB ? 0 : valueA > valueB ? 1 : -1;
-    } else {
-      comparison = String(valueA).localeCompare(String(valueB));
-    }
+    const comparison = compareValues(valueA, valueB);
 
     return comparison * multiplier;
   });

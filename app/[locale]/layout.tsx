@@ -27,33 +27,9 @@ export default async function RootLayout({ children, params }: RootLayoutProps) 
     "--sidebar-width": sidebarCollapsedCookie ? "60px" : "200px",
   } as CSSProperties;
 
-  const themeInitScript = `
-    (function() {
-      const storageKey = 'theme-preference';
-      const hasWindow = typeof window !== 'undefined';
-      const hasDocument = typeof document !== 'undefined';
-      const hasLocalStorage = hasWindow && typeof window.localStorage !== 'undefined';
-      const stored = hasLocalStorage ? window.localStorage.getItem(storageKey) : null;
-      const preference = stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system';
-      const mediaQuery = hasWindow && typeof window.matchMedia === 'function' ? window.matchMedia('(prefers-color-scheme: dark)') : null;
-      const mode = preference === 'system' ? (mediaQuery && mediaQuery.matches ? 'dark' : 'light') : preference;
-      if (hasDocument) {
-        const appliedMode = mode || 'dark';
-        document.documentElement.dataset.theme = appliedMode;
-      }
-    })();
-  `;
-
   return (
-    <html lang={params.locale} style={htmlStyle} suppressHydrationWarning>
-      <body className={`${inter.variable} antialiased`}>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: themeInitScript,
-          }}
-        />
-        {children}
-      </body>
+    <html lang={params.locale} style={htmlStyle}>
+      <body className={`${inter.variable} antialiased`}>{children}</body>
     </html>
   );
 }

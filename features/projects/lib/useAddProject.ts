@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useCreateProject, EMPTY_PROJECTS, ADD_PROJECT_FORM_INITIAL_STATE } from "@/features/projects";
 import { useAddCvProject } from "@/features/cvs";
 import type { ProjectFormPayload, AddProjectModalSubmitPayload, AddProjectFormState, ProjectOption, UseAddProjectParams, UseAddProjectResult } from "@/features/projects";
@@ -40,45 +40,9 @@ export function useAddProject({ cvId, projects, onClose, onSubmit, initialProjec
       : ADD_PROJECT_FORM_INITIAL_STATE
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const lastProjectId = useRef<string | null>(null);
 
   const availableProjects = projects ?? EMPTY_PROJECTS;
   const projectOptions = buildProjectOptions(availableProjects);
-  const selectedProject = availableProjects.find((project) => project.id === formState.projectId) ?? null;
-
-  useEffect(() => {
-    if (initialProject) {
-      setFormState({
-        projectId: initialProject.projectId,
-        domain: initialProject.domain,
-        startDate: initialProject.startDate,
-        endDate: initialProject.endDate || "",
-        description: initialProject.description,
-        environment: initialProject.environment,
-        responsibilities: initialProject.responsibilities,
-      });
-      lastProjectId.current = initialProject.projectId;
-    }
-  }, [initialProject]);
-
-  useEffect(() => {
-    if (!selectedProject) {
-      lastProjectId.current = null;
-      return;
-    }
-    if (lastProjectId.current === selectedProject.id) {
-      return;
-    }
-    lastProjectId.current = selectedProject.id;
-    setFormState((prev) => ({
-      ...prev,
-      domain: selectedProject.domain ?? "",
-      startDate: selectedProject.start_date ?? "",
-      endDate: selectedProject.end_date ?? "",
-      description: selectedProject.description ?? "",
-      environment: sanitizeList(selectedProject.environment ?? []),
-    }));
-  }, [selectedProject]);
 
   const addProject = async (payload: ProjectFormPayload | AddProjectModalSubmitPayload, isCvProject = false) => {
     if (isCvProject && cvId) {
@@ -105,7 +69,6 @@ export function useAddProject({ cvId, projects, onClose, onSubmit, initialProjec
 
   const resetForm = () => {
     setFormState(ADD_PROJECT_FORM_INITIAL_STATE);
-    lastProjectId.current = null;
   };
 
   const handleClose = () => {
@@ -114,6 +77,32 @@ export function useAddProject({ cvId, projects, onClose, onSubmit, initialProjec
   };
 
   const handleFieldChange = <K extends keyof AddProjectFormState>(field: K, value: AddProjectFormState[K]) => {
+    if (field === "projectId") {
+      const projectId = value as AddProjectFormState["projectId"];
+      const nextProject = availableProjects.find((project) => project.id === projectId);
+
+      setFormState((prev) => {
+        if (!nextProject) {
+          return {
+            ...prev,
+            projectId,
+          };
+        }
+
+        return {
+          ...prev,
+          projectId,
+          domain: nextProject.domain ?? "",
+          startDate: nextProject.start_date ?? "",
+          endDate: nextProject.end_date ?? "",
+          description: nextProject.description ?? "",
+          environment: sanitizeList(nextProject.environment ?? []),
+        };
+      });
+
+      return;
+    }
+
     setFormState((prev) => ({
       ...prev,
       [field]: value,

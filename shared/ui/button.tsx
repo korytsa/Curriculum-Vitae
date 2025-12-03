@@ -19,6 +19,8 @@ const variantClasses = {
   danger:
     "border-transparent text-[var(--color-accent-text)] bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] disabled:bg-[var(--color-accent-disabled)] disabled:text-[var(--color-accent-disabled-text)]",
   dangerGhost: "border-transparent text-red-500 hover:text-red-400 hover:bg-red-500/10 disabled:text-red-500/40",
+  dangerOutline: "bg-transparent border border-red-500 text-red-500 hover:bg-[#413535]",
+  dangerText: "bg-transparent font-medium text-red-500 border-none hover:bg-[#413535]",
 };
 
 const sizeClasses = {

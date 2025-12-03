@@ -24,7 +24,7 @@ export function LanguageSelectControl() {
 
   return (
     <div className="w-full sm:w-40">
-      <Select label={t("settings.language.title")} options={options} value={currentLanguage as SupportedLanguage} onChange={handleChange} align="bottom" />
+      <Select label={t("settings.language.title")} options={options} value={currentLanguage} onChange={handleChange} align="bottom" />
     </div>
   );
 }

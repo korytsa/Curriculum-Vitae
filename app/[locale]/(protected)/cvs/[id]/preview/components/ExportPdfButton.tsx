@@ -53,10 +53,10 @@ export function ExportPdfButton() {
   return (
     <Button
       type="button"
+      variant="dangerOutline"
       iconPosition="right"
       onClick={handleExportPdf}
       disabled={!cv || isExporting}
-      className="bg-transparent font-medium border border-red-500 text-red-500 hover:bg-[#413535]"
     >
       {t("cvs.preview.exportPdf")}
     </Button>
