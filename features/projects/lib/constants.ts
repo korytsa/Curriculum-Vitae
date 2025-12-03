@@ -42,6 +42,8 @@ export const SORT_CONFIG = {
   defaultDirection: "desc" as const,
 } as const;
 
+export const PROJECTS_ROOT_PATH_REGEX = /^\/[^/]+\/projects\/?$/;
+
 export const TECHNOLOGY_OPTIONS = [
   "HTML5",
   "CSS3",

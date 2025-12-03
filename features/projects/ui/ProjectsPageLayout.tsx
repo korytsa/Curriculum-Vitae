@@ -3,28 +3,12 @@
 import { Plus } from "lucide-react";
 import { Trans, useTranslation } from "react-i18next";
 import { Button, ConfirmDeleteModal, SearchInput, Table } from "@/shared/ui";
-import type { SearchInputProps, TableProps } from "@/shared/ui";
-import type { CvProject } from "@/shared/graphql/generated";
-
-export type ProjectsPageLayoutProps = {
-  searchInputProps: SearchInputProps<CvProject>;
-  tableProps: TableProps<CvProject>;
-  addProjectLabel: string;
-  onAddProject: () => void;
-  deleteModal: {
-    open: boolean;
-    onClose: () => void;
-    onConfirm: () => Promise<void>;
-    isLoading: boolean;
-    errorMessage?: string | null;
-    projectName?: string;
-  };
-  heading?: string;
-  renderModal: () => React.ReactNode;
-};
+import { useProjectsPermissions } from "../lib/utils";
+import type { ProjectsPageLayoutProps } from "./types";
 
 export function ProjectsPageLayout({ searchInputProps, tableProps, addProjectLabel, onAddProject, deleteModal, heading, renderModal }: ProjectsPageLayoutProps) {
   const { t } = useTranslation();
+  const { canManageProjects } = useProjectsPermissions();
 
   return (
     <>
@@ -36,15 +20,17 @@ export function ProjectsPageLayout({ searchInputProps, tableProps, addProjectLab
               <SearchInput {...searchInputProps} />
             </div>
           </div>
-          <Button
-            type="button"
-            className="bg-transparent font-medium text-red-500 hover:bg-[#413535]"
-            icon={<Plus className="h-5 w-5" />}
-            iconPosition="left"
-            onClick={onAddProject}
-          >
-            {addProjectLabel}
-          </Button>
+          {canManageProjects && (
+            <Button
+              type="button"
+              className="bg-transparent font-medium text-red-500 hover:bg-[#413535]"
+              icon={<Plus className="h-5 w-5" />}
+              iconPosition="left"
+              onClick={onAddProject}
+            >
+              {addProjectLabel}
+            </Button>
+          )}
         </div>
         <Table {...tableProps} />
       </section>

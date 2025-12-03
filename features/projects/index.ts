@@ -4,7 +4,7 @@ export { useDeleteProject } from "./model/useDeleteProject";
 export { useUpdateProject } from "./model/useUpdateProject";
 export type { UseProjectsResult } from "./model/useProjects";
 
-export { formatDate, sortProjects, useProjectSearchState } from "./lib/utils";
+export { formatDate, sortProjects, useProjectSearchState, useProjectsPermissions } from "./lib/utils";
 export {
   DEFAULT_SORT_DIRECTION,
   PROJECTS_SEARCH_FIELDS,

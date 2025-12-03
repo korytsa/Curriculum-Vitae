@@ -4,7 +4,9 @@ import { useState } from "react";
 import type { CvProject } from "@/shared/graphql/generated";
 import type { SearchInputProps } from "@/shared/ui";
 import type { ProjectsActiveField, ProjectsDirection, ProjectSearchState } from "./types";
-import { PROJECTS_SEARCH_FIELDS } from "./constants";
+import { PROJECTS_SEARCH_FIELDS, PROJECTS_ROOT_PATH_REGEX } from "./constants";
+import { usePathname } from "next/navigation";
+import { useIsAdmin } from "@/shared/lib";
 
 export const useProjectSearchState = (projects: CvProject[], placeholder: string): ProjectSearchState => {
   const [searchResults, setSearchResults] = useState<CvProject[]>([]);
@@ -102,4 +104,13 @@ export const formatDate = (value: string | null | undefined, locale?: string, pr
   const day = String(date.getDate()).padStart(2, "0");
   const year = date.getFullYear();
   return `${month}/${day}/${year}`;
+};
+
+export const useProjectsPermissions = () => {
+  const isAdmin = useIsAdmin();
+  const pathname = usePathname();
+  const isRootProjectsPage = !!pathname && PROJECTS_ROOT_PATH_REGEX.test(pathname);
+  const canManageProjects = isAdmin || !isRootProjectsPage;
+
+  return { isAdmin, isRootProjectsPage, canManageProjects };
 };

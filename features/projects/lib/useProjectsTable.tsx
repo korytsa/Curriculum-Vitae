@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { MdArrowDownward } from "react-icons/md";
 import type { CvProject } from "@/shared/graphql/generated";
 import { Loader, type TableProps, type TableColumn, TableRowActions, type DropdownMenuItem } from "@/shared/ui";
-import { formatDate, sortProjects, useProjectSearchState, DEFAULT_SORT_DIRECTION } from "../index";
+import { formatDate, sortProjects, useProjectSearchState, DEFAULT_SORT_DIRECTION, useProjectsPermissions } from "../index";
 import type { ProjectsActiveField, ProjectsDirection, UseProjectsTableParams } from "./types";
 
 const SortIcon = ({ direction }: { direction: ProjectsDirection }) => (
@@ -42,6 +42,8 @@ const formatDateCell = (value: unknown, formatDateFn: (value?: string | null) =>
 
 export function useProjectsTable({ projects, locale, isLoading = false, onEdit, onDelete, tableConfig = {}, emptyStateConfig = {} }: UseProjectsTableParams) {
   const { t } = useTranslation();
+  const { canManageProjects } = useProjectsPermissions();
+
   const [{ field: activeField, direction }, setSortState] = useState<{
     field: ProjectsActiveField | null;
     direction: ProjectsDirection;
@@ -156,13 +158,17 @@ export function useProjectsTable({ projects, locale, isLoading = false, onEdit, 
       (value) => formatDateCell(value, formatDateValue),
       "whitespace-nowrap"
     ),
-    {
-      key: "actions",
-      header: <span className="sr-only">{t("cvs.projectsPage.table.columns.actions")}</span>,
-      mobileHeaderLabel: t("cvs.projectsPage.table.columns.actions"),
-      className: "w-0 text-right",
-      render: (_value: unknown, row: CvProject) => <div className="flex w-full justify-end">{renderRowActions(row)}</div>,
-    },
+    ...(canManageProjects
+      ? [
+          {
+            key: "actions",
+            header: <span className="sr-only">{t("cvs.projectsPage.table.columns.actions")}</span>,
+            mobileHeaderLabel: t("cvs.projectsPage.table.columns.actions"),
+            className: "w-0 text-right",
+            render: (_value: unknown, row: CvProject) => <div className="flex w-full justify-end">{renderRowActions(row)}</div>,
+          },
+        ]
+      : []),
   ];
 
   const tableProps: TableProps<CvProject> = {
