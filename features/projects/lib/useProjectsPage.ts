@@ -2,7 +2,19 @@
 
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useProjects, useCreateProject, useDeleteProject, useUpdateProject, useDeleteProjectModal, useProjectsTable, TABLE_CONFIG, type ProjectModalMode, type UseProjectsPageParams, type UseProjectsPageResult, type ProjectFormPayload } from "@/features/projects";
+import {
+  useProjects,
+  useCreateProject,
+  useDeleteProject,
+  useUpdateProject,
+  useDeleteProjectModal,
+  useProjectsTable,
+  TABLE_CONFIG,
+  type ProjectModalMode,
+  type UseProjectsPageParams,
+  type UseProjectsPageResult,
+  type ProjectFormPayload,
+} from "@/features/projects";
 import type { CvProject } from "@/shared/graphql/generated";
 
 export function useProjectsPage({ locale }: UseProjectsPageParams): UseProjectsPageResult {

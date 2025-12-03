@@ -1,8 +1,6 @@
 "use client";
 
-import { ProjectsPageLayout } from "@/features/projects";
-import { AddProjectModal } from "./components/AddProjectModal";
-import { useCvProjectsPage } from "./lib/useCvProjectsPage";
+import { ProjectsPageLayout, ProjectModal, useCvProjectsPage } from "@/features/projects";
 import type { CvProjectsPageProps } from "@/features/projects";
 
 export default function CvProjectsPageRoute({ params }: CvProjectsPageProps) {
@@ -20,7 +18,8 @@ export default function CvProjectsPageRoute({ params }: CvProjectsPageProps) {
       onAddProject={handleAddProject}
       deleteModal={deleteProjectModal}
       renderModal={() => (
-        <AddProjectModal
+        <ProjectModal
+          variant="add-to-cv"
           open={addProjectModal.open}
           onClose={addProjectModal.onClose}
           projects={addProjectModal.projects}

@@ -1,9 +1,7 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
-import { ProjectsPageLayout } from "@/features/projects";
-import { CreateProjectModal } from "./components/CreateProjectModal";
-import { useProjectsPage } from "./lib/useProjectsPage";
+import { ProjectsPageLayout, ProjectModal, useProjectsPage } from "@/features/projects";
 import type { ProjectsPageProps } from "@/features/projects";
 
 export default function ProjectsPage({ params }: ProjectsPageProps) {
@@ -22,7 +20,8 @@ export default function ProjectsPage({ params }: ProjectsPageProps) {
       deleteModal={deleteProjectModal}
       heading={t("projectsHeading")}
       renderModal={() => (
-        <CreateProjectModal
+        <ProjectModal
+          variant="create"
           open={createProjectModal.open}
           onClose={createProjectModal.onClose}
           onSubmit={createProjectModal.onSubmit}
