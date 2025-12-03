@@ -547,5 +547,52 @@
         "logout": "Выйти"
       }
     }
+  },
+  "admin": {
+    "skills": {
+      "heading": "Навыки",
+      "actions": {
+        "create": "СОЗДАТЬ НАВЫК"
+      },
+      "search": {
+        "placeholder": "Поиск"
+      },
+      "table": {
+        "columns": {
+          "name": "Название",
+          "type": "Тип",
+          "category": "Категория"
+        },
+        "actions": {
+          "edit": "Редактировать",
+          "delete": "Удалить",
+          "ariaLabel": "Действия с навыком"
+        },
+        "empty": "Навыки не найдены"
+      },
+      "form": {
+        "createTitle": "Создать навык",
+        "updateTitle": "Обновить навык",
+        "confirm": "ПОДТВЕРДИТЬ",
+        "cancel": "ОТМЕНА",
+        "labels": {
+          "name": "Название",
+          "type": "Тип",
+          "category": "Категория"
+        },
+        "errors": {
+          "nameRequired": "Введите название",
+          "typeRequired": "Выберите тип",
+          "categoryRequired": "Выберите категорию"
+        }
+      },
+      "messages": {
+        "createSuccess": "Навык успешно создан",
+        "updateSuccess": "Навык успешно обновлён",
+        "deleteSuccess": "Навык успешно удалён",
+        "deleteError": "Не удалось удалить навык",
+        "deleteConfirm": "Вы уверены, что хотите удалить навык {{name}}?"
+      }
+    }
   }
 }

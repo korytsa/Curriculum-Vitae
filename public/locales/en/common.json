@@ -547,5 +547,52 @@
         "logout": "Logout"
       }
     }
+  },
+  "admin": {
+    "skills": {
+      "heading": "Skills",
+      "actions": {
+        "create": "CREATE SKILL"
+      },
+      "search": {
+        "placeholder": "Search"
+      },
+      "table": {
+        "columns": {
+          "name": "Name",
+          "type": "Type",
+          "category": "Category"
+        },
+        "actions": {
+          "edit": "Edit",
+          "delete": "Delete",
+          "ariaLabel": "Skill actions"
+        },
+        "empty": "No skills found"
+      },
+      "form": {
+        "createTitle": "Create Skill",
+        "updateTitle": "Update Skill",
+        "confirm": "CONFIRM",
+        "cancel": "CANCEL",
+        "labels": {
+          "name": "Name",
+          "type": "Type",
+          "category": "Category"
+        },
+        "errors": {
+          "nameRequired": "Name is required",
+          "typeRequired": "Type is required",
+          "categoryRequired": "Category is required"
+        }
+      },
+      "messages": {
+        "createSuccess": "Skill created successfully",
+        "updateSuccess": "Skill updated successfully",
+        "deleteSuccess": "Skill deleted successfully",
+        "deleteError": "Failed to delete skill",
+        "deleteConfirm": "Are you sure you want to delete skill {{name}}?"
+      }
+    }
   }
 }
