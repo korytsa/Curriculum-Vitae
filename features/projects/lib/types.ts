@@ -7,6 +7,32 @@ export type ProjectsDirection = "asc" | "desc";
 
 export type ProjectModalMode = "add" | "update";
 
+export type ProjectSearchState = {
+  searchInputProps: SearchInputProps<CvProject>;
+  filteredProjects: CvProject[];
+  hasSearchQuery: boolean;
+  handleResetSearch: () => void;
+};
+
+export type UseProjectsTableParams = {
+  projects: CvProject[];
+  locale: string;
+  isLoading?: boolean;
+  onEdit: (project: CvProject) => void;
+  onDelete: (project: CvProject) => void;
+  tableConfig?: {
+    menuWidth?: string;
+    buttonClassName?: string;
+    iconClassName?: string;
+    mobileSummaryKeys?: string[];
+  };
+  emptyStateConfig?: {
+    showTitle?: boolean;
+    emptyTitleKey?: string;
+    noResultsTitleKey?: string;
+  };
+};
+
 export type ProjectsPageProps = {
   params: { locale: string; id?: string };
 };
@@ -15,30 +41,32 @@ export type CvProjectsPageProps = {
   params: { locale: string; id: string };
 };
 
-export type ProjectFormPayload = {
-  name: string;
+type BaseProjectForm = {
   domain: string;
   startDate: string;
+  description: string;
+  environment: string[];
+};
+
+export type ProjectFormPayload = BaseProjectForm & {
+  name: string;
   endDate?: string;
-  description: string;
-  environment: string[];
 };
 
-export type ProjectFormState = {
+export type ProjectFormState = BaseProjectForm & {
   name: string;
-  domain: string;
-  startDate: string;
   endDate: string;
-  description: string;
-  environment: string[];
 };
 
-export type CreateProjectModalProps = {
+type BaseModalProps<T> = {
   open: boolean;
   onClose: () => void;
+  mode?: ProjectModalMode;
+};
+
+export type CreateProjectModalProps = BaseModalProps<ProjectFormPayload> & {
   onSubmit?: (payload: ProjectFormPayload) => Promise<void>;
   initialProject?: ProjectFormPayload;
-  mode?: ProjectModalMode;
 };
 
 export type UseProjectFormParams = {
@@ -47,25 +75,24 @@ export type UseProjectFormParams = {
   initialProject?: ProjectFormPayload;
 };
 
-export type UseProjectFormResult = {
-  formState: ProjectFormState;
-  handleFieldChange: <K extends keyof ProjectFormState>(field: K, value: ProjectFormState[K]) => void;
+type BaseFormResult<T> = {
+  formState: T;
+  handleFieldChange: <K extends keyof T>(field: K, value: T[K]) => void;
   handleSubmit: () => Promise<void>;
   handleClose: () => void;
   isSubmitting: boolean;
   disableSubmit: boolean;
 };
 
+export type UseProjectFormResult = BaseFormResult<ProjectFormState>;
+
 export type UseProjectsPageParams = {
   locale: string;
 };
 
-export type CreateProjectModalConfig = {
-  open: boolean;
-  onClose: () => void;
+export type CreateProjectModalConfig = BaseModalProps<ProjectFormPayload> & {
   onSubmit: (payload: ProjectFormPayload) => Promise<void>;
   initialProject?: ProjectFormPayload;
-  mode?: ProjectModalMode;
 };
 
 export type ProjectsPageResult = {
@@ -92,23 +119,21 @@ export type AddProjectModalSubmitPayload = {
   responsibilities: string[];
 };
 
-export type AddProjectFormInitialProject = {
+type BaseAddProjectForm = {
   projectId: string;
   domain: string;
   startDate: string;
-  endDate?: string;
   description: string;
   environment: string[];
+};
+
+export type AddProjectFormInitialProject = BaseAddProjectForm & {
+  endDate?: string;
   responsibilities: string;
 };
 
-export type AddProjectFormState = {
-  projectId: string;
-  domain: string;
-  startDate: string;
+export type AddProjectFormState = BaseAddProjectForm & {
   endDate: string;
-  description: string;
-  environment: string[];
   responsibilities: string;
 };
 
@@ -118,41 +143,30 @@ export type ProjectOption = {
 };
 
 export type UseAddProjectFormParams = {
-  projects?: import("@/shared/graphql/generated").Project[];
+  projects?: Project[];
   onClose: () => void;
   onSubmit?: (payload: AddProjectModalSubmitPayload) => Promise<void> | void;
   initialProject?: AddProjectFormInitialProject;
 };
 
-export type UseAddProjectFormResult = {
-  formState: AddProjectFormState;
+export type UseAddProjectFormResult = BaseFormResult<AddProjectFormState> & {
   projectOptions: ProjectOption[];
-  handleFieldChange: <K extends keyof AddProjectFormState>(field: K, value: AddProjectFormState[K]) => void;
   handleSubmit: () => Promise<void> | void;
-  handleClose: () => void;
-  isSubmitting: boolean;
-  disableSubmit: boolean;
 };
 
-export type AddProjectModalProps = {
-  open: boolean;
-  onClose: () => void;
-  projects?: import("@/shared/graphql/generated").Project[];
+export type AddProjectModalProps = BaseModalProps<AddProjectModalSubmitPayload> & {
+  projects?: Project[];
   isProjectListLoading?: boolean;
   onSubmit?: (payload: AddProjectModalSubmitPayload) => Promise<void> | void;
   initialProject?: AddProjectFormInitialProject;
-  mode?: ProjectModalMode;
 };
 
 export type UseCvProjectsPageResult = ProjectsPageResult & {
-  addProjectModal: {
-    open: boolean;
-    onClose: () => void;
-    projects: import("@/shared/graphql/generated").Project[];
+  addProjectModal: BaseModalProps<AddProjectModalSubmitPayload> & {
+    projects: Project[];
     isLoading: boolean;
     onSubmit: (payload: AddProjectModalSubmitPayload) => Promise<void>;
     initialProject?: AddProjectFormInitialProject;
-    mode: ProjectModalMode;
   };
 };
 

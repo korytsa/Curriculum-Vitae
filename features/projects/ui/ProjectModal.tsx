@@ -7,8 +7,6 @@ import { useAddProject } from "../lib/useAddProject";
 import { useUpdateProject } from "../lib/useUpdateProject";
 import { FORM_FIELDS, TECHNOLOGY_OPTIONS, type CreateProjectModalProps, type AddProjectModalProps } from "@/features/projects";
 
-type ProjectModalVariant = "add-to-cv" | "create";
-
 type UnifiedProjectModalProps =
   | (Omit<AddProjectModalProps, "mode"> & { variant: "add-to-cv"; mode?: "add" | "update" })
   | (Omit<CreateProjectModalProps, "mode"> & { variant: "create"; mode?: "add" | "update" });

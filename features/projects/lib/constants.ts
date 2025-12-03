@@ -1,5 +1,5 @@
 import type { Project } from "@/shared/graphql/generated";
-import type { ProjectFormState } from "./types";
+import type { ProjectFormState, AddProjectFormState } from "./types";
 
 export const DEFAULT_SORT_DIRECTION: "asc" | "desc" = "desc";
 
@@ -14,6 +14,16 @@ export const PROJECT_FORM_INITIAL_STATE: ProjectFormState = {
   endDate: "",
   description: "",
   environment: [],
+};
+
+export const ADD_PROJECT_FORM_INITIAL_STATE: AddProjectFormState = {
+  projectId: "",
+  domain: "",
+  startDate: "",
+  endDate: "",
+  description: "",
+  environment: [],
+  responsibilities: "",
 };
 
 export const FORM_FIELDS = {
@@ -84,4 +94,3 @@ export const TECHNOLOGY_OPTIONS = [
   "Swift",
   "Kotlin",
 ] as const;
-

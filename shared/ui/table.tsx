@@ -40,13 +40,13 @@ const Tag = ({ children, className = "" }: { children: React.ReactNode; classNam
 );
 
 const EnvironmentTag = ({ item, keyPrefix }: { item: string; keyPrefix: string }) => (
-  <Tag key={`${keyPrefix}-env-${item}`} className="border border-white/20">
+  <Tag className="border border-white/20">
     {item}
   </Tag>
 );
 
 const ResponsibilityTag = ({ item, keyPrefix }: { item: string; keyPrefix: string }) => (
-  <Tag key={`${keyPrefix}-${item}`} className="bg-white/10">
+  <Tag className="bg-white/10">
     {item}
   </Tag>
 );
@@ -199,7 +199,7 @@ export function Table<T extends Record<string, unknown>>({
             items={Array.isArray(rowData.environment) ? rowData.environment.filter(Boolean) : []}
             colSpan={colSpan}
             renderActions={!!renderActions}
-            renderTag={(item) => <EnvironmentTag item={item} keyPrefix={key} />}
+            renderTag={(item) => <EnvironmentTag key={`${key}-env-${item}`} item={item} keyPrefix={key} />}
             keyPrefix={key}
             shouldShowBorder={shouldShowBorderAfterEnvironment}
           />
@@ -214,7 +214,7 @@ export function Table<T extends Record<string, unknown>>({
             }
             colSpan={colSpan}
             renderActions={!!renderActions}
-            renderTag={(item) => <ResponsibilityTag item={item} keyPrefix={key} />}
+            renderTag={(item) => <ResponsibilityTag key={`${key}-resp-${item}`} item={item} keyPrefix={key} />}
             keyPrefix={key}
             shouldShowBorder={true}
           />

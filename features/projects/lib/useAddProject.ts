@@ -1,28 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useCreateProject, EMPTY_PROJECTS } from "@/features/projects";
+import { useCreateProject, EMPTY_PROJECTS, ADD_PROJECT_FORM_INITIAL_STATE } from "@/features/projects";
 import { useAddCvProject } from "@/features/cvs";
 import type {
   ProjectFormPayload,
   AddProjectModalSubmitPayload,
   AddProjectFormState,
   ProjectOption,
-  AddProjectFormInitialProject,
   UseAddProjectParams,
   UseAddProjectResult,
 } from "@/features/projects";
 import type { Project } from "@/shared/graphql/generated";
-
-const INITIAL_FORM_STATE: AddProjectFormState = {
-  projectId: "",
-  domain: "",
-  startDate: "",
-  endDate: "",
-  description: "",
-  environment: [],
-  responsibilities: "",
-};
 
 const sanitizeList = (list: string[]) => list.map((item) => item.trim()).filter((item, index, array) => item && array.indexOf(item) === index);
 
@@ -73,7 +62,7 @@ export function useAddProject({ cvId, projects, onClose, onSubmit, initialProjec
           environment: initialProject.environment,
           responsibilities: initialProject.responsibilities,
         }
-      : INITIAL_FORM_STATE
+      : ADD_PROJECT_FORM_INITIAL_STATE
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
   const lastProjectId = useRef<string | null>(null);
@@ -140,7 +129,7 @@ export function useAddProject({ cvId, projects, onClose, onSubmit, initialProjec
   };
 
   const resetForm = () => {
-    setFormState(INITIAL_FORM_STATE);
+    setFormState(ADD_PROJECT_FORM_INITIAL_STATE);
     lastProjectId.current = null;
   };
 

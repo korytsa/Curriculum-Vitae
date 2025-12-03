@@ -3,15 +3,8 @@
 import { useState } from "react";
 import type { CvProject } from "@/shared/graphql/generated";
 import type { SearchInputProps } from "@/shared/ui";
-import type { ProjectsActiveField, ProjectsDirection } from "./types";
+import type { ProjectsActiveField, ProjectsDirection, ProjectSearchState } from "./types";
 import { PROJECTS_SEARCH_FIELDS } from "./constants";
-
-export type ProjectSearchState = {
-  searchInputProps: SearchInputProps<CvProject>;
-  filteredProjects: CvProject[];
-  hasSearchQuery: boolean;
-  handleResetSearch: () => void;
-};
 
 export const useProjectSearchState = (projects: CvProject[], placeholder: string): ProjectSearchState => {
   const [searchResults, setSearchResults] = useState<CvProject[]>([]);
@@ -110,4 +103,3 @@ export const formatDate = (value: string | null | undefined, locale?: string, pr
   const year = date.getFullYear();
   return `${month}/${day}/${year}`;
 };
-
