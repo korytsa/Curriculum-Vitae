@@ -14,17 +14,8 @@ const sizeClasses = {
 
 export function Loader({ size = "md", className }: LoaderProps) {
   return (
-    <div
-      className={cn(
-        "inline-block rounded-full border-red-600 border-t-transparent animate-spin",
-        sizeClasses[size],
-        className
-      )}
-      role="status"
-      aria-label="Loading"
-    >
+    <div className={cn("inline-block rounded-full border-red-600 border-t-transparent animate-spin", sizeClasses[size], className)} role="status" aria-label="Loading">
       <span className="sr-only">Loading...</span>
     </div>
   );
 }
-

@@ -78,13 +78,7 @@ export default function CvsPage() {
             </div>
           </div>
 
-          <Button
-            type="button"
-            className="bg-transparent font-medium text-red-500 hover:bg-[#413535]"
-            icon={<Plus className="h-4 w-4" />}
-            iconPosition="left"
-            onClick={() => setShowCreateModal(true)}
-          >
+          <Button type="button" variant="dangerText" icon={<Plus className="h-4 w-4" />} iconPosition="left" onClick={() => setShowCreateModal(true)}>
             {t("cvs.actions.create")}
           </Button>
         </div>

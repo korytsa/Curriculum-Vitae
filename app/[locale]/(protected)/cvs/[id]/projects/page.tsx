@@ -1,64 +1,34 @@
 "use client";
 
-import { Plus } from "lucide-react";
-import { Trans, useTranslation } from "react-i18next";
-import { Button, ConfirmDeleteModal, SearchInput, Table } from "@/shared/ui";
-import { AddProjectModal } from "./components/AddProjectModal";
-import { useCvProjectsPage } from "./lib/useCvProjectsPage";
-import type { CvProjectsPageProps } from "./types";
+import { ProjectsPageLayout, ProjectModal, useCvProjectsPage } from "@/features/projects";
+import type { CvProjectsPageProps } from "@/features/projects";
 
 export default function CvProjectsPageRoute({ params }: CvProjectsPageProps) {
   const { id: cvId, locale } = params;
-  const { t } = useTranslation();
   const { searchInputProps, tableProps, addProjectLabel, handleAddProject, addProjectModal, deleteProjectModal } = useCvProjectsPage({
     cvId,
     locale,
   });
 
   return (
-    <>
-      <section className="pr-4">
-        <div className="mt-6 mb-1 flex flex-wrap items-start justify-between gap-4">
-          <div className="w-full sm:w-[325px]">
-            <SearchInput {...searchInputProps} />
-          </div>
-          <Button
-            type="button"
-            className="bg-transparent font-medium text-red-500 hover:bg-[#413535]"
-            icon={<Plus className="h-5 w-5" />}
-            iconPosition="left"
-            onClick={handleAddProject}
-          >
-            {addProjectLabel}
-          </Button>
-        </div>
-        <Table {...tableProps} />
-      </section>
-      <AddProjectModal
-        open={addProjectModal.open}
-        onClose={addProjectModal.onClose}
-        projects={addProjectModal.projects}
-        isProjectListLoading={addProjectModal.isLoading}
-        onSubmit={addProjectModal.onSubmit}
-        initialProject={addProjectModal.initialProject}
-        mode={addProjectModal.mode}
-      />
-      <ConfirmDeleteModal
-        open={deleteProjectModal.open}
-        onClose={deleteProjectModal.onClose}
-        onConfirm={deleteProjectModal.onConfirm}
-        isLoading={deleteProjectModal.isLoading}
-        errorMessage={deleteProjectModal.errorMessage}
-        title={t("cvs.projectsPage.deleteModal.title")}
-      >
-        <p className="font-normal">
-          <Trans
-            i18nKey="cvs.projectsPage.deleteModal.message"
-            values={{ name: deleteProjectModal.projectName ?? "" }}
-            components={{ strong: <span className="font-semibold" /> }}
-          />
-        </p>
-      </ConfirmDeleteModal>
-    </>
+    <ProjectsPageLayout
+      searchInputProps={searchInputProps}
+      tableProps={tableProps}
+      addProjectLabel={addProjectLabel}
+      onAddProject={handleAddProject}
+      deleteModal={deleteProjectModal}
+      renderModal={() => (
+        <ProjectModal
+          variant="add-to-cv"
+          open={addProjectModal.open}
+          onClose={addProjectModal.onClose}
+          projects={addProjectModal.projects}
+          isProjectListLoading={addProjectModal.isLoading}
+          onSubmit={addProjectModal.onSubmit}
+          initialProject={addProjectModal.initialProject}
+          mode={addProjectModal.mode}
+        />
+      )}
+    />
   );
 }

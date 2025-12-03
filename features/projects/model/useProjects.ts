@@ -16,8 +16,9 @@ export type UseProjectsResult = {
 };
 
 export function useProjects(): UseProjectsResult {
-  const { data, loading, error } =
-    useQuery<ProjectsQueryResult>(PROJECTS_QUERY);
+  const { data, loading, error } = useQuery<ProjectsQueryResult>(PROJECTS_QUERY, {
+    fetchPolicy: "cache-and-network",
+  });
 
   return {
     projects: data?.projects ?? [],

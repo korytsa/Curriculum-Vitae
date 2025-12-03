@@ -2,8 +2,8 @@ import { useParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useCv } from "@/features/cvs";
 import previewI18n from "@/shared/lib/preview-i18n";
-import type { CvProject, SkillMastery } from "@/shared/graphql/generated";
-import type { BuildPreviewDerivedDataOptions, CvPreviewDerivedData, MasteryPriorityMap, SkillsByCategory, SkillRow, SupportedLanguage } from "../types";
+import type { SkillMastery } from "@/shared/graphql/generated";
+import type { BuildPreviewDerivedDataOptions, CvPreviewDerivedData, CvPreviewProject, MasteryPriorityMap, SkillsByCategory, SkillRow, SupportedLanguage } from "../types";
 import type { TFunction } from "i18next";
 
 export const SUPPORTED_LANGUAGES = ["en", "ru"] as const;
@@ -56,13 +56,13 @@ const getProfileName = (cv: BuildPreviewDerivedDataOptions["cv"], t: BuildPrevie
   return fallbackName || cv?.name || t("cvs.details.placeholders.preview");
 };
 
-const extractUniqueDomains = (projects: CvProject[]): string[] => {
+const extractUniqueDomains = (projects: CvPreviewProject[]): string[] => {
   const domains = projects.map((project) => project.domain).filter((domain): domain is string => Boolean(domain));
 
   return Array.from(new Set(domains));
 };
 
-const calculateLatestSkillUsage = (projects: CvProject[], formatDate: (value?: string | null) => string, presentLabel: string): string | null => {
+const calculateLatestSkillUsage = (projects: CvPreviewProject[], formatDate: (value?: string | null) => string, presentLabel: string): string | null => {
   if (projects.length === 0) return null;
 
   const hasOngoingProject = projects.some((project) => !project.end_date);
@@ -151,7 +151,7 @@ export const buildPreviewDerivedData = ({ cv, skillCategories, locale, t }: Buil
   const presentLabel = t("cvs.projectsPage.table.labels.present");
   const formatDate = createDateFormatter(locale);
 
-  const projects = (cv?.projects ?? []).filter(Boolean) as CvProject[];
+  const projects: CvPreviewProject[] = cv?.projects ?? [];
   const skills = cv?.skills ?? [];
 
   return {

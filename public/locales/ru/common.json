@@ -129,13 +129,14 @@
     "projectsPage": {
       "actions": {
         "add": "ДОБАВИТЬ ПРОЕКТ",
-        "update": "Обновить проект",
-        "remove": "Удалить проект",
+        "update": "Обновить",
+        "remove": "Удалить",
         "openMenu": "Открыть меню действий"
       },
       "search": {
         "placeholder": "Поиск проектов",
-        "reset": "Сбросить поиск"
+        "reset": "Сбросить поиск",
+        "noResults": "Ничего не найдено"
       },
       "states": {
         "empty": {
@@ -167,26 +168,29 @@
       },
       "modal": {
         "title": "Добавить проект",
+        "createTitle": "Создать проект",
         "updateTitle": "Обновить проект",
         "fields": {
+          "name": "Название",
           "project": "Проект",
           "domain": "Домен",
           "startDate": "Дата начала",
           "endDate": "Дата окончания",
           "description": "Описание",
           "environment": "Технологии",
-          "environmentPlaceholder": "Укажите технологии через запятую",
+          "environmentPlaceholder": "Добавить навык",
           "responsibilities": "Обязанности",
           "responsibilitiesPlaceholder": "Список обязанностей"
         },
         "actions": {
           "cancel": "ОТМЕНА",
           "submit": "ДОБАВИТЬ",
+          "create": "СОЗДАТЬ",
           "update": "ОБНОВИТЬ"
         }
       },
       "deleteModal": {
-        "title": "Удалить проект",
+        "title": "Удалить",
         "message": "Вы уверены, что хотите удалить проект <strong>{{name}}</strong>?"
       }
     },
@@ -212,6 +216,7 @@
   "languages": {
     "heading": "Языки"
   },
+  "projectsHeading": "Проекты",
   "users": {
     "heading": "Сотрудники",
     "createUser": "Создать пользователя",

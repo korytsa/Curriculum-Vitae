@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { TFunction } from "i18next";
-import type { CvProject, CvQuery, Mastery, SkillMastery, SkillCategory } from "@/shared/graphql/generated";
+import type { CvQuery, Mastery, SkillMastery, SkillCategory } from "@/shared/graphql/generated";
 
 export type CvPreviewPageProps = {
   params: { locale: string; id: string };
@@ -16,6 +16,8 @@ export type SupportedLanguage = "en" | "ru";
 export type MasteryPriorityMap = Record<Mastery, number>;
 
 export type CvEntity = NonNullable<CvQuery["cv"]>;
+
+export type CvPreviewProject = NonNullable<CvEntity["projects"]>[number];
 
 export type SkillsByCategory = {
   categoryName: string;
@@ -37,7 +39,7 @@ export type CvPreviewDerivedData = {
   educationValue: string;
   languagesList: CvEntity["languages"];
   domainList: string[];
-  projects: CvProject[];
+  projects: CvPreviewProject[];
   sortedSkills: SkillMastery[];
   skillsByCategory: SkillsByCategory[];
   latestSkillUsage: string | null;
