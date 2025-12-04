@@ -3,9 +3,8 @@
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
 import { Input, Modal, FormStatus, Select } from "@/shared/ui";
-import { useUpdateSkill } from "../model/useUpdateSkill";
-import type { UpdateSkillPayload } from "../model/useUpdateSkill";
-import type { CategoryOption, SkillCategory } from "../model/types";
+import { useUpdateSkill } from "../../model/useSkillMutations";
+import type { UpdateSkillPayload, CategoryOption, SkillCategory } from "../../types";
 
 interface UpdateSkillFormValues {
   skillId: string;

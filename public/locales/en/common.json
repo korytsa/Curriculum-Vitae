@@ -569,8 +569,8 @@
           "category": "Category"
         },
         "actions": {
-          "edit": "Edit",
-          "delete": "Delete",
+          "update": "Update",
+          "remove": "Remove",
           "ariaLabel": "Skill actions"
         },
         "empty": "No skills found"
@@ -578,6 +578,7 @@
       "form": {
         "createTitle": "Create Skill",
         "updateTitle": "Update Skill",
+        "create": "CREATE",
         "confirm": "CONFIRM",
         "cancel": "CANCEL",
         "labels": {
@@ -597,6 +598,10 @@
         "deleteSuccess": "Skill deleted successfully",
         "deleteError": "Failed to delete skill",
         "deleteConfirm": "Are you sure you want to delete skill {{name}}?"
+      },
+      "deleteModal": {
+        "title": "Delete Skill",
+        "message": "Are you sure you want to delete <strong>{{name}}</strong>?"
       }
     }
   }

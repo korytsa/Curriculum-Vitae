@@ -6,10 +6,8 @@ import { useIsAdmin } from "@/shared/lib";
 
 export default function SkillsPage() {
   const admin = useIsAdmin();
-
   if (admin) {
     return <AdminSkillsPageContainer />;
   }
-
   return <SkillsPageContainer />;
 }

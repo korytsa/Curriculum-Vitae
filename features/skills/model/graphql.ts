@@ -5,6 +5,11 @@ export const SKILL_CATEGORIES_QUERY = gql`
     skillCategories {
       id
       name
+      order
+      parent {
+        id
+        name
+      }
     }
   }
 `;

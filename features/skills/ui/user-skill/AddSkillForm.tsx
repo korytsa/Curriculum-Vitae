@@ -3,11 +3,11 @@
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
 import { Modal, FormStatus, Select } from "@/shared/ui";
-import { useCreateSkill } from "../model/useCreateSkill";
-import { useSkills } from "../model/useSkills";
-import { useSkillSelectOptions } from "../model/useSkillSelectOptions";
-import { MASTERY_OPTIONS } from "../model/constants";
-import type { CreateSkillPayload } from "../model/useCreateSkill";
+import { useCreateSkill } from "../../model/useSkillMutations";
+import { useSkills } from "../../model/useSkills";
+import { useSkillSelectOptions } from "../../model/useSkillSelectOptions";
+import { MASTERY_OPTIONS } from "../../model/constants";
+import type { CreateSkillPayload } from "../../types";
 import type { Mastery } from "@/shared/graphql/generated";
 
 interface AddSkillFormValues {

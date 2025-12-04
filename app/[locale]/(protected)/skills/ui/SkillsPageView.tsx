@@ -5,22 +5,7 @@ import { useTranslation } from "react-i18next";
 import { Button, Loader } from "@/shared/ui";
 import { cn } from "@/shared/lib";
 import { CategoryBlock, AddSkillForm } from "@/features/skills";
-import type { SkillCategory } from "@/features/skills";
-
-interface SkillsPageViewProps {
-  skillsLoading: boolean;
-  displayCategories: SkillCategory[];
-  showAddSkillForm: boolean;
-  isDeleteMode: boolean;
-  selectedSkillIds: Set<string>;
-  deleteLoading?: boolean;
-  onOpenAddForm: () => void;
-  onToggleDeleteMode: () => void;
-  onToggleSkillSelection: (skillId: string) => void;
-  onDeleteSelectedSkills: () => void;
-  onCloseAddForm: () => void;
-  showHeading?: boolean;
-}
+import type { SkillsPageViewProps } from "./types";
 
 export function SkillsPageView({
   skillsLoading,
@@ -38,20 +23,12 @@ export function SkillsPageView({
 }: SkillsPageViewProps) {
   const { t } = useTranslation();
 
-  const hasSkills = displayCategories.some(
-    (cat) =>
-      cat.skills.length > 0 ||
-      cat.children?.some((child) => child.skills.length > 0)
-  );
+  const hasSkills = displayCategories.some((cat) => cat.skills.length > 0 || cat.children?.some((child) => child.skills.length > 0));
 
   return (
     <section className="text-white space-y-10">
       <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-6">
-        {showHeading && hasSkills && (
-          <h1 className="font-semibold text-neutral-500 mt-1">
-            {t("skills.heading")}
-          </h1>
-        )}
+        {showHeading && hasSkills && <h1 className="font-semibold text-neutral-500 mt-1">{t("skills.heading")}</h1>}
 
         <div className="flex-1 md:mt-16">
           {skillsLoading ? (
@@ -73,24 +50,14 @@ export function SkillsPageView({
             </div>
           )}
 
-          <div
-            className={cn(
-              "flex flex-col sm:flex-row items-center gap-4 sm:gap-10 pr-4 lg:pr-20 text-sm uppercase tracking-wide mt-8 w-full",
-              "justify-center sm:justify-end"
-            )}
-          >
+          <div className={cn("flex flex-col sm:flex-row items-center gap-4 sm:gap-10 pr-4 lg:pr-20 text-sm uppercase tracking-wide mt-8 w-full", "justify-center sm:justify-end")}>
             <Button
               type="button"
               variant="ghost"
               className="flex items-center gap-2 rounded-full px-4 py-2 text-gray-400 text-xs md:text-sm tracking-[0.2em] hover:text-gray-200 transition-colors"
               icon={<Plus className="h-4 w-4" />}
               onClick={onOpenAddForm}
-              disabled={
-                skillsLoading ||
-                isDeleteMode ||
-                showAddSkillForm ||
-                deleteLoading
-              }
+              disabled={skillsLoading || isDeleteMode || showAddSkillForm || deleteLoading}
             >
               {t("features.skills.page.actions.add")}
             </Button>
@@ -100,33 +67,18 @@ export function SkillsPageView({
                 variant="ghost"
                 className="flex items-center gap-2 text-red-500 text-xs md:text-sm tracking-[0.2em] hover:text-red-300 transition-colors"
                 icon={<Trash2 className="h-4 w-4" />}
-                onClick={
-                  isDeleteMode && selectedSkillIds.size > 0
-                    ? onDeleteSelectedSkills
-                    : onToggleDeleteMode
-                }
-                disabled={
-                  skillsLoading ||
-                  deleteLoading ||
-                  showAddSkillForm ||
-                  (isDeleteMode && selectedSkillIds.size === 0)
-                }
+                onClick={isDeleteMode && selectedSkillIds.size > 0 ? onDeleteSelectedSkills : onToggleDeleteMode}
+                disabled={skillsLoading || deleteLoading || showAddSkillForm || (isDeleteMode && selectedSkillIds.size === 0)}
               >
                 {t("features.skills.page.actions.delete")}
                 {isDeleteMode && selectedSkillIds.size > 0 && (
-                  <span className="ml-1 px-2 py-0.5 bg-red-500 text-white rounded-full text-xs font-semibold">
-                    {selectedSkillIds.size}
-                  </span>
+                  <span className="ml-1 px-2 py-0.5 bg-red-500 text-white rounded-full text-xs font-semibold">{selectedSkillIds.size}</span>
                 )}
               </Button>
             )}
           </div>
 
-          <AddSkillForm
-            open={showAddSkillForm}
-            onSuccess={onCloseAddForm}
-            onCancel={onCloseAddForm}
-          />
+          <AddSkillForm open={showAddSkillForm} onSuccess={onCloseAddForm} onCancel={onCloseAddForm} />
         </div>
       </div>
     </section>
