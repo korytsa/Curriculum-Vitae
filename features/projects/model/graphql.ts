@@ -5,7 +5,6 @@ export const PROJECTS_QUERY = gql`
     projects {
       id
       name
-      internal_name
       domain
       description
       environment

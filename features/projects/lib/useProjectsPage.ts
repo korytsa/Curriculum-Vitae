@@ -32,7 +32,7 @@ const mapProjectToCvProject = (project: Project): CvProject => {
     environment: project.environment,
     start_date: project.start_date,
     end_date: project.end_date,
-  } as Project;
+  } as unknown as Project;
 
   return {
     __typename: "CvProject" as const,
@@ -46,7 +46,7 @@ const mapProjectToCvProject = (project: Project): CvProject => {
     responsibilities: [],
     roles: [],
     project: baseProject,
-  } as CvProject;
+  } as unknown as CvProject;
 };
 
 const buildCvProjectInitialValues = (project: CvProject): AddProjectFormInitialProject => ({

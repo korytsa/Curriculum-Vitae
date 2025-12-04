@@ -10,7 +10,6 @@ const UPDATE_PROJECT_MUTATION = gql`
     updateProject(project: $project) {
       id
       name
-      internal_name
       domain
       description
       environment
@@ -28,7 +27,6 @@ type UpdateProjectMutation = {
     __typename: "Project";
     id: string;
     name: string;
-    internal_name: string;
     domain: string;
     description: string;
     environment: string[];

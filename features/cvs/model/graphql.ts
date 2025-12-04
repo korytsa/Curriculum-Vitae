@@ -4,7 +4,6 @@ const CV_PROJECT_FIELDS = gql`
   fragment CvProjectFields on CvProject {
     id
     name
-    internal_name
     domain
     start_date
     end_date
@@ -15,7 +14,6 @@ const CV_PROJECT_FIELDS = gql`
     project {
       id
       name
-      internal_name
     }
   }
 `;
