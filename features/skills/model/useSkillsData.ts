@@ -1,10 +1,6 @@
 import { useMemo } from "react";
-import type { SkillCategory, CategoryOption } from "./types";
-import type {
-  SkillCategoriesForFormQuery,
-  SkillsWithCategoriesQuery,
-  Mastery,
-} from "@/shared/graphql/generated";
+import type { SkillCategory, CategoryOption } from "../types";
+import type { SkillCategoriesForFormQuery, SkillsWithCategoriesQuery, Mastery } from "@/shared/graphql/generated";
 
 const masteryToValue = (mastery: Mastery): number => {
   switch (mastery) {
@@ -23,31 +19,20 @@ const masteryToValue = (mastery: Mastery): number => {
   }
 };
 
-export function useCategoryOptions(
-  categoriesData?: SkillCategoriesForFormQuery
-): CategoryOption[] {
-  return useMemo(() => {
-    if (
-      categoriesData?.skillCategories &&
-      categoriesData.skillCategories.length > 0
-    ) {
-      return categoriesData.skillCategories
-        .filter(
-          (category): category is NonNullable<typeof category> =>
-            category !== null
-        )
-        .map((category) => ({
-          id: category.id,
-          name: category.name,
-        }));
-    }
+export function useCategoryOptions(categoriesData?: SkillCategoriesForFormQuery): CategoryOption[] {
+  if (!categoriesData?.skillCategories || categoriesData.skillCategories.length === 0) {
     return [];
-  }, [categoriesData]);
+  }
+
+  return categoriesData.skillCategories
+    .filter((category): category is NonNullable<typeof category> => category !== null)
+    .map((category) => ({
+      id: category.id,
+      name: category.name,
+    }));
 }
 
-export function useDisplayCategories(
-  skillsData?: SkillsWithCategoriesQuery
-): SkillCategory[] {
+export function useDisplayCategories(skillsData?: SkillsWithCategoriesQuery): SkillCategory[] {
   return useMemo(() => {
     if (skillsData === undefined) {
       return [];
@@ -58,11 +43,7 @@ export function useDisplayCategories(
       return [];
     }
 
-    const allCategories =
-      skillsData?.skillCategories?.filter(
-        (category): category is NonNullable<typeof category> =>
-          category !== null
-      ) || [];
+    const allCategories = skillsData?.skillCategories?.filter((category): category is NonNullable<typeof category> => category !== null) || [];
 
     if (allCategories.length === 0) {
       return [
@@ -91,9 +72,7 @@ export function useDisplayCategories(
 
     const skillCategoryMap = new Map<string, string>();
 
-    const sortedParentCategories = parentCategories.sort(
-      (a, b) => a.order - b.order
-    );
+    const sortedParentCategories = parentCategories.sort((a, b) => a.order - b.order);
 
     sortedParentCategories.forEach((parentCat) => {
       userSkills.forEach((skill) => {
@@ -106,11 +85,7 @@ export function useDisplayCategories(
           targetCategoryId = childToParentMap.get(categoryId)!;
         }
 
-        if (
-          (categoryId === String(parentCat.id) ||
-            targetCategoryId === String(parentCat.id)) &&
-          !skillCategoryMap.has(skill.name)
-        ) {
+        if ((categoryId === String(parentCat.id) || targetCategoryId === String(parentCat.id)) && !skillCategoryMap.has(skill.name)) {
           skillCategoryMap.set(skill.name, parentCat.id);
         }
       });
@@ -129,11 +104,7 @@ export function useDisplayCategories(
               targetCategoryId = childToParentMap.get(categoryId)!;
             }
 
-            return (
-              (categoryId === String(parentCat.id) ||
-                targetCategoryId === String(parentCat.id)) &&
-              skillCategoryMap.get(skill.name) === parentCat.id
-            );
+            return (categoryId === String(parentCat.id) || targetCategoryId === String(parentCat.id)) && skillCategoryMap.get(skill.name) === parentCat.id;
           })
           .map((skill) => ({
             id: skill.name,
@@ -152,9 +123,7 @@ export function useDisplayCategories(
   }, [skillsData]);
 }
 
-export function useAllSkillsForSelect(
-  displayCategories: SkillCategory[]
-): Array<{ id: string; name: string; categoryName: string }> {
+export function useAllSkillsForSelect(displayCategories: SkillCategory[]): Array<{ id: string; name: string; categoryName: string }> {
   return useMemo(() => {
     const skills = displayCategories.flatMap((category) => [
       ...category.skills.map((skill) => ({

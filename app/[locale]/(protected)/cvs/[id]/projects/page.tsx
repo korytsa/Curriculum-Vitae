@@ -1,15 +1,34 @@
 "use client";
 
-import { useTranslation } from "react-i18next";
+import { ProjectsPageLayout, ProjectModal, useCvProjectsPage } from "@/features/projects";
+import type { CvProjectsPageProps } from "@/features/projects";
 
-export default function CvProjectsPage() {
-  const { t } = useTranslation();
+export default function CvProjectsPageRoute({ params }: CvProjectsPageProps) {
+  const { id: cvId, locale } = params;
+  const { searchInputProps, tableProps, addProjectLabel, handleAddProject, addProjectModal, deleteProjectModal } = useCvProjectsPage({
+    cvId,
+    locale,
+  });
 
   return (
-    <div className="mt-10 text-center text-sm text-neutral-400">
-      {t("cvs.details.placeholders.projects", {
-        defaultValue: "CV Projects",
-      })}
-    </div>
+    <ProjectsPageLayout
+      searchInputProps={searchInputProps}
+      tableProps={tableProps}
+      addProjectLabel={addProjectLabel}
+      onAddProject={handleAddProject}
+      deleteModal={deleteProjectModal}
+      renderModal={() => (
+        <ProjectModal
+          variant="add-to-cv"
+          open={addProjectModal.open}
+          onClose={addProjectModal.onClose}
+          projects={addProjectModal.projects}
+          isProjectListLoading={addProjectModal.isLoading}
+          onSubmit={addProjectModal.onSubmit}
+          initialProject={addProjectModal.initialProject}
+          mode={addProjectModal.mode}
+        />
+      )}
+    />
   );
 }

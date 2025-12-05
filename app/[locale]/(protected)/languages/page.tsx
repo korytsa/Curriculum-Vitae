@@ -43,14 +43,10 @@ export default function LanguagesPage() {
   const handleDeleteSelectedLanguages = async () => {
     if (selectedLanguageNames.size === 0) return;
 
-    try {
-      await deleteLanguage({ name: Array.from(selectedLanguageNames) });
-      setIsDeleteMode(false);
-      setSelectedLanguageNames(new Set());
-      await refetchLanguages?.();
-    } catch (error) {
-      console.error("Error deleting languages:", error);
-    }
+    await deleteLanguage({ name: Array.from(selectedLanguageNames) });
+    setIsDeleteMode(false);
+    setSelectedLanguageNames(new Set());
+    await refetchLanguages?.();
   };
 
   return (

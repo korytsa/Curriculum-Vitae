@@ -1,18 +1,6 @@
 import { useMemo } from "react";
 import type { SkillsWithCategoriesQuery } from "@/shared/graphql/generated";
-
-interface SkillOption {
-  value: string;
-  label: string;
-  categoryId: string;
-  categoryName: string;
-}
-
-export interface SelectOption {
-  value: string;
-  label: string;
-  isGroupHeader?: boolean;
-}
+import type { SkillOption, SelectOption } from "../types";
 
 export function useSkillSelectOptions(skillsData?: SkillsWithCategoriesQuery): {
   skillOptions: SkillOption[];
@@ -22,10 +10,7 @@ export function useSkillSelectOptions(skillsData?: SkillsWithCategoriesQuery): {
     if (!skillsData?.skills || !skillsData?.skillCategories) return [];
 
     const childToParentMap = new Map<string, { id: string; name: string }>();
-    const categoriesMap = new Map<
-      string,
-      { id: string; name: string; parent?: { id: string; name: string } | null }
-    >();
+    const categoriesMap = new Map<string, { id: string; name: string; parent?: { id: string; name: string } | null }>();
 
     skillsData.skillCategories.forEach((cat) => {
       if (cat) {

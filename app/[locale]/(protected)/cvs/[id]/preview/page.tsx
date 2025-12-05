@@ -1,15 +1,34 @@
 "use client";
 
-import { useTranslation } from "react-i18next";
+import { Loader } from "@/shared/ui";
+import { useCv } from "@/features/cvs";
+import { PreviewI18nProvider } from "./components/PreviewI18nProvider";
+import PreviewHeaderSection from "./components/cv-sections/PreviewHeaderSection";
+import PreviewDetailsSection from "./components/cv-sections/PreviewDetailsSection";
+import PreviewProjectsSection from "./components/cv-sections/PreviewProjectsSection";
+import PreviewSkillsSection from "./components/cv-sections/PreviewSkillsSection";
+import type { CvPreviewPageProps, SupportedLanguage } from "./types";
 
-export default function CvPreviewPage() {
-  const { t } = useTranslation();
+export default function CvPreviewPage({ params }: CvPreviewPageProps) {
+  const { id, locale } = params;
+  const { loading } = useCv(id);
+
+  if (loading) {
+    return (
+      <div className="mt-20 flex justify-center">
+        <Loader size="lg" />
+      </div>
+    );
+  }
 
   return (
-    <div className="mt-10 text-center text-sm text-neutral-400">
-      {t("cvs.details.placeholders.preview", {
-        defaultValue: "CV Preview",
-      })}
-    </div>
+    <PreviewI18nProvider initialLanguage={locale as SupportedLanguage}>
+      <div className="mt-8 mx-auto max-w-4xl space-y-12">
+        <PreviewHeaderSection />
+        <PreviewDetailsSection />
+        <PreviewProjectsSection />
+        <PreviewSkillsSection />
+      </div>
+    </PreviewI18nProvider>
   );
 }

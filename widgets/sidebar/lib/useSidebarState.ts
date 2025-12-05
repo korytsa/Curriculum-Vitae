@@ -6,6 +6,8 @@ import { accessTokenVar, setAccessToken } from "@/shared/config/apollo";
 import { decodeToken } from "@/shared/lib/jwt";
 import { buildUserMenuItems } from "../config/userMenuItems";
 import { getUserDisplayName, getUserInitials } from "./userDisplay";
+import type { MenuItem } from "../config/menuItems";
+import { adminPrimaryMenuItems, adminSecondaryMenuItems, employeeMenuItems } from "../config/menuItems";
 
 const SIDEBAR_WIDTH_EXPANDED = "200px";
 const SIDEBAR_WIDTH_COLLAPSED = "60px";
@@ -30,78 +32,36 @@ interface SidebarState {
   userMenuItems: ReturnType<typeof buildUserMenuItems>;
   isUserLoading: boolean;
   hasCurrentUser: boolean;
+  isAdmin: boolean;
+  primaryMenuItems: MenuItem[];
+  secondaryMenuItems: MenuItem[];
+  employeeMenuItems: MenuItem[];
 }
 
-export function useSidebarState({
-  initialIsCollapsed = false,
-  hasInitialPreference = false,
-}: UseSidebarStateParams = {}): SidebarState {
-  const pathname = usePathname();
+export function useSidebarState({ initialIsCollapsed = false, hasInitialPreference = false }: UseSidebarStateParams = {}): SidebarState {
+  const pathname = usePathname() || "/";
   const params = useParams();
-  const locale =
-    typeof params?.locale === "string"
-      ? params.locale
-      : Array.isArray(params?.locale)
-        ? params?.locale[0]
-        : undefined;
-
-  const segments = pathname.split("/").filter(Boolean);
-  const firstSegmentAfterLocale = locale ? segments[1] : segments[0];
-  const normalizedPath = firstSegmentAfterLocale
-    ? `/${firstSegmentAfterLocale}`
-    : "/";
+  const locale = getLocaleFromParams(params);
+  const normalizedPath = getNormalizedPath(pathname, locale);
 
   const { t } = useTranslation();
   const { users, loading: isUserLoading } = useUsers();
   const router = useRouter();
 
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(initialIsCollapsed);
-  const hasPreferenceRef = useRef(hasInitialPreference);
+  const { isCollapsed, toggleCollapse } = useCollapseState(initialIsCollapsed, hasInitialPreference);
 
-  useLayoutEffect(() => {
-    if (hasPreferenceRef.current) return;
-
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored !== null) {
-        setIsCollapsed(stored === "true");
-      }
-    } catch {}
-
-    hasPreferenceRef.current = true;
-  }, []);
-
-  useLayoutEffect(() => {
-    if (typeof document === "undefined") return;
-
-    const width = isCollapsed
-      ? SIDEBAR_WIDTH_COLLAPSED
-      : SIDEBAR_WIDTH_EXPANDED;
-    document.documentElement.style.setProperty("--sidebar-width", width);
-    document.cookie = `${STORAGE_KEY}=${String(
-      isCollapsed
-    )}; path=/; max-age=${COOKIE_MAX_AGE_SECONDS}`;
-
-    try {
-      localStorage.setItem(STORAGE_KEY, String(isCollapsed));
-    } catch {}
-  }, [isCollapsed]);
-
-  const applyLocaleToPath = (path: string) =>
-    locale ? `/${locale}${path}` : path;
+  const applyLocaleToPath = (path: string) => (locale ? `/${locale}${path}` : path);
 
   const token = accessTokenVar();
   const decodedToken = token ? decodeToken(token) : null;
   const currentUserId = decodedToken?.sub?.toString();
-  const currentUser = currentUserId
-    ? users.find((user: any) => user.id === currentUserId)
-    : null;
+  const isAdmin = decodedToken?.role === "Admin";
 
-  const id = currentUser?.id;
-  const initialsFallback = t("features.sidebar.avatar.initials");
-  const currentUserName = getUserDisplayName(currentUser);
-  const currentUserInitials = getUserInitials(currentUser, initialsFallback);
-  const currentUserAvatar = currentUser?.profile?.avatar || null;
+  const { id, currentUserName, currentUserInitials, currentUserAvatar, hasCurrentUser } = getCurrentUserData({
+    users,
+    currentUserId,
+    t,
+  });
 
   const handleLogout = () => {
     setAccessToken(null);
@@ -112,6 +72,7 @@ export function useSidebarState({
     id,
     applyLocaleToPath,
     handleLogout,
+    translate: t,
   });
 
   return {
@@ -119,13 +80,90 @@ export function useSidebarState({
     locale,
     normalizedPath,
     isCollapsed,
-    toggleCollapse: () => setIsCollapsed((prev) => !prev),
+    toggleCollapse,
     applyLocaleToPath,
     currentUserName,
     currentUserInitials,
     currentUserAvatar,
     userMenuItems,
     isUserLoading,
+    hasCurrentUser,
+    isAdmin,
+    primaryMenuItems: adminPrimaryMenuItems,
+    secondaryMenuItems: adminSecondaryMenuItems,
+    employeeMenuItems,
+  };
+}
+
+function useCollapseState(initialIsCollapsed: boolean, hasInitialPreference: boolean) {
+  const [isCollapsed, setIsCollapsed] = useState(initialIsCollapsed);
+  const hasPreferenceRef = useRef(hasInitialPreference);
+
+  useLayoutEffect(() => {
+    if (hasPreferenceRef.current) return;
+
+    if (typeof window !== "undefined" && window.localStorage) {
+      const stored = window.localStorage.getItem(STORAGE_KEY);
+      if (stored !== null) {
+        setIsCollapsed(stored === "true");
+      }
+    }
+
+    hasPreferenceRef.current = true;
+  }, []);
+
+  useLayoutEffect(() => {
+    if (typeof document === "undefined") return;
+
+    const width = isCollapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH_EXPANDED;
+    document.documentElement.style.setProperty("--sidebar-width", width);
+    document.cookie = `${STORAGE_KEY}=${String(isCollapsed)}; path=/; max-age=${COOKIE_MAX_AGE_SECONDS}`;
+
+    if (typeof window !== "undefined" && window.localStorage) {
+      window.localStorage.setItem(STORAGE_KEY, String(isCollapsed));
+    }
+  }, [isCollapsed]);
+
+  const toggleCollapse = () => {
+    setIsCollapsed((prev) => !prev);
+  };
+
+  return { isCollapsed, toggleCollapse };
+}
+
+function getLocaleFromParams(params: ReturnType<typeof useParams>) {
+  const locale = params?.locale;
+  if (typeof locale === "string") return locale;
+  if (Array.isArray(locale)) return locale[0];
+  return undefined;
+}
+
+function getNormalizedPath(pathname: string, locale?: string) {
+  const segments = pathname.split("/").filter(Boolean);
+  const firstSegmentAfterLocale = locale ? segments[1] : segments[0];
+  return firstSegmentAfterLocale ? `/${firstSegmentAfterLocale}` : "/";
+}
+
+type CurrentUserDataParams = {
+  users: Array<any> | undefined;
+  currentUserId?: string;
+  t: ReturnType<typeof useTranslation>["t"];
+};
+
+function getCurrentUserData({ users, currentUserId, t }: CurrentUserDataParams) {
+  const list = Array.isArray(users) ? users : [];
+  const currentUser = currentUserId ? list.find((user: any) => user.id === currentUserId) : null;
+
+  const initialsFallback = t("features.sidebar.avatar.initials");
+  const currentUserName = getUserDisplayName(currentUser);
+  const currentUserInitials = getUserInitials(currentUser, initialsFallback);
+  const currentUserAvatar = currentUser?.profile?.avatar || null;
+
+  return {
+    id: currentUser?.id,
+    currentUserName,
+    currentUserInitials,
+    currentUserAvatar,
     hasCurrentUser: Boolean(currentUser),
   };
 }

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useId } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Input, FormStatus } from "@/shared/ui";
 import type { FormikProps } from "formik";
@@ -21,14 +21,13 @@ export function CreateUserFormView({
   loading,
 }: CreateUserFormViewProps) {
   const { t } = useTranslation();
+  const formInstanceId = useId();
+  const getFieldId = (name: string) => `${formInstanceId}-${name}`;
 
-  const roleOptions = useMemo(
-    () => [
-      { label: t("features.createUserForm.roles.employee"), value: "Employee" },
-      { label: t("features.createUserForm.roles.admin"), value: "Admin" },
-    ],
-    [t]
-  );
+  const roleOptions = [
+    { label: t("features.createUserForm.roles.employee"), value: "Employee" },
+    { label: t("features.createUserForm.roles.admin"), value: "Admin" },
+  ];
 
   return (
     <form className="space-y-8" onSubmit={formik.handleSubmit}>
@@ -37,7 +36,7 @@ export function CreateUserFormView({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div>
           <Input
-            id="email"
+            id={getFieldId("email")}
             name="email"
             type="email"
             label={t("features.createUserForm.labels.email")}
@@ -53,7 +52,7 @@ export function CreateUserFormView({
         </div>
         <div>
           <Input
-            id="password"
+            id={getFieldId("password")}
             name="password"
             type="password"
             label={t("features.createUserForm.labels.password")}
@@ -73,7 +72,7 @@ export function CreateUserFormView({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <Input
-          id="firstName"
+          id={getFieldId("firstName")}
           name="firstName"
           type="text"
           label={t("features.createUserForm.labels.firstName")}
@@ -82,7 +81,7 @@ export function CreateUserFormView({
           onChange={formik.handleChange}
         />
         <Input
-          id="lastName"
+          id={getFieldId("lastName")}
           name="lastName"
           type="text"
           label={t("features.createUserForm.labels.lastName")}
@@ -94,7 +93,7 @@ export function CreateUserFormView({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <Input
-          id="departmentId"
+          id={getFieldId("departmentId")}
           name="departmentId"
           type="text"
           label={t("features.createUserForm.labels.departmentId")}
@@ -103,7 +102,7 @@ export function CreateUserFormView({
           onChange={formik.handleChange}
         />
         <Input
-          id="positionId"
+          id={getFieldId("positionId")}
           name="positionId"
           type="text"
           label={t("features.createUserForm.labels.positionId")}
@@ -118,8 +117,8 @@ export function CreateUserFormView({
           {t("features.createUserForm.labels.role")}
         </label>
         <select
+          id={getFieldId("role")}
           className={selectClass}
-          id="role"
           name="role"
           value={formik.values.role}
           onChange={formik.handleChange}

@@ -7,7 +7,7 @@ import {
   useRippleCleanup,
   createRipple,
   scrollToTab,
-} from "./utils";
+} from "./utils/tabs";
 
 export interface TabItem {
   id: string;

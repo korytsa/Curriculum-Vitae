@@ -6,7 +6,22 @@
     "unauthorized": "Сессия истекла. Пожалуйста, войдите снова."
   },
   "skills": {
-    "heading": "Навыки"
+    "heading": "Навыки",
+    "mastery": {
+      "novice": "Новичок",
+      "competent": "Компетентный",
+      "proficient": "Уверенный",
+      "advanced": "Продвинутый",
+      "expert": "Эксперт"
+    },
+    "categories": {
+      "Databases": "Базы данных",
+      "Frontend": "Фронтенд",
+      "Backend": "Бэкенд",
+      "Frontend technologies": "Фронтенд технологии",
+      "Programming languages": "Языки программирования",
+      "Other": "Другое"
+    }
   },
   "settings": {
     "heading": "Настройки",
@@ -26,6 +41,11 @@
         "ru": "Русский"
       }
     }
+  },
+  "errors": {
+    "unauthorized": "Сессия истекла. Пожалуйста, войдите снова.",
+    "network": "Ошибка сети. Проверьте подключение.",
+    "unexpected": "Что-то пошло не так. Попробуйте ещё раз."
   },
   "cvs": {
     "heading": "Резюме",
@@ -47,6 +67,14 @@
         "employee": "Сотрудник"
       }
     },
+    "list": {
+      "columns": {
+        "name": "Имя",
+        "education": "Образование",
+        "employee": "Сотрудник",
+        "emptyValue": "—"
+      }
+    },
     "createModal": {
       "title": "Создать резюме",
       "labels": {
@@ -64,10 +92,10 @@
     },
     "details": {
       "tabs": {
-        "details": "ДЕТАЛИ",
-        "skills": "НАВЫКИ",
-        "projects": "ПРОЕКТЫ",
-        "preview": "ПРЕДПРОСМОТР"
+        "details": "Детали",
+        "skills": "Навыки",
+        "projects": "Проекты",
+        "preview": "Предпросмотр"
       },
       "actions": {
         "update": "ОБНОВИТЬ"
@@ -82,9 +110,93 @@
         "error": "Не удалось обновить резюме"
       }
     },
+    "preview": {
+      "exportPdf": "ЭКСПОРТИРОВАТЬ PDF",
+      "languagesHeading": "Владение языками",
+      "domainsHeading": "Домены",
+      "professionalSkills": "Профессиональные навыки",
+      "projectsHeading": "Проекты",
+      "projectRole": "Роль в проекте",
+      "period": "Период",
+      "responsibilities": "Обязанности",
+      "environment": "Технологии",
+      "emptySkills": "Добавьте навыки в резюме, чтобы показать их здесь.",
+      "experienceColumn": "Опыт (лет)",
+      "lastUsedColumn": "Последнее использование",
+      "summaryPlaceholder": "Используйте этот блок, чтобы описать достижения, сильные стороны и ценность для команды.",
+      "dateUnknown": "Н/Д"
+    },
+    "projectsPage": {
+      "actions": {
+        "add": "ДОБАВИТЬ ПРОЕКТ",
+        "update": "Обновить",
+        "remove": "Удалить",
+        "openMenu": "Открыть меню действий"
+      },
+      "search": {
+        "placeholder": "Поиск проектов",
+        "reset": "Сбросить поиск",
+        "noResults": "Ничего не найдено"
+      },
+      "states": {
+        "empty": {
+          "title": "Проектов пока нет",
+          "description": "Добавьте первый проект в это резюме."
+        },
+        "noResults": {
+          "title": "Ничего не найдено",
+          "description": "Попробуйте изменить запрос, проверьте написание или используйте более общий термин"
+        }
+      },
+      "table": {
+        "columns": {
+          "name": "Название",
+          "domain": "Домен",
+          "startDate": "Дата начала",
+          "endDate": "Дата окончания",
+          "actions": "Действия"
+        },
+        "labels": {
+          "present": "По настоящее время"
+        },
+        "sort": {
+          "name": "Сортировать по названию",
+          "domain": "Сортировать по домену",
+          "startDate": "Сортировать по дате начала",
+          "endDate": "Сортировать по дате окончания"
+        }
+      },
+      "modal": {
+        "title": "Добавить проект",
+        "createTitle": "Создать проект",
+        "updateTitle": "Обновить проект",
+        "fields": {
+          "name": "Название",
+          "project": "Проект",
+          "domain": "Домен",
+          "startDate": "Дата начала",
+          "endDate": "Дата окончания",
+          "description": "Описание",
+          "environment": "Технологии",
+          "environmentPlaceholder": "Добавить навык",
+          "responsibilities": "Обязанности",
+          "responsibilitiesPlaceholder": "Список обязанностей"
+        },
+        "actions": {
+          "cancel": "ОТМЕНА",
+          "submit": "ДОБАВИТЬ",
+          "create": "СОЗДАТЬ",
+          "update": "ОБНОВИТЬ"
+        }
+      },
+      "deleteModal": {
+        "title": "Удалить",
+        "message": "Вы уверены, что хотите удалить проект <strong>{{name}}</strong>?"
+      }
+    },
     "deleteModal": {
       "title": "Удалить резюме",
-      "warning": "Вы уверены, что хотите удалить это резюме? Это действие нельзя отменить.",
+      "warning": "Вы уверены, что хотите удалить резюме <strong>{{name}}</strong>?",
       "cvName": "Резюме: {{name}}",
       "actions": {
         "delete": "УДАЛИТЬ",
@@ -95,9 +207,16 @@
       }
     }
   },
+  "confirmDeleteModal": {
+    "actions": {
+      "delete": "УДАЛИТЬ",
+      "cancel": "ОТМЕНА"
+    }
+  },
   "languages": {
     "heading": "Языки"
   },
+  "projectsHeading": "Проекты",
   "users": {
     "heading": "Сотрудники",
     "createUser": "Создать пользователя",
@@ -172,6 +291,24 @@
           "success": "Профиль успешно обновлён.",
           "error": "Не удалось обновить профиль. Попробуйте позже."
         }
+      }
+    },
+    "search": {
+      "placeholder": "Поиск сотрудников",
+      "reset": "Сбросить поиск",
+      "noResults": {
+        "title": "Ничего не найдено",
+        "description": "Попробуйте другой запрос, проверьте правописание или используйте более общий термин"
+      },
+      "logout": "Выйти"
+    },
+    "table": {
+      "columns": {
+        "firstName": "Имя",
+        "lastName": "Фамилия",
+        "email": "Email",
+        "department": "Отдел",
+        "position": "Должность"
       }
     }
   },
@@ -295,7 +432,6 @@
       "page": {
         "actions": {
           "add": "Добавить",
-          "update": "Обновить",
           "delete": "Удалить"
         }
       },
@@ -343,19 +479,7 @@
       },
       "deleteModal": {
         "title": "Удалить навык",
-        "confirmTitle": "Подтверждение удаления",
-        "warning": "Вы уверены, что хотите удалить этот навык? Это действие необратимо.",
-        "labels": {
-          "skill": "Навык",
-          "skillToDelete": "Навык к удалению:"
-        },
-        "placeholders": {
-          "skill": "Выберите навык..."
-        },
-        "delete": "УДАЛИТЬ",
-        "errors": {
-          "skillRequired": "Выберите навык для удаления"
-        }
+        "warning": "Вы уверены, что хотите удалить этот навык? Это действие необратимо."
       }
     },
     "languages": {
@@ -407,9 +531,12 @@
     "sidebar": {
       "menu": {
         "employees": "Сотрудники",
+        "projects": "Проекты",
+        "cvs": "Резюме",
+        "departments": "Отделы",
+        "positions": "Должности",
         "skills": "Навыки",
-        "languages": "Языки",
-        "cvs": "Резюме"
+        "languages": "Языки"
       },
       "avatar": {
         "initials": "R",
@@ -418,6 +545,63 @@
       "aria": {
         "expand": "Раскрыть боковую панель",
         "collapse": "Свернуть боковую панель"
+      },
+      "userMenu": {
+        "profile": "Профиль",
+        "settings": "Настройки",
+        "logout": "Выйти"
+      }
+    }
+  },
+  "admin": {
+    "skills": {
+      "heading": "Навыки",
+      "actions": {
+        "create": "СОЗДАТЬ НАВЫК"
+      },
+      "search": {
+        "placeholder": "Поиск"
+      },
+      "table": {
+        "columns": {
+          "name": "Название",
+          "type": "Тип",
+          "category": "Категория"
+        },
+        "actions": {
+          "update": "Обновить",
+          "remove": "Удалить",
+          "ariaLabel": "Действия с навыком"
+        },
+        "empty": "Навыки не найдены"
+      },
+      "form": {
+        "createTitle": "Создать навык",
+        "updateTitle": "Обновить навык",
+        "create": "СОЗДАТЬ",
+        "confirm": "ПОДТВЕРДИТЬ",
+        "cancel": "ОТМЕНА",
+        "labels": {
+          "name": "Название",
+          "type": "Тип",
+          "category": "Категория"
+        },
+        "errors": {
+          "nameRequired": "Введите название",
+          "typeRequired": "Выберите тип",
+          "categoryRequired": "Выберите категорию"
+        }
+      },
+      "messages": {
+        "createSuccess": "Навык успешно создан",
+        "updateSuccess": "Навык успешно обновлён",
+        "deleteSuccess": "Навык успешно удалён",
+        "deleteError": "Не удалось удалить навык",
+        "deleteConfirm": "Вы уверены, что хотите удалить навык {{name}}?"
+      },
+      "deleteModal": {
+        "title": "Удалить навык",
+        "message": "Вы уверены, что хотите удалить <strong>{{name}}</strong>?"
       }
     }
   }

@@ -1,17 +1,9 @@
 import type { TableColumn } from "@/shared/ui";
 import type { CvListItem } from "@/features/cvs";
 
-export const CVS_SEARCH_FIELDS = [
-  "name",
-  "education",
-  "description",
-  "user.email",
-  "user.profile.full_name",
-] as const;
+export const CVS_SEARCH_FIELDS = ["name", "education", "description", "user.email", "user.profile.full_name"] as const;
 
-export function getCvsTableColumns(
-  t: (key: string) => string
-): TableColumn<CvListItem>[] {
+export function getCvsTableColumns(t: (key: string) => string): TableColumn<CvListItem>[] {
   const nameLabel = t("cvs.table.columns.name");
   const educationLabel = t("cvs.table.columns.education");
   const employeeLabel = t("cvs.table.columns.employee");
@@ -27,19 +19,13 @@ export function getCvsTableColumns(
       ),
       className: "align-top w-1/4",
       mobileHeaderLabel: nameLabel,
-      render: (_value, row) => (
-        <span className="text-white font-semibold leading-snug break-words">
-          {row.name}
-        </span>
-      ),
+      render: (_value, row) => <span className="text-white font-semibold leading-snug break-words">{row.name}</span>,
     },
     {
       key: "education",
       header: educationLabel,
       className: "align-top w-1/4",
-      render: (value) => (
-        <span className="text-white/80">{value ? String(value) : "—"}</span>
-      ),
+      render: (value) => <span className="text-white/80">{value ? String(value) : "—"}</span>,
     },
     {
       key: "employee",

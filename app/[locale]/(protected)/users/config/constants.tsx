@@ -2,11 +2,7 @@ import { Avatar, type TableColumn } from "@/shared/ui";
 import { getAvatarFallback } from "@/features/users/lib/getAvatarFallback";
 import type { User } from "../types";
 
-export const USERS_SEARCH_FIELDS = [
-  "profile.first_name",
-  "profile.last_name",
-  "email",
-] as const;
+export const USERS_SEARCH_FIELDS = ["profile.first_name", "profile.last_name", "email"] as const;
 
 export function getUsersTableColumns(
   t: (key: string) => string

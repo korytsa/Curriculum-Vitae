@@ -1,33 +1,15 @@
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/shared/lib";
-import {
-  useEffect,
-  useState,
-  useRef,
-  forwardRef,
-  useId,
-  type HTMLAttributes,
-} from "react";
+import { useEffect, useState, useRef, forwardRef, useId, type HTMLAttributes } from "react";
 import { createPortal } from "react-dom";
-import {
-  findSelectedOption,
-  isNoSelectionValue,
-  isNoOptionLabel,
-  getDisplayValue,
-  hasValue as checkHasValue,
-  isLabelActive,
-  isActive,
-  getLabelColor,
-  getBorderColor,
-  type SelectOption,
-} from "./utils";
+import { findSelectedOption, isNoSelectionValue, isNoOptionLabel, getDisplayValue, hasValue as checkHasValue, isLabelActive, isActive, type SelectOption } from "./utils/select";
+import { getLabelColor, getBorderColor } from "./utils/form-field";
 
 export type { SelectOption };
 
 type SelectAlign = "center" | "bottom";
 
-export interface SelectProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
+export interface SelectProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
   options: SelectOption[];
   value?: string;
   onChange?: (value: string) => void;
@@ -36,24 +18,11 @@ export interface SelectProps
   disabled?: boolean;
   readOnly?: boolean;
   align?: SelectAlign;
+  placeholder?: string;
 }
 
 const Select = forwardRef<HTMLDivElement, SelectProps>(
-  (
-    {
-      className,
-      options,
-      value,
-      onChange,
-      error,
-      label,
-      disabled,
-      readOnly,
-      align = "center",
-      ...props
-    },
-    ref
-  ) => {
+  ({ className, options, value, onChange, error, label, disabled, readOnly, align = "center", placeholder, ...props }, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
     const selectRef = useRef<HTMLDivElement>(null);
@@ -68,19 +37,9 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
 
     const isInteractive = !(disabled || readOnly);
     const isNonEditable = !isInteractive;
-    const labelColor = getLabelColor(
-      error,
-      isInteractive ? isActiveState : false
-    );
-    const appliedLabelColor =
-      isNonEditable && !error
-        ? "text-[var(--color-disabled-text)]"
-        : labelColor;
-    const borderColor = getBorderColor(
-      error,
-      isInteractive ? isActiveState : false,
-      isInteractive
-    );
+    const labelColor = getLabelColor(error, isInteractive ? isActiveState : false);
+    const appliedLabelColor = isNonEditable && !error ? "text-[var(--color-disabled-text)]" : labelColor;
+    const borderColor = getBorderColor(error, isInteractive ? isActiveState : false, isInteractive);
 
     useEffect(() => {
       if (!isOpen) return;
@@ -92,16 +51,13 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
 
       const handleDocumentMouseDown = (event: MouseEvent) => {
         const target = event.target as Node;
-        if (
-          selectRef.current?.contains(target) ||
-          dropdownRef.current?.contains(target)
-        ) {
+        if (selectRef.current?.contains(target) || dropdownRef.current?.contains(target)) {
           return;
         }
         closeDropdown();
       };
 
-      const handleDocumentKeyDown = (event: KeyboardEvent) => {
+      const handleDocumentKeyDown = (event: globalThis.KeyboardEvent) => {
         if (event.key === "Escape") {
           closeDropdown();
         }
@@ -130,17 +86,13 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
     };
 
     return (
-      <div
-        className={cn("relative select-none", className)}
-        ref={ref}
-        {...props}
-      >
+      <div className={cn("relative select-none", className)} ref={ref} {...props}>
         <div className="relative" ref={selectRef}>
           <div
             className={cn(
-              "w-full h-12 rounded-md border px-3 py-3 transition-all cursor-pointer bg-[var(--color-surface)]",
+              "w-full min-h-[48px] rounded-md border px-3 py-3 transition-all cursor-pointer bg-transparent",
               "focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50",
-              "flex items-center justify-between",
+              "flex items-center gap-2",
               borderColor,
               disabled && "opacity-50 cursor-not-allowed"
             )}
@@ -163,29 +115,15 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
             aria-disabled={disabled}
             aria-readonly={readOnly || undefined}
           >
-            <span
-              className={cn(
-                "flex-1 text-left text-[var(--color-text)]",
-                isNonEditable && "text-[var(--color-disabled-text)]"
-              )}
-            >
-              {displayValue}
-            </span>
-            <ChevronDown
-              className={cn(
-                "h-4 w-4 text-white transition-transform duration-200 flex-shrink-0",
-                isOpen && "transform rotate-180"
-              )}
-            />
+            <span className={cn("flex-1 text-left text-[var(--color-text)]", isNonEditable && "text-[var(--color-disabled-text)]")}>{displayValue || placeholder}</span>
+            <ChevronDown className={cn("h-4 w-4 text-white transition-transform duration-200 flex-shrink-0", isOpen && "transform rotate-180")} />
           </div>
 
           {label && (
             <label
               className={cn(
-                "absolute left-3 transition-all duration-200 pointer-events-none px-2 z-10",
-                isLabelActiveState
-                  ? "top-0 -translate-y-1/2 text-xs bg-[var(--color-bg)]"
-                  : "top-1/2 -translate-y-1/2 text-sm",
+                "absolute left-3 transition-all duration-200 pointer-events-none px-1 z-10",
+                isLabelActiveState ? "top-0 -translate-y-1/2 text-xs bg-[var(--color-bg)]" : "top-1/2 -translate-y-1/2",
                 appliedLabelColor
               )}
             >
@@ -198,58 +136,23 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
               const selectRect = selectRef.current?.getBoundingClientRect();
               const viewportHeight = window.innerHeight;
               const viewportPadding = 8;
-              const spaceBelow = selectRect
-                ? viewportHeight - selectRect.bottom - viewportPadding
-                : 0;
-              const dropdownOffset = 4;
-              const itemHeight = 40;
-              const groupHeaderHeight = 32;
-              const estimatedContentHeight = options.reduce(
-                (total, option) =>
-                  total +
-                  (option.isGroupHeader ? groupHeaderHeight : itemHeight),
-                0
-              );
-              const safeViewportHeight = Math.max(
-                viewportHeight - viewportPadding * 2,
-                itemHeight
-              );
-              const maxHeight = Math.min(
-                500,
-                safeViewportHeight,
-                Math.max(spaceBelow, estimatedContentHeight)
-              );
-              const baseDropdownHeight = Math.min(
-                estimatedContentHeight,
-                maxHeight
-              );
-              const dropdownHeight =
-                align === "bottom"
-                  ? Math.min(baseDropdownHeight, 320)
-                  : baseDropdownHeight;
-              const selectCenter = selectRect
-                ? selectRect.top + selectRect.height / 2
-                : viewportPadding;
+              const estimatedContentHeight = options.reduce((total, option) => total + (option.isGroupHeader ? 32 : 40), 0);
+              const spaceBelow = selectRect ? viewportHeight - selectRect.bottom - viewportPadding : 0;
+              const maxHeight = Math.min(500, Math.max(viewportHeight - viewportPadding * 2, 40), Math.max(spaceBelow, estimatedContentHeight));
+              const dropdownHeight = align === "bottom" ? Math.min(estimatedContentHeight, maxHeight, 320) : Math.min(estimatedContentHeight, maxHeight);
               const maxTop = viewportHeight - dropdownHeight - viewportPadding;
-              const centeredTop = selectCenter - dropdownHeight / 2;
-              const clampTop = (desiredTop: number) =>
-                Math.min(
-                  Math.max(desiredTop, viewportPadding),
-                  Math.max(maxTop, viewportPadding)
-                );
+              const clampTop = (desiredTop: number) => Math.min(Math.max(desiredTop, viewportPadding), Math.max(maxTop, viewportPadding));
+
               const topPosition =
                 align === "bottom"
-                  ? clampTop(
-                      (selectRect ? selectRect.bottom : viewportPadding) +
-                        dropdownOffset
-                    )
-                  : clampTop(centeredTop);
+                  ? clampTop((selectRect?.bottom ?? viewportPadding) + 4)
+                  : clampTop((selectRect ? selectRect.top + selectRect.height / 2 : viewportPadding) - dropdownHeight / 2);
 
               const dropdownContent = (
                 <div
                   ref={dropdownRef}
                   id={listboxId}
-                  className="fixed top-20 z-[10000] bg-[var(--color-surface)] shadow-lg overflow-auto [&::-webkit-scrollbar]:hidden"
+                  className="fixed top-20 z-[10000] bg-[var(--color-select-dropdown-bg)] shadow-lg overflow-auto [&::-webkit-scrollbar]:hidden"
                   style={{
                     scrollbarWidth: "none",
                     msOverflowStyle: "none",
@@ -276,9 +179,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
                     }
 
                     const isPlaceholderOption = isNoOptionLabel(option.label);
-                    const isSelected =
-                      option.value === value ||
-                      (!value && isNoSelection && isPlaceholderOption);
+                    const isSelected = option.value === value || (!value && isNoSelection && isPlaceholderOption);
 
                     return (
                       <div

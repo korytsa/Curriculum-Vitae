@@ -5,6 +5,11 @@ export const SKILL_CATEGORIES_QUERY = gql`
     skillCategories {
       id
       name
+      order
+      parent {
+        id
+        name
+      }
     }
   }
 `;
@@ -74,6 +79,71 @@ export const UPDATE_SKILL_MUTATION = gql`
         id
         name
       }
+    }
+  }
+`;
+
+export const ADMIN_SKILLS_QUERY = gql`
+  query AdminSkills {
+    skills {
+      id
+      name
+      category {
+        id
+        name
+      }
+      category_name
+      category_parent_name
+      created_at
+    }
+    skillCategories {
+      id
+      name
+      order
+      parent {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const CREATE_SKILL_MUTATION = gql`
+  mutation CreateSkill($skill: CreateSkillInput!) {
+    createSkill(skill: $skill) {
+      id
+      name
+      category {
+        id
+        name
+      }
+      category_name
+      category_parent_name
+      created_at
+    }
+  }
+`;
+
+export const DELETE_SKILL_MUTATION = gql`
+  mutation DeleteSkill($skill: DeleteSkillInput!) {
+    deleteSkill(skill: $skill) {
+      affected
+    }
+  }
+`;
+
+export const ADMIN_UPDATE_SKILL_MUTATION = gql`
+  mutation AdminUpdateSkill($skill: UpdateSkillInput!) {
+    updateSkill(skill: $skill) {
+      id
+      name
+      category {
+        id
+        name
+      }
+      category_name
+      category_parent_name
+      created_at
     }
   }
 `;

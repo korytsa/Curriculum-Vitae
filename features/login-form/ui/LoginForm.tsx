@@ -39,9 +39,7 @@ export function LoginForm() {
     return errors;
   };
 
-  const mapValuesToLoginPayload = (
-    values: typeof initialValues
-  ): LoginPayload => ({
+  const mapValuesToLoginPayload = (values: typeof initialValues): LoginPayload => ({
     email: values.email.trim(),
     password: values.password,
   });
@@ -58,12 +56,8 @@ export function LoginForm() {
     <form className="space-y-6" onSubmit={formik.handleSubmit}>
       <FormStatus
         errorMessage={error?.message ?? null}
-        successMessage={
-          forgotFeedback?.type === "success" ? forgotFeedback.message : null
-        }
-        noticeMessage={
-          forgotFeedback?.type === "error" ? forgotFeedback.message : null
-        }
+        successMessage={forgotFeedback?.type === "success" ? forgotFeedback.message : null}
+        noticeMessage={forgotFeedback?.type === "error" ? forgotFeedback.message : null}
       />
       <div>
         <Input
@@ -74,9 +68,7 @@ export function LoginForm() {
           {...formik.getFieldProps("email")}
           required
         />
-        {formik.touched.email && formik.errors.email ? (
-          <p className="mt-1 text-sm text-red-400">{formik.errors.email}</p>
-        ) : null}
+        {formik.touched.email && formik.errors.email ? <p className="mt-1 text-sm text-red-400">{formik.errors.email}</p> : null}
       </div>
 
       <div>
@@ -88,20 +80,11 @@ export function LoginForm() {
           {...formik.getFieldProps("password")}
           required
         />
-        {formik.touched.password && formik.errors.password ? (
-          <p className="mt-1 text-sm text-red-400">{formik.errors.password}</p>
-        ) : null}
+        {formik.touched.password && formik.errors.password ? <p className="mt-1 text-sm text-red-400">{formik.errors.password}</p> : null}
       </div>
 
-      <Button
-        variant="primary"
-        className="w-full"
-        type="submit"
-        disabled={loading || !formik.isValid || formik.isSubmitting}
-      >
-        {loading || formik.isSubmitting
-          ? t("features.loginForm.buttons.loggingIn")
-          : t("features.loginForm.buttons.login")}
+      <Button variant="primary" className="w-full" type="submit" disabled={loading || !formik.isValid || formik.isSubmitting}>
+        {loading || formik.isSubmitting ? t("features.loginForm.buttons.loggingIn") : t("features.loginForm.buttons.login")}
       </Button>
 
       <div className="text-center">
@@ -129,25 +112,15 @@ export function LoginForm() {
 
             setForgotFeedback(null);
 
-            try {
-              await forgotPassword({ email: trimmedEmail });
-              setForgotFeedback({
-                type: "success",
-                message: t("features.loginForm.forgotPassword.success"),
-              });
-            } catch (forgotError) {
-              const fallbackMessage =
-                forgotError instanceof Error
-                  ? forgotError.message
-                  : t("features.loginForm.forgotPassword.genericError");
-              setForgotFeedback({ type: "error", message: fallbackMessage });
-            }
+            await forgotPassword({ email: trimmedEmail });
+            setForgotFeedback({
+              type: "success",
+              message: t("features.loginForm.forgotPassword.success"),
+            });
           }}
           disabled={forgotLoading}
         >
-          {forgotLoading
-            ? t("features.loginForm.forgotPassword.sending")
-            : t("features.loginForm.forgotPassword.cta")}
+          {forgotLoading ? t("features.loginForm.forgotPassword.sending") : t("features.loginForm.forgotPassword.cta")}
         </Button>
       </div>
     </form>

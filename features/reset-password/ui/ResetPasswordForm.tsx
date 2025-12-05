@@ -70,20 +70,12 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
         return;
       }
 
-      try {
-        await resetPassword(payload);
-        setFeedback({
-          type: "success",
-          message: t("features.resetPassword.feedback.success"),
-        });
-        helpers.resetForm();
-      } catch (mutationError) {
-        const fallbackMessage =
-          mutationError instanceof Error
-            ? mutationError.message
-            : t("features.resetPassword.feedback.genericError");
-        setFeedback({ type: "error", message: fallbackMessage });
-      }
+      await resetPassword(payload);
+      setFeedback({
+        type: "success",
+        message: t("features.resetPassword.feedback.success"),
+      });
+      helpers.resetForm();
     },
   });
 
@@ -91,12 +83,8 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
     <div className="min-h-screen bg-[#1F1F1F] flex items-center justify-center px-4">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-2">
-          <h1 className="text-4xl font-bold text-white">
-            {t("features.resetPassword.headings.title")}
-          </h1>
-          <p className="text-lg text-white/80">
-            {t("features.resetPassword.headings.subtitle")}
-          </p>
+          <h1 className="text-4xl font-bold text-white">{t("features.resetPassword.headings.title")}</h1>
+          <p className="text-lg text-white/80">{t("features.resetPassword.headings.subtitle")}</p>
         </div>
 
         <form className="space-y-6" onSubmit={formik.handleSubmit}>
@@ -115,11 +103,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
               {...formik.getFieldProps("password")}
               required
             />
-            {formik.touched.password && formik.errors.password ? (
-              <p className="mt-1 text-sm text-red-400">
-                {formik.errors.password}
-              </p>
-            ) : null}
+            {formik.touched.password && formik.errors.password ? <p className="mt-1 text-sm text-red-400">{formik.errors.password}</p> : null}
           </div>
 
           <div>
@@ -131,24 +115,11 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
               {...formik.getFieldProps("confirmPassword")}
               required
             />
-            {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
-              <p className="mt-1 text-sm text-red-400">
-                {formik.errors.confirmPassword}
-              </p>
-            ) : null}
+            {formik.touched.confirmPassword && formik.errors.confirmPassword ? <p className="mt-1 text-sm text-red-400">{formik.errors.confirmPassword}</p> : null}
           </div>
 
-          <Button
-            type="submit"
-            variant="primary"
-            className="w-full"
-            disabled={
-              loading || !formik.isValid || formik.isSubmitting || !token
-            }
-          >
-            {loading || formik.isSubmitting
-              ? t("features.resetPassword.buttons.updating")
-              : t("features.resetPassword.buttons.submit")}
+          <Button type="submit" variant="primary" className="w-full" disabled={loading || !formik.isValid || formik.isSubmitting || !token}>
+            {loading || formik.isSubmitting ? t("features.resetPassword.buttons.updating") : t("features.resetPassword.buttons.submit")}
           </Button>
         </form>
       </div>

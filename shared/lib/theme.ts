@@ -41,7 +41,6 @@ export const applyThemePreference = (
   const theme = resolveTheme(preference);
   const root = document.documentElement;
   root.dataset.theme = theme;
-  root.style.colorScheme = theme;
 
   if (persist) {
     window.localStorage.setItem(THEME_STORAGE_KEY, preference);

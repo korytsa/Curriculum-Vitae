@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { Plus } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { useRouter, useParams } from "next/navigation";
 import toast from "react-hot-toast";
-import { Button, SearchInput, Table } from "@/shared/ui";
+import { Button, ConfirmDeleteModal, SearchInput, Table } from "@/shared/ui";
 import { useCvsPage } from "./lib/useCvsPage";
-import { CreateCvModal, DeleteCvModal, useCvs } from "@/features/cvs";
+import { CreateCvModal, useCvs, useDeleteCv } from "@/features/cvs";
 
 export default function CvsPage() {
   const { t } = useTranslation();
@@ -21,7 +21,8 @@ export default function CvsPage() {
     cvName?: string;
   }>({ open: false, cvId: "" });
 
-  const { cvs} = useCvs();
+  const { cvs } = useCvs();
+  const { deleteCv, loading: isDeleteLoading, error: deleteError } = useDeleteCv();
 
   const handleCloseModal = () => setShowCreateModal(false);
 
@@ -43,16 +44,22 @@ export default function CvsPage() {
   };
 
   const handleCloseDeleteModal = () => {
-    setDeleteModalState({ open: false, cvId: "" });
+    setDeleteModalState({ open: false, cvId: "", cvName: undefined });
   };
 
   const handleDeleteSuccess = async () => {
     await refetch?.();
-    toast.success(
-      t("cvs.deleteModal.notifications.success", {
-        defaultValue: "CV deleted successfully",
-      })
-    );
+    toast.success(t("cvs.deleteModal.notifications.success"));
+  };
+
+  const handleConfirmDeleteCv = async () => {
+    if (!deleteModalState.cvId) {
+      return;
+    }
+
+    await deleteCv({ cvId: deleteModalState.cvId });
+    await handleDeleteSuccess();
+    handleCloseDeleteModal();
   };
 
   const { heading, searchInputProps, tableProps, refetch } = useCvsPage({
@@ -71,34 +78,28 @@ export default function CvsPage() {
             </div>
           </div>
 
-          <Button
-            type="button"
-            variant="ghost"
-            className="rounded-full px-6 py-2 text-red-400 hover:text-red-200 uppercase tracking-[0.3em] text-xs"
-            icon={<Plus className="h-4 w-4" />}
-            iconPosition="left"
-            onClick={() => setShowCreateModal(true)}
-          >
-            {t("cvs.actions.create", { defaultValue: "Create CV" })}
+          <Button type="button" variant="dangerText" icon={<Plus className="h-4 w-4" />} iconPosition="left" onClick={() => setShowCreateModal(true)}>
+            {t("cvs.actions.create")}
           </Button>
         </div>
 
         <Table {...tableProps} />
       </section>
 
-      <CreateCvModal
-        open={showCreateModal}
-        onClose={handleCloseModal}
-        onSuccess={handleCreated}
-      />
+      <CreateCvModal open={showCreateModal} onClose={handleCloseModal} onSuccess={handleCreated} />
 
-      <DeleteCvModal
+      <ConfirmDeleteModal
         open={deleteModalState.open}
-        cvId={deleteModalState.cvId}
-        cvName={deleteModalState.cvName}
+        title={t("cvs.deleteModal.title")}
+        onConfirm={handleConfirmDeleteCv}
         onClose={handleCloseDeleteModal}
-        onSuccess={handleDeleteSuccess}
-      />
+        isLoading={isDeleteLoading}
+        errorMessage={deleteError?.message ?? null}
+      >
+        <p className="font-normal">
+          <Trans i18nKey="cvs.deleteModal.warning" values={{ name: deleteModalState.cvName || "" }} components={{ strong: <span className="font-semibold" /> }} />
+        </p>
+      </ConfirmDeleteModal>
     </>
   );
 }

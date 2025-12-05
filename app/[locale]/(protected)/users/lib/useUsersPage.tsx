@@ -68,29 +68,37 @@ export function useUsersPage(): UsersPageHookResult {
     const currentUser = filteredUsers.find((user) => user.id === currentUserId);
     if (!currentUser) return filteredUsers;
 
-    const otherUsers = filteredUsers.filter(
-      (user) => user.id !== currentUserId
-    );
+    const otherUsers = filteredUsers.filter((user) => user.id !== currentUserId);
 
     return [currentUser, ...otherUsers];
   })();
 
+  const translate = (key: string) => t(key);
+
+  const searchText = {
+    placeholder: translate("users.search.placeholder"),
+    reset: translate("users.search.reset"),
+    noResultsTitle: translate("users.search.noResults.title"),
+    noResultsDescription: translate("users.search.noResults.description"),
+    logout: translate("users.search.logout"),
+  };
+
   const emptyState = !isSearchActive ? (
     <div className="py-5 text-center flex justify-center items-center">
       <Button variant="outline" className="px-10" onClick={handleLogout}>
-        Logout
+        {searchText.logout}
       </Button>
     </div>
   ) : (
     <div className="mt-6 flex flex-col items-center justify-center gap-3 py-20 text-center">
-      <h3 className="text-xl text-white">No results found</h3>
-      <p>Try another search, check the spelling or use a broader term</p>
+      <h3 className="text-xl text-white">{searchText.noResultsTitle}</h3>
+      <p className="text-white/70">{searchText.noResultsDescription}</p>
       <button
         type="button"
         className="mt-2 rounded-full px-10 py-3 text-sm font-medium uppercase tracking-wide text-neutral-500 transition-colors hover:bg-[#454545]"
         onClick={handleResetSearch}
       >
-        Reset search
+        {searchText.reset}
       </button>
     </div>
   );
@@ -99,15 +107,7 @@ export function useUsersPage(): UsersPageHookResult {
     await refetch();
   };
 
-  const renderRowActions = (row: User) => (
-    <UserRowActions
-      row={row}
-      currentUserId={currentUserId}
-      onNavigate={navigateToUser}
-      isAdmin={isAdmin}
-      onDeleted={refreshUsers}
-    />
-  );
+  const renderRowActions = (row: User) => <UserRowActions row={row} currentUserId={currentUserId} onNavigate={navigateToUser} isAdmin={isAdmin} onDeleted={refreshUsers} />;
 
   const searchInputProps: SearchInputProps<User> = {
     data: users as User[],
@@ -116,7 +116,7 @@ export function useUsersPage(): UsersPageHookResult {
     onQueryChange: setSearchQuery,
     resetKey: searchResetKey,
     hasError: isSearchActive && sortedUsers.length === 0,
-    placeholder: "Search",
+    placeholder: searchText.placeholder,
   };
 
   const tableProps: TableProps<User> = {
@@ -129,12 +129,11 @@ export function useUsersPage(): UsersPageHookResult {
   };
 
   return {
-    heading: t("users.heading") || "Employees",
+    heading: translate("users.heading"),
     searchInputProps,
     tableProps,
     canCreateUser: isAdmin,
-    createUserLabel:
-      t("users.createUser", { defaultValue: "Create user" }) || "Create user",
+    createUserLabel: t("users.createUser"),
     refreshUsers,
   };
 }

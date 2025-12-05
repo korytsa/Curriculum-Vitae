@@ -21,11 +21,7 @@ interface AddLanguageFormProps {
   onCancel: () => void;
 }
 
-export function AddLanguageForm({
-  open,
-  onSuccess,
-  onCancel,
-}: AddLanguageFormProps) {
+export function AddLanguageForm({ open, onSuccess, onCancel }: AddLanguageFormProps) {
   const { createLanguage, loading, error } = useCreateLanguage();
   const { languagesData } = useLanguages();
   const { t } = useTranslation();
@@ -40,23 +36,17 @@ export function AddLanguageForm({
     const errors: Partial<Record<keyof AddLanguageFormValues, string>> = {};
 
     if (!values.languageName) {
-      errors.languageName = t(
-        "features.languages.addForm.errors.languageRequired"
-      );
+      errors.languageName = t("features.languages.addForm.errors.languageRequired");
     }
 
     if (!values.proficiency) {
-      errors.proficiency = t(
-        "features.languages.addForm.errors.proficiencyRequired"
-      );
+      errors.proficiency = t("features.languages.addForm.errors.proficiencyRequired");
     }
 
     return errors;
   };
 
-  const mapValuesToPayload = (
-    values: AddLanguageFormValues
-  ): CreateLanguagePayload | null => {
+  const mapValuesToPayload = (values: AddLanguageFormValues): CreateLanguagePayload | null => {
     if (!values.languageName || !values.proficiency) {
       return null;
     }
@@ -77,13 +67,9 @@ export function AddLanguageForm({
         return;
       }
 
-      try {
-        await createLanguage(payload);
-        helpers.resetForm();
-        onSuccess();
-      } catch (err) {
-        console.error("Error creating language:", err);
-      }
+      await createLanguage(payload);
+      helpers.resetForm();
+      onSuccess();
     },
   });
 
@@ -121,11 +107,7 @@ export function AddLanguageForm({
             onChange={(value) => formik.setFieldValue("languageName", value)}
             options={languageOptions}
             align="bottom"
-            error={
-              formik.touched.languageName && formik.errors.languageName
-                ? formik.errors.languageName
-                : undefined
-            }
+            error={formik.touched.languageName && formik.errors.languageName ? formik.errors.languageName : undefined}
           />
         </div>
 
@@ -134,16 +116,10 @@ export function AddLanguageForm({
             id="proficiency"
             label={t("features.languages.addForm.labels.proficiency")}
             value={formik.values.proficiency}
-            onChange={(value) =>
-              formik.setFieldValue("proficiency", value as Proficiency)
-            }
+            onChange={(value) => formik.setFieldValue("proficiency", value as Proficiency)}
             options={proficiencyOptions}
             align="bottom"
-            error={
-              formik.touched.proficiency && formik.errors.proficiency
-                ? formik.errors.proficiency
-                : undefined
-            }
+            error={formik.touched.proficiency && formik.errors.proficiency ? formik.errors.proficiency : undefined}
           />
         </div>
       </div>

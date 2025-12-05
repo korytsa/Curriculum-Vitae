@@ -6,7 +6,22 @@
     "unauthorized": "Your session expired. Please log in again."
   },
   "skills": {
-    "heading": "Skills"
+    "heading": "Skills",
+    "mastery": {
+      "novice": "Novice",
+      "competent": "Competent",
+      "proficient": "Proficient",
+      "advanced": "Advanced",
+      "expert": "Expert"
+    },
+    "categories": {
+      "Databases": "Databases",
+      "Frontend": "Frontend",
+      "Backend": "Backend",
+      "Frontend technologies": "Frontend technologies",
+      "Programming languages": "Programming languages",
+      "Other": "Other"
+    }
   },
   "settings": {
     "heading": "Settings",
@@ -26,6 +41,11 @@
         "ru": "Russian"
       }
     }
+  },
+  "errors": {
+    "unauthorized": "Your session expired. Please log in again.",
+    "network": "Network error. Please check your connection.",
+    "unexpected": "Something went wrong. Please try again."
   },
   "cvs": {
     "heading": "CVs",
@@ -47,6 +67,14 @@
         "employee": "Employee"
       }
     },
+    "list": {
+      "columns": {
+        "name": "Name",
+        "education": "Education",
+        "employee": "Employee",
+        "emptyValue": "—"
+      }
+    },
     "createModal": {
       "title": "Create CV",
       "labels": {
@@ -64,10 +92,10 @@
     },
     "details": {
       "tabs": {
-        "details": "DETAILS",
-        "skills": "SKILLS",
-        "projects": "PROJECTS",
-        "preview": "PREVIEW"
+        "details": "Details",
+        "skills": "Skills",
+        "projects": "Projects",
+        "preview": "Preview"
       },
       "actions": {
         "update": "UPDATE"
@@ -82,9 +110,93 @@
         "error": "Failed to update CV"
       }
     },
+    "preview": {
+      "exportPdf": "EXPORT PDF",
+      "languagesHeading": "Language proficiency",
+      "domainsHeading": "Domains",
+      "professionalSkills": "Professional skills",
+      "projectsHeading": "Projects",
+      "projectRole": "Project Role",
+      "period": "Period",
+      "responsibilities": "Responsibilities",
+      "environment": "Environment",
+      "emptySkills": "Add skills to the CV to showcase them here.",
+      "experienceColumn": "Experience in years",
+      "lastUsedColumn": "Last used",
+      "summaryPlaceholder": "Use this space to highlight achievements, focus areas and the value you bring to teams.",
+      "dateUnknown": "N/A"
+    },
+    "projectsPage": {
+      "actions": {
+        "add": "ADD PROJECT",
+        "update": "Update project",
+        "remove": "Remove project",
+        "openMenu": "Open actions menu"
+      },
+      "search": {
+        "placeholder": "Search projects",
+        "reset": "Reset search",
+        "noResults": "No results found"
+      },
+      "states": {
+        "empty": {
+          "title": "No projects yet",
+          "description": "Start by adding a project to this CV."
+        },
+        "noResults": {
+          "title": "No results found",
+          "description": "Try another search, check the spelling or use a broader term"
+        }
+      },
+      "table": {
+        "columns": {
+          "name": "Name",
+          "domain": "Domain",
+          "startDate": "Start Date",
+          "endDate": "End Date",
+          "actions": "Actions"
+        },
+        "labels": {
+          "present": "Present"
+        },
+        "sort": {
+          "name": "Sort by name",
+          "domain": "Sort by domain",
+          "startDate": "Sort by start date",
+          "endDate": "Sort by end date"
+        }
+      },
+      "modal": {
+        "title": "Add project",
+        "createTitle": "Create project",
+        "updateTitle": "Update project",
+        "fields": {
+          "name": "Name",
+          "project": "Project",
+          "domain": "Domain",
+          "startDate": "Start Date",
+          "endDate": "End Date",
+          "description": "Description",
+          "environment": "Environment",
+          "environmentPlaceholder": "Add skill",
+          "responsibilities": "Responsibilities",
+          "responsibilitiesPlaceholder": "List Responsibilities"
+        },
+        "actions": {
+          "cancel": "CANCEL",
+          "submit": "ADD",
+          "create": "CREATE",
+          "update": "UPDATE"
+        }
+      },
+      "deleteModal": {
+        "title": "Remove project",
+        "message": "Are you sure you want to remove project <strong>{{name}}</strong>?"
+      }
+    },
     "deleteModal": {
       "title": "Delete CV",
-      "warning": "Are you sure you want to delete this CV? This action cannot be undone.",
+      "warning": "Are you sure you want to delete CV <strong>{{name}}</strong>?",
       "cvName": "CV: {{name}}",
       "actions": {
         "delete": "DELETE",
@@ -95,9 +207,16 @@
       }
     }
   },
+  "confirmDeleteModal": {
+    "actions": {
+      "delete": "DELETE",
+      "cancel": "CANCEL"
+    }
+  },
   "languages": {
     "heading": "Languages"
   },
+  "projectsHeading": "Projects",
   "users": {
     "heading": "Employees",
     "createUser": "Create user",
@@ -172,6 +291,24 @@
           "success": "Profile updated successfully.",
           "error": "Unable to update profile. Please try again."
         }
+      }
+    },
+    "search": {
+      "placeholder": "Search employees",
+      "reset": "Reset search",
+      "noResults": {
+        "title": "No results found",
+        "description": "Try another search, check the spelling or use a broader term"
+      },
+      "logout": "Logout"
+    },
+    "table": {
+      "columns": {
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "department": "Department",
+        "position": "Position"
       }
     }
   },
@@ -295,7 +432,6 @@
       "page": {
         "actions": {
           "add": "Add Skill",
-          "update": "Update Skill",
           "delete": "Remove Skills"
         }
       },
@@ -343,19 +479,7 @@
       },
       "deleteModal": {
         "title": "Remove skill",
-        "confirmTitle": "Confirm Deletion",
-        "warning": "Are you sure you want to delete this skill? This action cannot be undone.",
-        "labels": {
-          "skill": "Skill",
-          "skillToDelete": "Skill to delete:"
-        },
-        "placeholders": {
-          "skill": "Select a skill..."
-        },
-        "delete": "DELETE",
-        "errors": {
-          "skillRequired": "Please select a skill to delete"
-        }
+        "warning": "Are you sure you want to delete this skill? This action cannot be undone."
       }
     },
     "languages": {
@@ -407,9 +531,12 @@
     "sidebar": {
       "menu": {
         "employees": "Employees",
+        "projects": "Projects",
+        "cvs": "CVs",
+        "departments": "Departments",
+        "positions": "Positions",
         "skills": "Skills",
-        "languages": "Languages",
-        "cvs": "CVs"
+        "languages": "Languages"
       },
       "avatar": {
         "initials": "R",
@@ -418,6 +545,63 @@
       "aria": {
         "expand": "Expand sidebar",
         "collapse": "Collapse sidebar"
+      },
+      "userMenu": {
+        "profile": "Profile",
+        "settings": "Settings",
+        "logout": "Logout"
+      }
+    }
+  },
+  "admin": {
+    "skills": {
+      "heading": "Skills",
+      "actions": {
+        "create": "CREATE SKILL"
+      },
+      "search": {
+        "placeholder": "Search"
+      },
+      "table": {
+        "columns": {
+          "name": "Name",
+          "type": "Type",
+          "category": "Category"
+        },
+        "actions": {
+          "update": "Update",
+          "remove": "Remove",
+          "ariaLabel": "Skill actions"
+        },
+        "empty": "No skills found"
+      },
+      "form": {
+        "createTitle": "Create Skill",
+        "updateTitle": "Update Skill",
+        "create": "CREATE",
+        "confirm": "CONFIRM",
+        "cancel": "CANCEL",
+        "labels": {
+          "name": "Name",
+          "type": "Type",
+          "category": "Category"
+        },
+        "errors": {
+          "nameRequired": "Name is required",
+          "typeRequired": "Type is required",
+          "categoryRequired": "Category is required"
+        }
+      },
+      "messages": {
+        "createSuccess": "Skill created successfully",
+        "updateSuccess": "Skill updated successfully",
+        "deleteSuccess": "Skill deleted successfully",
+        "deleteError": "Failed to delete skill",
+        "deleteConfirm": "Are you sure you want to delete skill {{name}}?"
+      },
+      "deleteModal": {
+        "title": "Delete Skill",
+        "message": "Are you sure you want to delete <strong>{{name}}</strong>?"
       }
     }
   }

@@ -3,7 +3,7 @@
 import { useFormik } from "formik";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
-import { Button, Input, FormStatus } from "@/shared/ui";
+import { Button, Input, FormStatus, TextArea } from "@/shared/ui";
 import { useCv, useUpdateCv } from "@/features/cvs";
 import { Loader } from "@/shared/ui";
 
@@ -26,32 +26,17 @@ export default function CvDetailsPage({ params }: CvDetailsPageProps) {
     validate: (values) => {
       const errors: Partial<Record<keyof typeof values, string>> = {};
       if (!values.name.trim()) {
-        errors.name = t("cvs.createModal.errors.nameRequired", {
-          defaultValue: "Name is required",
-        });
+        errors.name = t("cvs.createModal.errors.nameRequired");
       }
       return errors;
     },
     onSubmit: async (values) => {
-      try {
-        await updateCv({
-          name: values.name.trim(),
-          education: values.education?.trim() || undefined,
-          description: values.description?.trim() || "",
-        });
-        toast.success(
-          t("cvs.details.notifications.success", {
-            defaultValue: "CV updated successfully",
-          })
-        );
-      } catch (err) {
-        console.error("Error updating CV:", err);
-        toast.error(
-          t("cvs.details.notifications.error", {
-            defaultValue: "Failed to update CV",
-          })
-        );
-      }
+      await updateCv({
+        name: values.name.trim(),
+        education: values.education?.trim() || undefined,
+        description: values.description?.trim() || "",
+      });
+      toast.success(t("cvs.details.notifications.success"));
     },
   });
 
@@ -72,60 +57,33 @@ export default function CvDetailsPage({ params }: CvDetailsPageProps) {
           <div>
             <Input
               id="name"
-              label={t("cvs.createModal.labels.name", { defaultValue: "Name" })}
+              label={t("cvs.createModal.labels.name")}
               {...formik.getFieldProps("name")}
               required
-              error={
-                formik.touched.name && formik.errors.name
-                  ? formik.errors.name
-                  : undefined
-              }
+              error={formik.touched.name && formik.errors.name ? formik.errors.name : undefined}
             />
           </div>
 
           <div>
             <Input
               id="education"
-              label={t("cvs.createModal.labels.education", {
-                defaultValue: "Education",
-              })}
+              label={t("cvs.createModal.labels.education")}
               {...formik.getFieldProps("education")}
-              error={
-                formik.touched.education && formik.errors.education
-                  ? formik.errors.education
-                  : undefined
-              }
+              error={formik.touched.education && formik.errors.education ? formik.errors.education : undefined}
             />
           </div>
 
-          <div>
-            <label
-              htmlFor="description"
-              className="mb-2 block text-sm font-medium text-white/80"
-            >
-              {t("cvs.createModal.labels.description", {
-                defaultValue: "Description",
-              })}
-            </label>
-            <textarea
-              id="description"
-              className="w-full rounded-lg border border-white/20 bg-transparent px-3 py-2 text-white placeholder:text-white/40 focus:border-white focus:outline-none min-h-[140px] resize-none"
-              {...formik.getFieldProps("description")}
-            />
-            {formik.touched.description && formik.errors.description && (
-              <p className="mt-1 text-sm text-red-500">
-                {formik.errors.description}
-              </p>
-            )}
-          </div>
+          <TextArea
+            id="description"
+            label={t("cvs.createModal.labels.description")}
+            rows={5}
+            {...formik.getFieldProps("description")}
+            error={formik.touched.description && formik.errors.description ? formik.errors.description : undefined}
+          />
 
           <div className="flex justify-end">
-            <Button
-              type="submit"
-              variant="outline"
-              disabled={updateLoading || !formik.isValid || formik.isSubmitting}
-            >
-              {t("cvs.details.actions.update", { defaultValue: "UPDATE" })}
+            <Button type="submit" variant="outline" disabled={updateLoading || !formik.isValid || formik.isSubmitting}>
+              {t("cvs.details.actions.update")}
             </Button>
           </div>
         </form>

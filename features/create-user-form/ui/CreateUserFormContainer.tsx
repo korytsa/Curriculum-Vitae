@@ -24,15 +24,10 @@ export function CreateUserFormContainer({
       {showHeading ? (
         <div className="space-y-2">
           <h1 className="text-3xl font-semibold text-white">
-            {t("features.createUserForm.heading", {
-              defaultValue: "Create user",
-            })}
+            {t("features.createUserForm.heading")}
           </h1>
           <p className="text-white/70 text-base">
-            {t("features.createUserForm.description", {
-              defaultValue:
-                "Fill out the fields below to create a new Employee or Admin account.",
-            })}
+            {t("features.createUserForm.description")}
           </p>
         </div>
       ) : null}
